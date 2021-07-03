@@ -1,11 +1,14 @@
-const Security = require('../classes/Security')
+const Security = require('../config/Security')
+const User = require('../models/UserModel')
 
 /**
  * User Controller
  */
 class UserController {
     static async getAll(req, res) {
-        
+        User.findAll()
+            .then(users => res.status(200).json(users))
+            .catch(error => res.status(404).json({ error: error.message }))
     }
 
     static async register(req, res) {

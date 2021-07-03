@@ -1,4 +1,4 @@
-const Security = require('../classes/Security')
+const Security = require('../config/Security')
 
 const auth = (req, res, next) => {
     try {

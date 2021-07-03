@@ -1,14 +1,21 @@
 const express = require('express')
 const dotenv = require('dotenv')
-const Database = require('./classes/Database')
+const db = require('./config/database')
 const userRoute = require('./routes/userRoute')
 const postRoute = require('./routes/postRoute')
 
 dotenv.config({ path: './.env' })
 
-const app = express()
+db.authenticate()
+    .then(() => console.log('Connection to MySQL successful !'))
+    .catch(error => {
+        console.error('Connection to MySQL failed !')
+        setTimeout(() => {
+            db.authenticate()
+        }, 5000)
+    })
 
-Database.connection()
+const app = express()
 
 app.use((req, res, next) => {
     res.setHeader('Access-Control-Allow-Origin', process.env.ALLOWED_ORIGIN)
