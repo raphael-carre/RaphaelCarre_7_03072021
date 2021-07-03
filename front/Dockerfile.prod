@@ -1,0 +1,9 @@
+FROM node:14.17 as build
+WORKDIR /app
+COPY package.json .
+RUN npm install
+COPY . .
+RUN npm run prod
+
+FROM httpd:2.4
+COPY --from=build /app/build /usr/local/apache2/htdocs

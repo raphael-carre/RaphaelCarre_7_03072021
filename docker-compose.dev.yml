@@ -1,0 +1,13 @@
+version: "3"
+services:
+    back:
+        volumes:
+            - ./back/app:/app/app:ro
+            - /app/node_modules
+            
+    front:
+        build:
+            dockerfile: Dockerfile.dev
+        volumes:
+            - ./front/src:/app/src:ro
+            - /app/node_modules
