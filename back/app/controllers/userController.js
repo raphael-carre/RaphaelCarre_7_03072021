@@ -33,7 +33,21 @@ class UserController {
     static async login(req, res) {
         const { email, password } = req.body
 
+        await User.findOne({ attributes: ['id', 'email', 'password'], where: { email }})
+            .then(async user => {
+                if (!user) return res.status(404).json({ error: 'Utilisateur introuvable !' })
+                
+                const userId = user.id
 
+                await Security.compareHash(password, user.password)
+                    .then(valid => {
+                        if (!valid) return res.status(401).json({ error: 'Mot de passe incorrect !' })
+
+                        res.status(200).json({ userId, token: Security.createJwt(userId) })
+                    })
+                    .catch(error => res.status(500).json({ error }))
+            })
+            .catch(error => res.status(404).json({ error }))
     }
 }
 
