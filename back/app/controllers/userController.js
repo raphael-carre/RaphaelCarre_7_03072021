@@ -12,10 +12,21 @@ class UserController {
     }
 
     static async register(req, res) {
-        const { email, password } = req.body
+        const { firstName, lastName, email, password } = req.body
 
         await Security.hash(password)
-            .then(hash => console.log(hash))
+            .then(async hash => {
+                const newUser = {
+                    firstName,
+                    lastName,
+                    email,
+                    password: hash
+                }
+
+                await User.create(newUser)
+                    .then(() => res.status(201).json({ message: 'Utilisateur créé !' }))
+                    .catch(error => res.status(500).json({ error }))
+            })
             .catch(error => res.status(500).json({ error }))
     }
 

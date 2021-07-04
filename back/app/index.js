@@ -6,14 +6,21 @@ const postRoute = require('./routes/postRoute')
 
 dotenv.config({ path: './.env' })
 
-db.authenticate()
-    .then(() => console.log('Connection to MySQL successful !'))
-    .catch(error => {
-        console.error('Connection to MySQL failed !')
-        setTimeout(() => {
-            db.authenticate()
-        }, 5000)
-    })
+const dbConnection = db => {
+    db.authenticate()
+        .then(() => {
+            db.sync()
+            console.log('Connection to MySQL successful !')
+        })
+        .catch(error => {
+            console.error('Connection to MySQL failed !')
+            setTimeout(() => {
+                dbConnection(db)
+            }, 5000)
+        })
+}
+
+dbConnection(db)
 
 const app = express()
 
