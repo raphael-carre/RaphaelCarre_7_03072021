@@ -1,5 +1,6 @@
 const Security = require('../config/Security')
 const Post = require('../models/PostModel')
+
 /**
  * Post Controller
  */

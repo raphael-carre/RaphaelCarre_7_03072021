@@ -1,13 +1,12 @@
-const Auth = require('../middlewares/auth')
-const Admin = require('../middlewares/admin')
+const auth = require('../middlewares/auth')
+const admin = require('../middlewares/admin')
 const UserController = require('../controllers/userController')
-
 const router = require('express').Router()
 
-router.get('/', Auth, Admin, UserController.getAll)
-router.get('/:id', Auth, UserController.getOne)
-router.put('/:id', Auth, UserController.update)
-router.delete('/:id', Auth, Admin, UserController.delete)
+router.get('/', auth, admin, UserController.getAll)
+router.get('/:id', auth, UserController.getOne)
+router.put('/:id', auth, UserController.update)
+router.delete('/:id', auth, admin, UserController.delete)
 router.post('/register', UserController.register)
 router.post('/login', UserController.login)
 

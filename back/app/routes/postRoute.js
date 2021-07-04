@@ -1,6 +1,6 @@
 const auth = require('../middlewares/auth')
-const PostController = require('../controllers/postController')
 const admin = require('../middlewares/admin')
+const PostController = require('../controllers/postController')
 const router = require('express').Router()
 
 router.get('/', auth, PostController.getAll)
