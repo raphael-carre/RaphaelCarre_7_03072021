@@ -1,24 +1,10 @@
 const express = require('express')
 const dotenv = require('dotenv')
-const db = require('./config/database')
+const { db, dbConnection } = require('./config/database')
 const userRoute = require('./routes/userRoute')
 const postRoute = require('./routes/postRoute')
 
 dotenv.config({ path: './.env' })
-
-const dbConnection = db => {
-    db.authenticate()
-        .then(() => {
-            db.sync()
-            console.log('Connection to MySQL successful !')
-        })
-        .catch(error => {
-            console.error('Connection to MySQL failed !')
-            setTimeout(() => {
-                dbConnection(db)
-            }, 5000)
-        })
-}
 
 dbConnection(db)
 
