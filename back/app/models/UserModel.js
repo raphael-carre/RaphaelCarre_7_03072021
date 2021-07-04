@@ -10,6 +10,12 @@ const User = db.define('User', {
         type: Sequelize.STRING(40),
         allowNull: false
     },
+    image: {
+        type: Sequelize.STRING
+    },
+    description: {
+        type: Sequelize.TEXT
+    },
     email: {
         type: Sequelize.STRING(60),
         allowNull: false,
