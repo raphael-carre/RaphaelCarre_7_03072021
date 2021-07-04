@@ -42,8 +42,6 @@ class UserController {
         const id = parseInt(req.params.id)
         const tokenId = Security.decodeJwt(req.headers.authorization.split(' ')[1])
 
-        console.log(id, tokenId)
-
         if (id !== tokenId) return res.status(401).json({ error: 'Vous n\'avez pas l\'autorisation d\'effectuer cette action !' })
 
         await User.update(req.body, { where: { id } })
