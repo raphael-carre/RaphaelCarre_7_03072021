@@ -18,16 +18,6 @@ const Post = db.define('Post', {
         type: Sequelize.INTEGER,
         defaultValue: 0,
         allowNull: false
-    },
-    comments: {
-        type: Sequelize.JSON,
-        defaultValue: "[]",
-        allowNull: false
-    },
-    commentsCounter: {
-        type: Sequelize.INTEGER,
-        defaultValue: 0,
-        allowNull: false
     }
 })
 

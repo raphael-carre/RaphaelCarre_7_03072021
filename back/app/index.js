@@ -3,6 +3,7 @@ const dotenv = require('dotenv')
 const { db, dbConnection } = require('./config/database')
 const userRoute = require('./routes/userRoute')
 const postRoute = require('./routes/postRoute')
+const commentRoute = require('./routes/commentRoute')
 
 dotenv.config({ path: './.env' })
 
@@ -21,6 +22,7 @@ app.use(express.json())
 
 app.use('/api/users', userRoute)
 app.use('/api/posts', postRoute)
+app.use('/api/posts/:postId/comments', commentRoute)
 
 app.get('/', (req, res) => {
     res.status(200).json({ message: 'Test message from backend service...' })
