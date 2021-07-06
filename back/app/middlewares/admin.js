@@ -1,15 +1,21 @@
+const FetchErrorHandler = require('../config/FetchErrorHandler')
 const Security = require('../config/Security')
 const User = require('../models/UserModel')
 
 const adminAuth = async (req, res, next) => {
-    const tokenId = Security.decodeJwt(req.headers.authorization.split(' ')[1])
-
-    const currentUser = await User.findOne({ attributes: ['isAdmin'], where: { id: tokenId } })
-    if (!currentUser) return res.status(401).json({ error: 'Cette action n\'est pas autorisée !' })
-
-    if (!req.body.adminUser && currentUser.isAdmin && req.body.adminUser === undefined) { req.body.adminUser = true }
-
-    next()
+    try {
+        const tokenId = Security.decodeJwt(req.headers.authorization.split(' ')[1])
+    
+        const currentUser = await User.findOne({ attributes: ['isAdmin'], where: { id: tokenId } })
+        if (!currentUser) throw new FetchErrorHandler(401)
+    
+        if (!req.body.adminUser && currentUser.isAdmin && req.body.adminUser === undefined) { req.body.adminUser = true }
+    
+        next()
+    }
+    catch (error) {
+        res.status(error.statusCode || 500).send(error)
+    }
 }
 
 module.exports = adminAuth

@@ -22,7 +22,7 @@ class UserController {
             res.status(200).json(users)
         }
         catch (error) {
-            res.status(error.statusCode || 500).json({ error: error.message })
+            res.status(error.statusCode || 500).send(error)
         }
     }
 
@@ -42,7 +42,7 @@ class UserController {
             res.status(200).json(user)
         }
         catch (error) {
-            res.status(error.statusCode || 500).json({ error: error.message })
+            res.status(error.statusCode || 500).send(error)
         }
     }
 
@@ -72,7 +72,7 @@ class UserController {
             res.status(200).json({ message: 'Mise à jour effectuée !', userData: updatedUser })
         }
         catch (error) {
-            res.status(error.statusCode || 500).json({ error: error.message })
+            res.status(error.statusCode || 500).send(error)
         }
     }
 
@@ -96,7 +96,7 @@ class UserController {
             res.status(200).json({ message: 'Compte utilisateur supprimé !' })
         }
         catch (error) {
-            res.status(error.statusCode || 500).json({ error: error.message })
+            res.status(error.statusCode || 500).send(error)
         }
     }
 
@@ -132,7 +132,7 @@ class UserController {
             res.status(200).json({ message: 'Utilisateur créé !' })
         }
         catch (error) {
-            res.status(error.statusCode || 500).json({ error: error.message })
+            res.status(error.statusCode || 500).send(error)
         }
     }
 
@@ -156,7 +156,7 @@ class UserController {
             res.status(200).json({ userId: user.id, token: Security.createJwt(user.id) })
         }
         catch (error) {
-            res.status(error.statusCode || 500).json({ error: error.message })
+            res.status(error.statusCode || 500).send(error)
         }
     }
 }

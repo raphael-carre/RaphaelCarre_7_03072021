@@ -23,7 +23,7 @@ class CommentController {
             res.status(200).json({ commentsCounter: comments.length, comments })
         }
         catch (error) {
-            res.status(error.statusCode || 500).json({ error: error.message })
+            res.status(error.statusCode || 500).send(error)
         }
     }
 
@@ -54,7 +54,7 @@ class CommentController {
             res.status(201).json({ commentsCounter, newComment })
         }
         catch (error) {
-            res.status(error.statusCode || 500).json({ error: error.message })
+            res.status(error.statusCode || 500).send(error)
         }
     }
 
@@ -90,7 +90,7 @@ class CommentController {
             res.status(200).json({ message: 'Commentaire mis à jour !', comment: updatedComment })
         }
         catch (error) {
-            res.status(error.statusCode || 500).json({ error: error.message })
+            res.status(error.statusCode || 500).send(error)
         }
     }
 
@@ -120,7 +120,7 @@ class CommentController {
             res.status(200).json({ message: 'Commentaire supprimé !' })
         }
         catch (error) {
-            res.status(error.statusCode || 500).json({ error: error.message })
+            res.status(error.statusCode || 500).send(error)
         }
     }
 }

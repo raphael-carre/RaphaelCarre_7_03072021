@@ -27,7 +27,7 @@ class PostLikeController {
             res.status(200).json(likedPosts)
         }
         catch (error) {
-            res.status(error.statusCode || 500).json({ error: error.message })
+            res.status(error.statusCode || 500).send(error)
         }
     }
 
@@ -50,7 +50,7 @@ class PostLikeController {
             res.status(200).json(usersLiked)
         }
         catch (error) {
-            res.status(error.statusCode || 500).json({ error: error.message })
+            res.status(error.statusCode || 500).send(error)
         }
     }
 
@@ -87,7 +87,7 @@ class PostLikeController {
             res.status(200).json({ message })
         }
         catch (error) {
-            res.status(error.statusCode || 500).json({ error: error.message })
+            res.status(error.statusCode || 500).send(error)
         }
     }
 }

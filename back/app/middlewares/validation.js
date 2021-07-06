@@ -25,7 +25,7 @@ const validation = (req, res, next) => {
         }
         next()
     }
-    catch (error) { return res.status(400).json({ error: error.message }) }
+    catch (error) { return res.status(400).send(error) }
 }
 
 module.exports = validation

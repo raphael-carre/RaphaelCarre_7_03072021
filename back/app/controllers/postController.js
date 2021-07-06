@@ -20,7 +20,7 @@ class PostController {
             res.status(200).json(posts)
         }
         catch (error) {
-            res.status(error.statusCode || 500).json({ error: error.message })
+            res.status(error.statusCode || 500).send(error)
         }
     }
 
@@ -42,7 +42,7 @@ class PostController {
             res.status(201).json({ message: 'Votre publication est enregistrée !', newPost })
         }
         catch (error) {
-            res.status(error.statusCode || 500).json({ error: error.message })
+            res.status(error.statusCode || 500).send(error)
         }
     }
 
@@ -75,7 +75,7 @@ class PostController {
             res.status(200).json({ message: 'Publication mise à jour !', updatedPost })
         }
         catch (error) {
-            res.status(error.statusCode || 500).json({ error: error.message })
+            res.status(error.statusCode || 500).send(error)
         }
     }
 
@@ -102,7 +102,7 @@ class PostController {
             res.status(200).json({ message: 'Publication supprimée !' })
         }
         catch (error) {
-            res.status(error.statusCode || 500).json({ error: error.message })
+            res.status(error.statusCode || 500).send(error)
         }
     }
 }
