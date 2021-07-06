@@ -104,6 +104,9 @@ class UserController {
         try {
             const { firstName, lastName, email, password } = req.body
 
+            const existingUser = await User.findOne({ attributes: ['email'], where: { email } })
+            if (existingUser) throw new FetchErrorHandler(400, 'Cette adresse e-mail est déjà utilisée !')
+
             const usersCount = await User.count()
             if (typeof usersCount !== 'number') throw new FetchErrorHandler(500)
     
