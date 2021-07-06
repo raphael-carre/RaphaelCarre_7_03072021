@@ -16,6 +16,7 @@ class PostLikeController {
     static async getByUser(req, res) {
         try {
             const userId = parseInt(req.params.id)
+            if (isNaN(userId)) throw new FetchErrorHandler(400)
     
             const user = await User.findOne({ attributes: ['id'], where: { id: userId } })
             if (!user) throw new FetchErrorHandler(404, 'Utilisateur introuvable !')
@@ -38,6 +39,7 @@ class PostLikeController {
     static async getByPost(req, res) {
         try {
             const postId = parseInt(req.params.id)
+            if (isNaN(postId)) throw new FetchErrorHandler(400)
     
             const post = await Post.findOne({ attributes: ['id'], where: { id: postId } })
             if (!post) throw new FetchErrorHandler(404, 'Publication introuvable !')
@@ -60,6 +62,8 @@ class PostLikeController {
     static async toggle(req, res) {
         try {
             const postId = parseInt(req.params.id)
+            if (isNaN(postId)) throw new FetchErrorHandler(400)
+
             const userId = Security.decodeJwt(req.headers.authorization.split(' ')[1])
     
             const post = await Post.findOne({ attributes: ['id'], where: { id: postId } })

@@ -34,6 +34,7 @@ class UserController {
     static async getOne(req, res) {
         try {
             const id = parseInt(req.params.id)
+            if (isNaN(id)) throw new FetchErrorHandler(400)
     
             const user = await User.findOne({ attributes: ['id', 'firstName', 'lastName', 'description', 'email', 'image', 'createdAt'], where: { id } })
             if (!user) throw new FetchErrorHandler(404, 'Utilisateur introuvable !')
@@ -53,6 +54,8 @@ class UserController {
     static async update(req, res) {
         try {
             const id = parseInt(req.params.id)
+            if (isNaN(id)) throw new FetchErrorHandler(400)
+
             const tokenId = Security.decodeJwt(req.headers.authorization.split(' ')[1])
     
             if (!(id === tokenId || req.body.adminUser)) throw new FetchErrorHandler(401)
@@ -81,6 +84,8 @@ class UserController {
     static async delete(req, res) {
         try {
             const id = parseInt(req.params.id)
+            if (isNaN(id)) throw new FetchErrorHandler(400)
+
             const tokenId = Security.decodeJwt(req.headers.authorization.split(' ')[1])
     
             if (!(id === tokenId || req.body.adminUser)) throw new FetchErrorHandler(401)

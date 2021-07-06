@@ -15,6 +15,7 @@ class CommentController {
     static async getAll(req, res) {
         try {
             const postId = parseInt(req.params.postId)
+            if (isNaN(postId)) throw new FetchErrorHandler(400)
     
             const comments = await Comment.findAll({ where: { postId }, order: [['createdAt', 'ASC']]})
             if (typeof comments !== 'object') throw new FetchErrorHandler(500)
@@ -34,6 +35,8 @@ class CommentController {
     static async create(req, res) {
         try {
             const postId = parseInt(req.params.postId)
+            if (isNaN(postId)) throw new FetchErrorHandler(400)
+
             const userId = Security.decodeJwt(req.headers.authorization.split(' ')[1])
             
             const content = req.body.content || ''
@@ -63,7 +66,11 @@ class CommentController {
     static async update(req, res) {
         try {
             const id = parseInt(req.params.id)
+            if (isNaN(id)) throw new FetchErrorHandler(400)
+
             const postId = parseInt(req.params.postId)
+            if (isNaN(postId)) throw new FetchErrorHandler(400)
+
             const userId = Security.decodeJwt(req.headers.authorization.split(' ')[1])
     
             const comment = await Comment.findOne({ attributes: ['postId', 'userId'], where: { id, postId } })
@@ -95,7 +102,11 @@ class CommentController {
     static async delete(req, res) {
         try {
             const id = parseInt(req.params.id)
+            if (isNaN(id)) throw new FetchErrorHandler(400)
+
             const postId = parseInt(req.params.postId)
+            if (isNaN(userId)) throw new FetchErrorHandler(400)
+
             const userId = Security.decodeJwt(req.headers.authorization.split(' ')[1])
     
             const comment = await Comment.findOne({ attributes: ['postId', 'userId'], where: { id, postId } })

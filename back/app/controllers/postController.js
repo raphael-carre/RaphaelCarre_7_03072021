@@ -54,6 +54,8 @@ class PostController {
     static async update(req, res) {
         try { 
             const id = parseInt(req.params.id)
+            if (isNaN(id)) throw new FetchErrorHandler(400)
+
             const tokenId = Security.decodeJwt(req.headers.authorization.split(' ')[1])
             
             const post = await Post.findOne({ attributes: ['userId'], where: { id } })
@@ -85,6 +87,8 @@ class PostController {
     static async delete(req, res) {
         try {
             const id = parseInt(req.params.id)
+            if (isNaN(id)) throw new FetchErrorHandler(400)
+
             const tokenId = Security.decodeJwt(req.headers.authorization.split(' ')[1])
     
             const post = await Post.findOne({ attributes: ['userId'], where: { id } })
