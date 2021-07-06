@@ -1,5 +1,6 @@
 const express = require('express')
 const dotenv = require('dotenv')
+const loggerMiddleware = require('./middlewares/logger-middleware')
 const { db, dbConnection } = require('./config/database')
 const userRoute = require('./routes/userRoute')
 const postRoute = require('./routes/postRoute')
@@ -20,6 +21,8 @@ app.use((req, res, next) => {
 })
 
 app.use(express.json())
+
+app.use(loggerMiddleware)
 
 app.use('/api/users', userRoute)
 app.use('/api/posts', postRoute)

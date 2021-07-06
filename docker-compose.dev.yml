@@ -3,6 +3,8 @@ services:
     back:
         volumes:
             - ./back/app:/app/app:ro
+            - ./back/logs:/app/logs
+            - ./back/images:/app/images
             - /app/node_modules
             
     front:

@@ -1,6 +1,9 @@
 version: "3"
 services:
     back:
+        volumes: 
+            - ./back/logs:/app/logs
+            - ./back/images:/app/images
         command: ["npm", "start"]
         
     front:

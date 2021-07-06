@@ -1,5 +1,6 @@
 const http = require('http')
 const app = require('./app')
+const logger = require('./app/config/Winston')
 
 const normalizePort = val => {
     const port = parseInt(val, 10)
@@ -33,7 +34,7 @@ const server = http.createServer(app)
 
 server.on('error', errorHandler)
 server.on('listening', () => {
-    console.log(`Server started on http://localhost:${port || 3000}`)
+    logger.info(`Server started on http://localhost:${port}`)
 })
 
 server.listen(port)
