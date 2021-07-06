@@ -8,7 +8,7 @@ services:
             - db
         networks: 
             - reactapp
-            - default
+            - api
         hostname: backend
 
     front:
@@ -33,11 +33,11 @@ services:
             - MYSQL_ROOT_PASSWORD=root_password
             - LANG=C.UTF-8
         networks: 
-            - default
+            - api
         hostname: database
 
 networks:
-    default:
+    api:
         name: gm-back-ntwk
     reactapp:
         name: gm-front-ntwk

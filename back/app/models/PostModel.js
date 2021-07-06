@@ -8,16 +8,6 @@ const Post = db.define('Post', {
     },
     content: {
         type: Sequelize.TEXT
-    },
-    likes: {
-        type: Sequelize.JSON,
-        defaultValue: "[]",
-        allowNull: false
-    },
-    likesCounter: {
-        type: Sequelize.INTEGER,
-        defaultValue: 0,
-        allowNull: false
     }
 })
 

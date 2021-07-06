@@ -75,32 +75,6 @@ class PostController {
             .then(() => res.status(200).json({ message: 'Publication supprimée !' }))
             .catch(error => res.status(500).json({ error }))
     }
-
-    /**
-     * Adds / Removes a 'like' for a specific post.
-     * @param {Request} req Request
-     * @param {Response} res Response
-     */
-    static async like(req, res) {
-        const id = parseInt(req.params.id)
-        const tokenId = Security.decodeJwt(req.headers.authorization.split(' ')[1])
-        
-        const post = await Post.findOne({ attributes: ['likes', 'likesCounter'], where: { id } })
-        
-        const likes = JSON.parse(post.likes)
-        const alreadyLiked = likes.filter(value => value === tokenId).length
-
-        const updatedPost = {
-            likes: JSON.stringify(!alreadyLiked ? [...likes, tokenId] : likes.filter(id => id !== tokenId)),
-            likesCounter: !alreadyLiked ? post.likesCounter + 1 : post.likesCounter - 1
-        }
-
-        const message = !alreadyLiked ? 'Vous avez mis un like à la publication !' : 'Vous n\'aimez plus cette publication !'
-        
-        await Post.update(updatedPost, { where: { id } })
-            .then(() => res.status(200).json({ message }))
-            .catch(error => res.status(500).json({ error }))
-    }
 }
 
 module.exports = PostController
