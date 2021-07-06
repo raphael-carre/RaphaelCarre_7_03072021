@@ -1,3 +1,4 @@
+const FetchErrorHandler = require('../config/FetchErrorHandler')
 const Security = require('../config/Security')
 const User = require('../models/UserModel')
 
@@ -11,13 +12,18 @@ class UserController {
      * @param {Response} res Response
      */
     static async getAll(req, res) {
-        if (!req.body.adminUser) {
-            return res.status(401).json({ error: 'Vous n\'avez pas l\'autorisation d\'effectuer cette action !' })
-        }
+        try {
+            const options = !req.body.adminUser ? { attributes: ['id', 'firstName', 'lastName'] } : {}
 
-        await User.findAll()
-            .then(users => res.status(200).json(users))
-            .catch(error => res.status(404).json({ error: error.message }))
+            const users = await User.findAll(options)
+            if (typeof users !== 'object') throw new FetchErrorHandler(500)
+            if (users.length === 0) throw new FetchErrorHandler(404, 'Aucun utilisateur enregistré !')
+
+            res.status(200).json(users)
+        }
+        catch (error) {
+            res.status(error.statusCode || 500).json({ error: error.message })
+        }
     }
 
     /**
@@ -26,11 +32,17 @@ class UserController {
      * @param {Response} res Response
      */
     static async getOne(req, res) {
-        const id = parseInt(req.params.id)
+        try {
+            const id = parseInt(req.params.id)
+    
+            const user = await User.findOne({ attributes: ['id', 'firstName', 'lastName', 'description', 'email', 'image', 'createdAt'], where: { id } })
+            if (!user) throw new FetchErrorHandler(404, 'Utilisateur introuvable !')
 
-        await User.findOne({ attributes: ['id', 'firstName', 'lastName', 'description', 'email', 'image', 'createdAt'], where: { id } })
-            .then(user => res.status(200).json(user))
-            .catch(error => res.status(404).json({ error: 'Utilisateur introuvable' }))
+            res.status(200).json(user)
+        }
+        catch (error) {
+            res.status(error.statusCode || 500).json({ error: error.message })
+        }
     }
 
     /**
@@ -39,18 +51,26 @@ class UserController {
      * @param {Response} res Response
      */
     static async update(req, res) {
-        const id = parseInt(req.params.id)
-        const tokenId = Security.decodeJwt(req.headers.authorization.split(' ')[1])
+        try {
+            const id = parseInt(req.params.id)
+            const tokenId = Security.decodeJwt(req.headers.authorization.split(' ')[1])
+    
+            if (!(id === tokenId || req.body.adminUser)) throw new FetchErrorHandler(401)
 
-        if (id !== tokenId) return res.status(401).json({ error: 'Vous n\'avez pas l\'autorisation d\'effectuer cette action !' })
+            const user = await User.findOne({ attributes: ['id'], where: { id } })
+            if (!user) throw new FetchErrorHandler(404, 'Utilisateur introuvable')
+    
+            const updateUser = await User.update(req.body, { where: { id } })
+            if (updateUser[0] === 0) throw new FetchErrorHandler(500)
 
-        await User.update(req.body, { where: { id } })
-            .then(async () => {
-                await User.findOne({ attributes: ['id', 'firstName', 'lastName', 'description', 'email', 'image'], where: { id } })
-                    .then(user => res.status(200).json(user))
-                    .catch(error => res.status(500).json({ error }))
-            })
-            .catch(error => res.status(404).json({ error: 'Utilisateur introuvable !' }))
+            const updatedUser = await User.findOne({ attributes: ['id', 'firstName', 'lastName', 'description', 'email', 'image'], where: { id } })
+            if (!updatedUser) throw new FetchErrorHandler(500)
+
+            res.status(200).json({ message: 'Mise à jour effectuée !', userData: updatedUser })
+        }
+        catch (error) {
+            res.status(error.statusCode || 500).json({ error: error.message })
+        }
     }
 
     /**
@@ -59,16 +79,20 @@ class UserController {
      * @param {Response} res Response
      */
     static async delete(req, res) {
-        const id = parseInt(req.params.id)
-        const tokenId = Security.decodeJwt(req.headers.authorization.split(' ')[1])
+        try {
+            const id = parseInt(req.params.id)
+            const tokenId = Security.decodeJwt(req.headers.authorization.split(' ')[1])
+    
+            if (!(id === tokenId || req.body.adminUser)) throw new FetchErrorHandler(401)
+    
+            const destroyedUser = await User.destroy({ where: { id }})
+            if (destroyedUser === 0) throw new FetchErrorHandler(500)
 
-        if (!(id === tokenId || req.body.adminUser)) {
-            return res.status(401).json({ error: 'Vous n\'avez pas l\'autorisation d\'effectuer cette action !' })
+            res.status(200).json({ message: 'Compte utilisateur supprimé !' })
         }
-
-        await User.destroy({ where: { id }})
-            .then(() => res.status(200).json({ message: 'Compte utilisateur supprimé !' }))
-            .catch(error => res.status(500).json({ error }))
+        catch (error) {
+            res.status(error.statusCode || 500).json({ error: error.message })
+        }
     }
 
     /**
@@ -77,24 +101,31 @@ class UserController {
      * @param {Response} res Response
      */
     static async register(req, res) {
-        const { firstName, lastName, email, password } = req.body
-        const usersCount = await User.count()
+        try {
+            const { firstName, lastName, email, password } = req.body
 
-        await Security.hash(password)
-            .then(async hash => {
-                const newUser = {
-                    firstName,
-                    lastName,
-                    email,
-                    password: hash,
-                    isAdmin: usersCount === 0 ? true : false
-                }
+            const usersCount = await User.count()
+            if (typeof usersCount !== 'number') throw new FetchErrorHandler(500)
+    
+            const hash = await Security.hash(password)
+            if (!hash) throw new FetchErrorHandler(500)
 
-                await User.create(newUser)
-                    .then(() => res.status(201).json({ message: 'Utilisateur créé !' }))
-                    .catch(error => res.status(500).json({ error }))
-            })
-            .catch(error => res.status(500).json({ error }))
+            const userData = {
+                firstName,
+                lastName,
+                email,
+                password: hash,
+                isAdmin: usersCount === 0 ? true : false
+            }
+
+            const newUser = await User.create(userData)
+            if (!newUser) throw new FetchErrorHandler(500)
+
+            res.status(200).json({ message: 'Utilisateur créé !' })
+        }
+        catch (error) {
+            res.status(error.statusCode || 500).json({ error: error.message })
+        }
     }
 
     /**
@@ -103,23 +134,22 @@ class UserController {
      * @param {Response} res Response
      */
     static async login(req, res) {
-        const { email, password } = req.body
+        try {
+            const { email, password } = req.body
+    
+            const user = await User.findOne({ attributes: ['id', 'email', 'password'], where: { email }})
+            if (!user) throw new FetchErrorHandler(404, 'Utilisateur introuvable !')
+                    
+            const isValid = await Security.compareHash(password, user.password)
+            if (typeof isValid !== 'boolean') throw new FetchErrorHandler(500)
 
-        await User.findOne({ attributes: ['id', 'email', 'password'], where: { email }})
-            .then(async user => {
-                if (!user) return res.status(404).json({ error: 'Utilisateur introuvable !' })
-                
-                const userId = user.id
+            if (!isValid) throw new FetchErrorHandler(401, 'Mot de passe incorrect !')
 
-                await Security.compareHash(password, user.password)
-                    .then(valid => {
-                        if (!valid) return res.status(401).json({ error: 'Mot de passe incorrect !' })
-
-                        res.status(200).json({ userId, token: Security.createJwt(userId) })
-                    })
-                    .catch(error => res.status(500).json({ error }))
-            })
-            .catch(error => res.status(404).json({ error }))
+            res.status(200).json({ userId: user.id, token: Security.createJwt(user.id) })
+        }
+        catch (error) {
+            res.status(error.statusCode || 500).json({ error: error.message })
+        }
     }
 }
 

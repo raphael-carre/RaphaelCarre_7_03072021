@@ -1,3 +1,4 @@
+const FetchErrorHandler = require('../config/FetchErrorHandler')
 const Security = require('../config/Security')
 const User = require('../models/UserModel')
 const Post = require('../models/PostModel')
@@ -13,14 +14,20 @@ class PostLikeController {
      * @param {Response} res Response
      */
     static async getByUser(req, res) {
-        const userId = parseInt(req.params.id)
+        try {
+            const userId = parseInt(req.params.id)
+    
+            const user = await User.findOne({ attributes: ['id'], where: { id: userId } })
+            if (!user) throw new FetchErrorHandler(404, 'Utilisateur introuvable !')
+    
+            const likedPosts = await PostLike.findAll({ where: { userId }})
+            if (typeof likedPosts !== 'object') throw new FetchErrorHandler(500)
 
-        const user = await User.findOne({ attributes: ['id'], where: { id: userId } })
-        if (!user) return res.status(404).json({ error: 'L\'utilisateur que vous recherchez n\'existe pas !' })
-
-        await PostLike.findAll({ where: { userId }})
-            .then(likedPosts => res.status(200).json(likedPosts))
-            .catch(error => res.status(500).json({ error }))
+            res.status(200).json(likedPosts)
+        }
+        catch (error) {
+            res.status(error.statusCode || 500).json({ error: error.message })
+        }
     }
 
     /**
@@ -29,14 +36,20 @@ class PostLikeController {
      * @param {Response} res Response
      */
     static async getByPost(req, res) {
-        const postId = parseInt(req.params.id)
+        try {
+            const postId = parseInt(req.params.id)
+    
+            const post = await Post.findOne({ attributes: ['id'], where: { id: postId } })
+            if (!post) throw new FetchErrorHandler(404, 'Publication introuvable !')
+    
+            const usersLiked = await PostLike.findAll({ where: { postId } })
+            if (typeof usersLiked !== 'object') throw new FetchErrorHandler(500)
 
-        const post = await Post.findOne({ attributes: ['id'], where: { id: postId } })
-        if (!post) return res.status(404).json({ error: 'La publication que vous recherchez n\'existe pas !' })
-
-        await PostLike.findAll({ where: { postId } })
-            .then(usersLiked => res.status(200).json(usersLiked))
-            .catch(error => res.status(500).json({ error }))
+            res.status(200).json(usersLiked)
+        }
+        catch (error) {
+            res.status(error.statusCode || 500).json({ error: error.message })
+        }
     }
 
     /**
@@ -45,25 +58,33 @@ class PostLikeController {
      * @param {Response} res Response
      */
     static async toggle(req, res) {
-        const postId = parseInt(req.params.id)
-        const userId = Security.decodeJwt(req.headers.authorization.split(' ')[1])
+        try {
+            const postId = parseInt(req.params.id)
+            const userId = Security.decodeJwt(req.headers.authorization.split(' ')[1])
+    
+            const post = await Post.findOne({ attributes: ['id'], where: { id: postId } })
+            if (!post) throw new FetchErrorHandler(404, 'Publication introuvable !')
+    
+            const postLiked = await PostLike.findOne({ where: { postId, userId }})
+    
+            if (!postLiked) {
+                const newPostLike = await PostLike.create({ userId, postId })
+                if (!newPostLike) throw new FetchErrorHandler(500)
 
-        const post = await Post.findOne({ attributes: ['id'], where: { id: postId } })
-        if (!post) return res.status(404).json({ error: 'La publication que vous souhaitez liker/disliker n\'existe pas !' })
+                return res.status(201).json({ message: 'Vous aimez cette publication !' })
+            }
+    
+            const like = !postLiked.like
+            const message = like ? 'Vous aimez cette publication !' : 'Vous n\'aimez plus cette publication !'
 
-        const postLiked = await PostLike.findOne({ where: { postId, userId }})
+            const postLikeUpdate = await PostLike.update({ like }, { where: { id: postLiked.id } })
+            if (postLikeUpdate[0] === 0) throw new FetchErrorHandler(500)
 
-        if (!postLiked) {
-            return await PostLike.create({ userId, postId })
-                .then(() => res.status(201).json({ message: 'Vous aimez cette publication !' }))
-                .catch(error => res.status(500).json({ error }))
+            res.status(200).json({ message })
         }
-
-        const like = !postLiked.like
-        const message = like ? 'Vous aimez cette publication !' : 'Vous n\'aimez plus cette publication !'
-        await PostLike.update({ like }, { where: { id: postLiked.id } })
-            .then(() => res.status(200).json({ message }))
-            .catch(error => res.status(500).json({ error }))
+        catch (error) {
+            res.status(error.statusCode || 500).json({ error: error.message })
+        }
     }
 }
 
