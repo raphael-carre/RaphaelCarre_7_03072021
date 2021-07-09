@@ -1,0 +1,175 @@
+#!/bin/bash
+
+# Vérification de l'existence de Docker (docker-compose) sur la machine
+[ -x "$(command -v docker-compose)" ] && DOCKER=true
+
+MODE=""
+if [ "$1" == 'reset' ]
+then
+    # Réinitialisation du projet
+    while [[ ! "$RESET" =~ ^(y|n)$ ]]
+    do
+        read -r -p 'Cette action est irréversible ! Êtes-vous sûr de vouloir réinitialiser le projet ? (Y/n) ' RESET
+        if [ -z "$RESET" ]
+        then RESET=y
+        fi
+    done
+
+    if [ "$RESET" == 'n' ]
+    then exit 1
+    else
+        if [ "$DOCKER" == true ]
+        then
+            if  [ "$(docker ps -a | grep 'gm-')" ]
+            then 
+                docker-compose down -v
+            fi
+
+            rm -rf ./database/mysql
+            rm -rf ./database/files/init
+        else 
+            rm -rf ./database/dbInit.sql
+            rm -rf ./front/build
+        fi
+
+        rm -rf ./back/logs
+        rm -rf ./back/.env
+        exit 1
+    fi
+else
+    # Sélection du mode de lancement
+    if [ ! "$(docker ps -a | grep 'gm-')" ]
+    then
+        if [ -z "$1" ]
+        then 
+            while [[ ! "$MODE" =~ ^(prod|dev)$ ]]
+            do
+                read -r -p 'Mode de lancement du projet (dev/prod, defaut: prod) : ' MODE
+                if [ -z "$MODE" ]
+                then
+                    MODE=prod
+                fi
+            done
+        else
+                MODE=$1
+        fi
+    fi
+fi
+
+if [ ! -f "./back/.env" ]
+then
+    # Parametres de la base de données
+    if [ ! "$DOCKER" == true ]
+    then 
+        read -r -p "Adresse de la base de données (defaut: localhost) : " DB_URL
+        if [ -z "$DB_URL" ]
+        then
+            DB_URL=localhost
+        fi
+        DB_HOST=$DB_URL
+    else
+            DB_HOST=gm-db
+    fi
+
+    while [ -z $MYSQL_ADMIN_USERNAME ]
+    do
+        read -r -p "Nom d'administrateur pour la base de données : " MYSQL_ADMIN_USERNAME
+        if [ -z $MYSQL_ADMIN_USERNAME ]
+        then
+            echo "Vous devez obligatoirement renseigner un nom pour l'administrateur !"
+        fi
+    done
+
+    while [ -z $MYSQL_ADMIN_PASSWORD ]
+    do
+        read -s -p $'Mot de passe administrateur pour la base de données : \n' MYSQL_ADMIN_PASSWORD
+        if [ -z $MYSQL_ADMIN_PASSWORD ]
+        then
+            echo "Vous devez obligatoirement renseigner un mot de passe pour l'administrateur !"
+        fi
+    done
+        
+    # Création du fichier SQL pour initialiser la base de données
+    if [ "$DOCKER" == true ]
+    then
+        [ ! -d "./database/files" ] && mkdir ./database/files
+        [ ! -d "./database/files/init" ] && mkdir ./database/files/init
+        
+        SQL_INITFILE="database/files/init/dbInit.sql"
+    else
+        SQL_INITFILE="database/dbInit.sql"
+    fi
+
+    if [ ! -f "./$SQL_INITFILE" ]
+    then
+        touch "./$SQL_INITFILE"
+        cat > "./$SQL_INITFILE" << INITSQL
+CREATE USER IF NOT EXISTS '$MYSQL_ADMIN_USERNAME'@'%' IDENTIFIED BY '$MYSQL_ADMIN_PASSWORD';
+CREATE DATABASE IF NOT EXISTS groupomania CHARACTER SET 'utf8';
+GRANT ALL PRIVILEGES ON groupomania.* TO '$MYSQL_ADMIN_USERNAME'@'%';
+INITSQL
+    fi
+
+    if [ ! "$DOCKER" == true ]
+    then
+        echo "Veuillez importer le fichier suivant dans votre client MySQL : "
+        echo $PWD/$SQL_INITFILE
+
+        read -n1 -rsp $'Pressez une touche pour continuer...\n'
+    fi
+
+
+    # Création du fichier .env
+    if [ ! -f "./back/.env" ]
+    then
+        JWT_SECRET=$(openssl rand -hex 100 | tr -dc 'a-zA-Z0-9' | fold -w 32 | head -n 1)
+
+        touch ./back/.env
+        cat > ./back/.env << ENVFILE
+SERVER_PORT=3080
+ALLOWED_ORIGIN=*
+JWT_SECRET=$JWT_SECRET
+DB_HOST=$DB_HOST
+DB_USERNAME=$MYSQL_ADMIN_USERNAME
+DB_USER_PASSWORD=$MYSQL_ADMIN_PASSWORD
+ENVFILE
+    fi
+fi
+
+if [ "$DOCKER" == true ]
+then
+    # Création et lancement des containers
+    if [ ! "$(docker ps -a | grep 'gm-')" ]
+    then
+        echo -e "\n"
+        docker-compose -f docker-compose.yml -f docker-compose.$MODE.yml up -d --build
+
+        if [[ "$MODE" = "dev" ]]
+        then
+            docker logs groupomania_gm-back_1 -f
+        fi
+    else
+        docker-compose down -v
+    fi
+else
+    # Installation des dépendances et lancement des scripts npm
+    cd ./front
+    npm install
+
+    cd ../back
+    npm install
+    
+    cd ..
+
+    if [ "$MODE" == 'dev' ]
+    then
+        echo "Veuillez executer la commande 'cd ./back ; npm run dev"
+        echo "Dans un autre terminal, executez la commande 'cd ./front ; npm run dev"
+    else
+        cd ./front
+        npm run prod
+
+        cd ../back
+        npm start
+    fi
+fi

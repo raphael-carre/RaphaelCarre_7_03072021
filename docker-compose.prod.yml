@@ -1,12 +1,12 @@
 version: "3"
 services:
-    back:
+    gm-back:
         volumes: 
             - ./back/logs:/app/logs
             - ./back/images:/app/images
         command: ["npm", "start"]
         
-    front:
+    gm-front:
         build:
             dockerfile: Dockerfile.prod
         ports:

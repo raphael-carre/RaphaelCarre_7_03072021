@@ -1,13 +1,13 @@
 version: "3"
 services:
-    back:
+    gm-back:
         volumes:
             - ./back/app:/app/app:ro
             - ./back/logs:/app/logs
             - ./back/images:/app/images
             - /app/node_modules
             
-    front:
+    gm-front:
         build:
             dockerfile: Dockerfile.dev
         volumes:

@@ -1,28 +1,29 @@
 version: "3"
 services:
-    back:
+    gm-back:
         build: ./back
         ports: 
             - "3080:3080"
         depends_on:
-            - db
+            gm-db:
+                condition: service_healthy
         networks: 
             - reactapp
             - api
         hostname: backend
 
-    front:
+    gm-front:
         build:
             context: ./front
         ports:
-            - "80:80"
+            - "8080:8080"
         depends_on: 
-            - back
+            - gm-back
         networks:
             - reactapp
         hostname: frontend
 
-    db:
+    gm-db:
         image: mysql
         ports:
             - "3200:3306"
@@ -35,6 +36,11 @@ services:
         networks: 
             - api
         hostname: database
+        healthcheck: 
+            test: bash -c "[ -d /var/lib/mysql/groupomania ]"
+            interval: 3s
+            timeout: 30s
+            retries: 10
 
 networks:
     api:

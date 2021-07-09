@@ -1,5 +1,5 @@
 const express = require('express')
-const dotenv = require('dotenv')
+const dotenv = require('dotenv').config({ path: './.env' })
 const loggerMiddleware = require('./middlewares/logger-middleware')
 const { db, dbConnection } = require('./config/database')
 const userRoute = require('./routes/userRoute')
@@ -7,11 +7,9 @@ const postRoute = require('./routes/postRoute')
 const postLikeRoute = require('./routes/postLikeRoute')
 const commentRoute = require('./routes/commentRoute')
 
-dotenv.config({ path: './.env' })
+const app = express()
 
 dbConnection(db)
-
-const app = express()
 
 app.use((req, res, next) => {
     res.setHeader('Access-Control-Allow-Origin', process.env.ALLOWED_ORIGIN)

@@ -30,7 +30,7 @@ class Security {
      * @returns {string} JSON Web Token
      */
     static createJwt(userId) {
-        return jwt.sign({ userId }, process.env.JWT_TOKEN_SECRET, { expiresIn: '24h' })
+        return jwt.sign({ userId }, process.env.JWT_SECRET, { expiresIn: '24h' })
     }
 
     /**
@@ -39,7 +39,7 @@ class Security {
      * @returns {number} User id
      */
     static decodeJwt(token) {
-        const decodedToken = jwt.verify(token, process.env.JWT_TOKEN_SECRET)
+        const decodedToken = jwt.verify(token, process.env.JWT_SECRET)
         return decodedToken.userId
     }
 }
