@@ -171,7 +171,6 @@ then
             docker logs groupomania_gm-back_1 -f
         fi
     else
-        dumpDb
         docker-compose down -v
         rm -rf ./back/docs/jsdoc/
     fi
