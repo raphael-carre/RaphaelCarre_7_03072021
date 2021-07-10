@@ -1,0 +1,556 @@
+/api/users/register:
+  post:
+    tags: ['Users']
+    description: Creates a new user
+    summary: Creates a new user
+    requestBody:
+      $ref: '#components/requestBodies/UserRegister'
+    responses:
+      201:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                message:
+                  example: Utilisateur créé !
+      400:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                error:
+                  example: Requête invalide !
+
+/api/users/login:
+  post:
+    tags: ['Users']
+    description: User login
+    summary: User login
+    requestBody:
+      $ref: '#components/requestBodies/UserLogin'
+    responses:
+      200:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                userId:
+                  type: string
+                token:
+                  type: string
+      404:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                error:
+                  example: Utilisateur introuvable !
+
+/api/users:
+  get:
+    tags: ['Users']
+    description: Returns every users in database
+    summary: Returns every users in database
+    security:
+      - Auth: []
+    responses:
+      200:
+        content:
+          application/json:
+            schema:
+              type: array
+              items:
+                $ref: '#components/schemas/User'
+      404:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                error: 
+                  example: Aucun utilisateur enregistré !
+
+/api/users/{id}:
+  get:
+    tags: ['Users']
+    description: Returns one user from the database
+    summary: Returns one user from the database
+    security:
+      - Auth: []
+    parameters:
+      - name: id
+        in: path
+        description: User id
+        required: true
+        schema: 
+          type: number
+    responses:
+      200:
+        content:
+          application/json:
+            schema:
+              $ref: '#components/schemas/User'
+      404:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                error: 
+                  example: Utilisateur introuvable !
+
+  put:
+    tags: ['Users']
+    description: Updates one user in the database
+    summary: Updates one user in the database
+    security:
+      - Auth: []
+    parameters:
+      - name: id
+        in: path
+        description: User id
+        required: true
+        schema: 
+          type: number
+    requestBody:
+      $ref: '#components/requestBodies/UserUpdate'
+    responses:
+      200:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                message:
+                  example: Mise à jour effectuée !
+                userData:
+                  $ref: '#components/schemas/User'
+      401:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                error:
+                  example: Vous n'avez pas l'autorisation d'effectuer cette action !
+
+  delete:
+    tags: ['Users']
+    description: Deletes one user in the database
+    summary: Deletes one user in the database
+    security:
+      - Auth: []
+    parameters:
+      - name: id
+        in: path
+        description: User id
+        required: true
+        schema: 
+          type: number
+    responses:
+      200:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                message:
+                  example: Compte utilisateur supprimé !
+      401:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                error:
+                  example: Vous n'avez pas l'autorisation d'effectuer cette action !
+
+/api/posts:
+  post:
+    tags: ['Posts']
+    description: Creates a new post in the database
+    summary: Creates a new post in the database
+    security:
+      - Auth: []
+    requestBody:
+      $ref: '#components/requestBodies/Post'
+    responses:
+      201:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                message:
+                  example: Votre publication est enregistrée !
+                newPost:
+                  $ref: '#components/schemas/Post'
+      400:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                error:
+                  example: Requête invalide !
+  get:
+    tags: ['Posts']
+    description: Returns every posts in database
+    summary: Returns every posts in database
+    security:
+      - Auth: []
+    responses:
+      200:
+        content:
+          application/json:
+            schema:
+              type: array
+              items:
+                allOf:
+                  - $ref: '#components/schemas/Post'
+                  - type: object
+                    properties:
+                      userFirstName:
+                        type: string
+                      userLastName:
+                        type: string
+                      userImage:
+                        type: string
+      404:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                error: 
+                  example: Il n'existe aucune publication...
+
+/api/posts/{id}:
+  put:
+    tags: ['Posts']
+    description: Updates one post in the database
+    summary: Updates one post in the database
+    security:
+      - Auth: []
+    requestBody:
+      $ref: '#components/requestBodies/Post'
+    parameters:
+      - name: id
+        in: path
+        description: Post id
+        required: true
+        schema: 
+          type: number
+    responses:
+      200:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                message:
+                  example: Publication mise à jour !
+                updatedPost:
+                  $ref: '#components/schemas/Post'
+      400:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                error: 
+                  example: Votre publication est vide !
+  delete:
+    tags: ['Posts']
+    description: Deletes one post in the database
+    summary: Deletes one post in the database
+    security:
+      - Auth: []
+    parameters:
+      - name: id
+        in: path
+        description: Post id
+        required: true
+        schema: 
+          type: number
+    responses:
+      200:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                message:
+                  example: Publication supprimée !
+      404:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                error: 
+                  example: Publication introuvable !
+
+/api/posts/{postId}/comments:
+  post:
+    tags: ['Comments']
+    description: Creates a comment for a specific post
+    summary: Creates a comment for a specific post
+    security:
+      - Auth: []
+    parameters:
+      - name: postId
+        in: path
+        description: Post id
+        required: true
+        schema: 
+          type: number
+    requestBody:
+      $ref: '#components/requestBodies/Comment'
+    responses:
+      201:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                message:
+                  example: Votre commentaire a été ajouté !
+                commentsCounter:
+                  type: number
+                newComment:
+                  $ref: '#components/schemas/Comment'
+      400:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                error:
+                  example: Votre commentaire est vide !
+  get:
+    tags: ['Comments']
+    description: Returns every comments for a specific post
+    summary: Returns every comments for a specific post
+    security:
+      - Auth: []
+    parameters:
+      - name: postId
+        in: path
+        description: Post id
+        required: true
+        schema: 
+          type: number
+    responses:
+      200:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                  commentsCounter:
+                    type: number
+                  comments:
+                    type: array
+                    items:
+                      allOf:
+                        - $ref: '#components/schemas/Comment'
+                        - type: object
+                          properties:
+                            userFirstName:
+                              type: string
+                            userLastName:
+                              type: string
+                            userImage:
+                              type: string
+      500:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                error: 
+                  example: Il y a ey un problème...
+
+/api/posts/{postId}/comments/{id}:
+  put:
+    tags: ['Comments']
+    description: Updates a comment for a specific post
+    summary: Updates a comment for a specific post
+    security:
+      - Auth: []
+    requestBody:
+      $ref: '#components/requestBodies/Comment'
+    parameters:
+      - name: postId
+        in: path
+        description: Post id
+        required: true
+        schema: 
+          type: number
+      - name: id
+        in: path
+        description: Comment id
+        required: true
+        schema: 
+          type: number
+    responses:
+      200:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                message:
+                  example: Commentaire mis à jour !
+                comment:
+                  $ref: '#components/schemas/Comment'
+      404:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                error: 
+                  example: Commentaire introuvable !
+  delete:
+    tags: ['Comments']
+    description: Deletes a comment for a specific post
+    summary: Deletes a comment for a specific post
+    security:
+      - Auth: []
+    parameters:
+      - name: PostId
+        in: path
+        description: Post id
+        required: true
+        schema: 
+          type: number
+      - name: id
+        in: path
+        description: Comment id
+        required: true
+        schema: 
+          type: number
+    responses:
+      200:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                message:
+                  example: Commentaire supprimé !
+      404:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                error: 
+                  example: Commentaire introuvable !
+
+/api/likes/posts/{id}:
+  post:
+    tags: ['Likes']
+    description: Like / dislike a post
+    summary: Like / dislike a post 
+    security:
+      - Auth: []
+    parameters:
+      - name: id
+        in: path
+        description: Post id
+        required: true
+        schema: 
+          type: number
+    responses:
+      200:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                message:
+                  example: Vous aimez cette publication !
+      404:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                message:
+                  example: Publication introuvable !
+  get:
+    tags: ['Likes']
+    description: Get every users who liked/disliked a specific post
+    summary: Get every users who liked/disliked a specific post
+    security:
+      - Auth: []
+    parameters:
+      - name: id
+        in: path
+        description: Post id
+        required: true
+        schema: 
+          type: number
+    responses:
+      200:
+        content:
+          application/json:
+            schema:
+              type: array
+              items:
+                allOf:
+                  - $ref: '#components/schemas/Like'
+                  - type: object
+                    properties:
+                      userFirstName:
+                        type: string
+                      userLastName:
+                        type: string
+                      userImage:
+                        type: string
+      404:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                message:
+                  example: Publication introuvable !
+                  
+/api/likes/users/{id}:
+  get:
+    tags: ['Likes']
+    description: Posts liked by a specific user
+    summary: Posts liked by a specific user 
+    security:
+      - Auth: []
+    parameters:
+      - name: id
+        in: path
+        description: User id
+        required: true
+        schema: 
+          type: number
+    responses:
+      200:
+        content:
+          application/json:
+            schema:
+              type: array
+              items:
+                $ref: '#components/schemas/Like'
+      404:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                message:
+                  example: Utilisateur introuvable !

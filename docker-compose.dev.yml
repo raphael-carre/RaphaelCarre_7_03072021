@@ -5,6 +5,7 @@ services:
             - ./back/app:/app/app:ro
             - ./back/logs:/app/logs
             - ./back/images:/app/images
+            - ./back/docs/jsdoc:/app/docs/jsdoc
             - /app/node_modules
             
     gm-front:

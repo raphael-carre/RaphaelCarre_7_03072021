@@ -1,0 +1,21 @@
+definition:
+  openapi: 3.0.0
+  info:
+    title: "Groupomania"
+    version: 1.0
+  basePath: /
+  externalDocs: 
+    url: "/jsdoc"
+    description: "API code documentation"
+
+  servers: 
+  - url: "http://localhost:3080"
+    description: "Development server"
+
+  paths:
+    $ref: './paths.yaml'
+                
+components:
+  $ref: './components.yaml'
+
+apis: ["./**/*.yaml"]

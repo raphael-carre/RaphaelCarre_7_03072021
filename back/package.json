@@ -5,7 +5,8 @@
   "main": "server.js",
   "scripts": {
     "start": "node server",
-    "dev": "NODE_ENV=development nodemon",
+    "dev": "npm run doc; npm run server",
+    "server": "NODE_ENV=development nodemon",
     "doc": "jsdoc -c .jsdoc.config.json -r -d ./docs/jsdoc/"
   },
   "keywords": [],
@@ -17,6 +18,7 @@
     "dotenv": "^10.0.0",
     "express": "^4.17.1",
     "helmet": "^4.6.0",
+    "js-yaml": "^4.1.0",
     "jsonwebtoken": "^8.5.1",
     "multer": "^1.4.2",
     "mysql2": "^2.2.5",

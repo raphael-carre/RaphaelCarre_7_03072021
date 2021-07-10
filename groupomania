@@ -1,5 +1,16 @@
 #!/bin/bash
 
+dumpDb() {
+    echo "Sauvegarde de la base de données dans le repertoire ./database/files/dumps ..."
+    [ ! -d "./database/files/dumps" ] && mkdir ./database/files/dumps
+
+    DB_USER="$(cat ./back/.env | grep DB_USERNAME= | cut -d '=' -f2)"
+    DB_PASS="$(cat ./back/.env | grep DB_USER_PASSWORD= | cut -d '=' -f2)"
+    DB_FILE="./database/files/dumps/groupomania_$(date +%s).sql"
+
+    docker exec -t "$(basename $PWD)_gm-db_1" mysqldump -u $DB_USER -p$DB_PASS groupomania > $DB_FILE
+}
+
 # Vérification de l'existence de Docker (docker-compose) sur la machine
 [ -x "$(command -v docker-compose)" ] && DOCKER=true
 
@@ -9,9 +20,9 @@ then
     # Réinitialisation du projet
     while [[ ! "$RESET" =~ ^(y|n)$ ]]
     do
-        read -r -p 'Cette action est irréversible ! Êtes-vous sûr de vouloir réinitialiser le projet ? (Y/n) ' RESET
+        read -r -p 'Cette action est irréversible ! Êtes-vous sûr de vouloir réinitialiser le projet ? (y/N) ' RESET
         if [ -z "$RESET" ]
-        then RESET=y
+        then RESET=n
         fi
     done
 
@@ -22,6 +33,7 @@ then
         then
             if  [ "$(docker ps -a | grep 'gm-')" ]
             then 
+                dumpDb
                 docker-compose down -v
             fi
 
@@ -32,6 +44,7 @@ then
             rm -rf ./front/build
         fi
 
+        rm -rf ./back/docs/jsdoc/
         rm -rf ./back/logs
         rm -rf ./back/.env
         exit 1
@@ -136,6 +149,15 @@ ENVFILE
     fi
 fi
 
+# Création du dossier pour la documentation JSDOC
+if [ "$MODE" == 'dev' ]
+then
+    if [ ! -d "./back/docs/jsdoc" ]
+    then mkdir ./back/docs/jsdoc
+    fi
+fi
+
+
 if [ "$DOCKER" == true ]
 then
     # Création et lancement des containers
@@ -149,7 +171,9 @@ then
             docker logs groupomania_gm-back_1 -f
         fi
     else
+        dumpDb
         docker-compose down -v
+        rm -rf ./back/docs/jsdoc/
     fi
 else
     # Installation des dépendances et lancement des scripts npm

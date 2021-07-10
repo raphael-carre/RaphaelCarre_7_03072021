@@ -1,0 +1,179 @@
+components:
+  securitySchemes:
+    Auth:
+      type: http
+      scheme: bearer
+      bearerFormat: JWT
+
+  schemas:
+    User:
+      type: object
+      required:
+        - firstName
+        - lastName
+        - email
+        - password
+      properties:
+        id:
+          type: number
+        firstName:
+          type: string
+        lastName:
+          type: string
+        email:
+          type: string
+        password:
+          type: string
+          format: password
+        description:
+          type: string
+        image:
+          type: string
+          example: http://myurl.com/myprofileimage.jpg
+        isAdmin:
+          type: boolean
+        createdAt:
+          type: string
+          format: date-time
+          example: '2021-06-01 14:00:00'
+        updatedAt:
+          type: string
+          format: date-time
+          example: '2021-06-02 16:34:00'
+    Post:
+      type: object
+      properties:
+        id:
+          type: number
+        image:
+          type: string
+        content:
+          type: string
+        userId:
+          type: number
+        createdAt:
+          type: string
+          format: date-time
+          example: '2021-06-01 14:00:00'
+        updatedAt:
+          type: string
+          format: date-time
+          example: '2021-06-02 16:34:00'
+    Comment:
+      type: object
+      properties:
+        id:
+          type: number
+        content:
+          type: string
+        postId:
+          type: number
+        userId:
+          type: number
+        createdAt:
+          type: string
+          format: date-time
+          example: '2021-06-01 14:00:00'
+        updatedAt:
+          type: string
+          format: date-time
+          example: '2021-06-02 16:34:00'
+    Like:
+      type: object
+      properties:
+        id:
+          type: number
+        userId:
+          type: number
+        postId:
+          type: number
+        like:
+          type: boolean
+        createdAt:
+          type: string
+          format: date-time
+          example: '2021-06-01 14:00:00'
+        updatedAt:
+          type: string
+          format: date-time
+          example: '2021-06-02 16:34:00'
+
+  requestBodies:
+    UserRegister:
+      required: true
+      description: User register datas
+      content:
+        application/json:
+          schema:
+            type: object
+            required:
+              - firstName
+              - lastName
+              - email
+              - password
+            properties:
+              firstName:
+                type: string
+              lastName:
+                type: string
+              email:
+                type: string
+              password:
+                type: string
+                format: password
+    UserLogin:
+      required: true
+      description: User login datas
+      content:
+        application/json:
+          schema:
+            type: object
+            required:
+              - email
+              - password
+            properties:
+              email:
+                type: string
+              password:
+                type: string
+    UserUpdate:
+      required: true
+      description: User update datas
+      content:
+        application/json:
+          schema:
+            type: object
+            required:
+              - email
+              - password
+            properties:
+              email:
+                type: string
+              password:
+                type: string
+              description:
+                type: string
+              image:
+                type: string
+                example: http://myurl.com/myprofileimage.jpg
+    Post:
+      description: New Post
+      content:
+        application/json:
+          schema:
+            type: object
+            properties:
+              image:
+                type: string
+                example: http://myurl.com/myimage.jpg
+              content:
+                type: string
+    Comment:
+      description: Comment
+      content:
+        application/json:
+          schema:
+            type: object
+            properties:
+              content:
+                type: string
