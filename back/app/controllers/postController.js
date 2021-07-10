@@ -1,6 +1,8 @@
 const FetchErrorHandler = require('../config/FetchErrorHandler')
 const Security = require('../config/Security')
+const Sequelize = require('sequelize')
 const Post = require('../models/PostModel')
+const User = require('../models/UserModel')
 
 /**
  * Post Controller
@@ -13,7 +15,19 @@ class PostController {
      */
     static async getAll(req, res) {
         try {
-            const posts = await Post.findAll({order: [['createdAt', 'DESC']] })
+            const options = {
+                attributes: {
+                    include: [
+                        [Sequelize.col('User.firstName'), 'userFirstName'],
+                        [Sequelize.col('User.lastName'), 'userLastName'],
+                        [Sequelize.col('User.image'), 'userImage']
+                    ]
+                },
+                include: [{ model: User, attributes: [] }],
+                order: [['createdAt', 'DESC']]
+            }
+
+            const posts = await Post.findAll(options)
             if (typeof posts !== 'object') throw new FetchErrorHandler(500)
             if (posts.length === 0) throw new FetchErrorHandler(404, 'Il n\'existe aucune publication...')
 

@@ -20,7 +20,4 @@ const PostLike = db.define('PostLike', {
     }
 })
 
-PostLike.belongsTo(User, { foreignKey: 'userId', onDelete: 'cascade' })
-PostLike.belongsTo(Post, { foreignKey: 'postId', onDelete: 'cascade' })
-
 module.exports = PostLike

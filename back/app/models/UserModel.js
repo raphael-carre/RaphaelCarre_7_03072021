@@ -1,5 +1,8 @@
 const Sequelize = require('sequelize')
 const { db } = require('../config/database')
+const Post = require('./PostModel')
+const Comment = require('./CommentModel')
+const PostLike = require('./PostLikeModel')
 
 const User = db.define('User', {
     firstName: {
@@ -30,5 +33,14 @@ const User = db.define('User', {
         defaultValue: false
     }
 })
+
+User.hasMany(Post, { foreignKey: 'userId', onDelete: 'cascade' })
+Post.belongsTo(User, { foreignKey: 'userId', onDelete: 'cascade' })
+
+User.hasMany(Comment, { foreignKey: 'userId', onDelete: 'cascade' })
+Comment.belongsTo(User, { foreignKey: 'userId', onDelete: 'cascade' })
+
+User.hasMany(PostLike, { foreignKey: 'userId', onDelete: 'cascade' })
+PostLike.belongsTo(User, { foreignKey: 'userId', onDelete: 'cascade' })
 
 module.exports = User

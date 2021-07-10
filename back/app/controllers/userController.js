@@ -13,7 +13,7 @@ class UserController {
      */
     static async getAll(req, res) {
         try {
-            const options = !req.body.adminUser ? { attributes: ['id', 'firstName', 'lastName'] } : {}
+            const options = !req.body.adminUser ? { attributes: ['id', 'firstName', 'lastName'] } : { attributes: { exclude: ['password'] }}
 
             const users = await User.findAll(options)
             if (typeof users !== 'object') throw new FetchErrorHandler(500)
@@ -36,7 +36,7 @@ class UserController {
             const id = parseInt(req.params.id)
             if (isNaN(id)) throw new FetchErrorHandler(400)
     
-            const user = await User.findOne({ attributes: ['id', 'firstName', 'lastName', 'description', 'email', 'image', 'createdAt'], where: { id } })
+            const user = await User.findOne({ attributes: { exclude: ['password'] }, where: { id } })
             if (!user) throw new FetchErrorHandler(404, 'Utilisateur introuvable !')
 
             res.status(200).json(user)

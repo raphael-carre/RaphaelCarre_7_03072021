@@ -10,7 +10,4 @@ const Comment = db.define('Comment', {
     }
 })
 
-Comment.belongsTo(Post, { foreignKey: 'postId', onDelete: 'cascade' })
-Comment.belongsTo(User, { foreignKey: 'userId', onDelete: 'cascade' })
-
 module.exports = Comment

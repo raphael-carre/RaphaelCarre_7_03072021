@@ -1,7 +1,9 @@
+const Sequelize = require('sequelize')
 const FetchErrorHandler = require('../config/FetchErrorHandler')
 const Security = require('../config/Security')
 const Comment = require('../models/CommentModel')
 const Post = require('../models/PostModel')
+const User = require('../models/UserModel')
 
 /**
  * Comment Controller
@@ -16,8 +18,20 @@ class CommentController {
         try {
             const postId = parseInt(req.params.postId)
             if (isNaN(postId)) throw new FetchErrorHandler(400)
+
+            const options = {
+                attributes: {
+                    include: [
+                        [Sequelize.col('User.firstName'), 'userFirstName'],
+                        [Sequelize.col('User.lastName'), 'userLastName'],
+                        [Sequelize.col('User.image'), 'userImage']
+                    ]
+                },
+                include: [{ model: User, attributes: [] }],
+                where: { postId }, order: [['createdAt', 'ASC']]
+            }
     
-            const comments = await Comment.findAll({ where: { postId }, order: [['createdAt', 'ASC']]})
+            const comments = await Comment.findAll(options)
             if (typeof comments !== 'object') throw new FetchErrorHandler(500)
 
             res.status(200).json({ commentsCounter: comments.length, comments })
@@ -51,7 +65,7 @@ class CommentController {
             const commentsCounter = await Comment.count({ where: { postId } })
             if (typeof commentsCounter !== 'number') throw new FetchErrorHandler(500)
     
-            res.status(201).json({ commentsCounter, newComment })
+            res.status(201).json({ message: 'Votre commentaire a été ajouté !', commentsCounter, newComment })
         }
         catch (error) {
             res.status(error.statusCode || 500).send(error)

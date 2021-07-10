@@ -1,3 +1,4 @@
+const Sequelize = require('sequelize')
 const FetchErrorHandler = require('../config/FetchErrorHandler')
 const Security = require('../config/Security')
 const User = require('../models/UserModel')
@@ -44,7 +45,19 @@ class PostLikeController {
             const post = await Post.findOne({ attributes: ['id'], where: { id: postId } })
             if (!post) throw new FetchErrorHandler(404, 'Publication introuvable !')
     
-            const usersLiked = await PostLike.findAll({ where: { postId } })
+            const options = {
+                attributes: {
+                    include: [
+                        [Sequelize.col('User.firstName'), 'userFirstName'],
+                        [Sequelize.col('User.lastName'), 'userLastName'],
+                        [Sequelize.col('User.image'), 'userImage']
+                    ]
+                },
+                include: [{ model: User, attributes: [] }],
+                where: { postId }
+            }
+
+            const usersLiked = await PostLike.findAll(options)
             if (typeof usersLiked !== 'object') throw new FetchErrorHandler(500)
 
             res.status(200).json(usersLiked)
