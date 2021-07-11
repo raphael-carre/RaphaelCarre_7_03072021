@@ -8,6 +8,7 @@ const userRoute = require('./routes/userRoute')
 const postRoute = require('./routes/postRoute')
 const postLikeRoute = require('./routes/postLikeRoute')
 const commentRoute = require('./routes/commentRoute')
+const lostPassword = require('./routes/lostPasswordRoute')
 
 const app = express()
 
@@ -36,6 +37,7 @@ app.use('/api/users', userRoute)
 app.use('/api/posts', postRoute)
 app.use('/api/likes', postLikeRoute)
 app.use('/api/comments', commentRoute)
+app.use('/api/password', lostPassword)
 
 if (process.env.NODE_ENV === 'development') {
     app.use('/api-docs', swaggerUi.serve, swaggerUi.setup(swaggerConfig))

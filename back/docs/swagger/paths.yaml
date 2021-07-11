@@ -578,3 +578,51 @@
               properties:
                 error:
                   example: Utilisateur introuvable !
+
+/api/password/lost:
+  post:
+    tags: ['Password']
+    description:
+    summary:
+    parameters:
+
+    responses:
+      200:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                email:
+                  type: string
+                code:
+                  type: number
+      404:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                error:
+                  example: Vous ne possedez pas de compte utilisateur !
+
+/api/password/reset:
+  post:
+    tags: ['Password']
+    description:
+    summary:
+    parameters:
+
+    responses:
+      200:
+        content:
+          application/json:
+
+      500:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                error:
+                  example: Il y a eu un problème !
