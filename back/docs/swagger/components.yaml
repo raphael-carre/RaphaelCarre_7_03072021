@@ -177,3 +177,56 @@ components:
             properties:
               content:
                 type: string
+
+  definitions:
+    UserLight:
+      type: object
+      properties:
+        firstName:
+          type: string
+        lastName:
+          type: string
+        image:
+          type: string
+    UserPosts:
+      type: array
+      items:
+        allOf:
+          - $ref: '#components/schemas/Post'
+          - type: object
+            properties:
+              Comments:
+                $ref: '#components/definitions/Comments'
+              PostLikes:
+                $ref: '#components/definitions/PostLikes'
+    Posts:
+      type: array
+      items:
+        allOf:
+          - $ref: '#components/schemas/Post'
+          - type: object
+            properties:
+              User:
+                $ref: '#components/definitions/UserLight'
+              Comments:
+                $ref: '#components/definitions/Comments'
+              PostLikes:
+                $ref: '#components/definitions/PostLikes'
+    Comments:
+      type: array
+      items:
+        allOf:
+          - $ref: '#components/schemas/Comment'
+          - type: object
+            properties:
+              User:
+                $ref: '#components/definitions/UserLight'
+    PostLikes:
+      type: array
+      items:
+        allOf:
+          - $ref: '#components/schemas/Like'
+          - type: object
+            properties:
+              User:
+                $ref: '#components/definitions/UserLight'

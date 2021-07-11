@@ -20,14 +20,7 @@ class CommentController {
             if (isNaN(postId)) throw new FetchErrorHandler(400)
 
             const options = {
-                attributes: {
-                    include: [
-                        [Sequelize.col('User.firstName'), 'userFirstName'],
-                        [Sequelize.col('User.lastName'), 'userLastName'],
-                        [Sequelize.col('User.image'), 'userImage']
-                    ]
-                },
-                include: [{ model: User, attributes: [] }],
+                include: [{ model: User, attributes: ['firstName', 'lastName', 'image'] }],
                 where: { postId }, order: [['createdAt', 'ASC']]
             }
     

@@ -1,5 +1,9 @@
+const Sequelize = require('sequelize')
 const FetchErrorHandler = require('../config/FetchErrorHandler')
 const Security = require('../config/Security')
+const Comment = require('../models/CommentModel')
+const PostLike = require('../models/PostLikeModel')
+const Post = require('../models/PostModel')
 const User = require('../models/UserModel')
 
 /**
@@ -36,7 +40,22 @@ class UserController {
             const id = parseInt(req.params.id)
             if (isNaN(id)) throw new FetchErrorHandler(400)
     
-            const user = await User.findOne({ attributes: { exclude: ['password'] }, where: { id } })
+            const user = await User.findOne({ 
+                attributes: { exclude: ['password'] },
+                include: [{ 
+                    model: Post, 
+                    include: [
+                        { model: Comment, include: [{ model: User, attributes: ['firstName', 'lastName', 'image'] }] },
+                        { model: PostLike, where: { 'like': true }, required: false, include: [{ model: User, attributes: ['firstName', 'lastName', 'image'] }]}
+                    ]
+                }],
+                where: { id },
+                order: [
+                    [{ model: Post }, 'createdAt', 'DESC'],
+                    [{ model: Post }, { model: Comment }, 'createdAt', 'DESC'],
+                    [{ model: Post }, { model: PostLike }, 'updatedAt', 'DESC'],
+                ]
+            })
             if (!user) throw new FetchErrorHandler(404, 'Utilisateur introuvable !')
 
             res.status(200).json(user)

@@ -94,6 +94,9 @@
           application/json:
             schema:
               $ref: '#components/schemas/User'
+              properties:
+                Posts:
+                  $ref: '#components/definitions/UserPosts'
       404:
         content:
           application/json:
@@ -102,7 +105,6 @@
               properties:
                 error: 
                   example: Utilisateur introuvable !
-
   put:
     tags: ['Users']
     description: Updates one user in the database
@@ -137,7 +139,6 @@
               properties:
                 error:
                   example: Vous n'avez pas l'autorisation d'effectuer cette action !
-
   delete:
     tags: ['Users']
     description: Deletes one user in the database
@@ -208,18 +209,7 @@
         content:
           application/json:
             schema:
-              type: array
-              items:
-                allOf:
-                  - $ref: '#components/schemas/Post'
-                  - type: object
-                    properties:
-                      userFirstName:
-                        type: string
-                      userLastName:
-                        type: string
-                      userImage:
-                        type: string
+              $ref: '#components/definitions/Posts'
       404:
         content:
           application/json:
@@ -361,12 +351,8 @@
                         - $ref: '#components/schemas/Comment'
                         - type: object
                           properties:
-                            userFirstName:
-                              type: string
-                            userLastName:
-                              type: string
-                            userImage:
-                              type: string
+                            User: 
+                              $ref: '#components/definitions/UserLight'
       500:
         content:
           application/json:
@@ -509,12 +495,8 @@
                   - $ref: '#components/schemas/Like'
                   - type: object
                     properties:
-                      userFirstName:
-                        type: string
-                      userLastName:
-                        type: string
-                      userImage:
-                        type: string
+                      User:
+                        $ref: '#components/definitions/UserLight'
       404:
         content:
           application/json:

@@ -3,6 +3,8 @@ const Security = require('../config/Security')
 const Sequelize = require('sequelize')
 const Post = require('../models/PostModel')
 const User = require('../models/UserModel')
+const Comment = require('../models/CommentModel')
+const PostLike = require('../models/PostLikeModel')
 
 /**
  * Post Controller
@@ -16,15 +18,16 @@ class PostController {
     static async getAll(req, res) {
         try {
             const options = {
-                attributes: {
-                    include: [
-                        [Sequelize.col('User.firstName'), 'userFirstName'],
-                        [Sequelize.col('User.lastName'), 'userLastName'],
-                        [Sequelize.col('User.image'), 'userImage']
-                    ]
-                },
-                include: [{ model: User, attributes: [] }],
-                order: [['createdAt', 'DESC']]
+                include: [
+                    { model: User, attributes: ['firstName', 'lastName', 'image'] },
+                    { model: Comment, include: [{ model: User, attributes: ['firstName', 'lastName', 'image'] }] },
+                    { model: PostLike, where: { 'like': true }, required: false, include: [{ model: User, attributes: ['firstName', 'lastName', 'image'] }] }
+                ],
+                order: [
+                    ['createdAt', 'DESC'],
+                    [{ model: Comment }, 'createdAt', 'DESC'],
+                    [{ model: PostLike}, 'updatedAt', 'DESC']
+                ]
             }
 
             const posts = await Post.findAll(options)

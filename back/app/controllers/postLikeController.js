@@ -10,7 +10,7 @@ const PostLike = require('../models/PostLikeModel')
  */
 class PostLikeController {
     /**
-     * Get every liked posts id for a specific user.
+     * Get every liked posts for a specific user.
      * @param {Request} req Request
      * @param {Response} res Response
      */
@@ -46,14 +46,7 @@ class PostLikeController {
             if (!post) throw new FetchErrorHandler(404, 'Publication introuvable !')
     
             const options = {
-                attributes: {
-                    include: [
-                        [Sequelize.col('User.firstName'), 'userFirstName'],
-                        [Sequelize.col('User.lastName'), 'userLastName'],
-                        [Sequelize.col('User.image'), 'userImage']
-                    ]
-                },
-                include: [{ model: User, attributes: [] }],
+                include: [{ model: User, attributes: ['firstName', 'lastName', 'image'] }],
                 where: { postId }
             }
 
