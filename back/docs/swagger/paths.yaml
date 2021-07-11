@@ -511,7 +511,7 @@
             schema:
               type: object
               properties:
-                message:
+                error:
                   example: Publication introuvable !
   get:
     tags: ['Likes']
@@ -545,7 +545,7 @@
             schema:
               type: object
               properties:
-                message:
+                error:
                   example: Publication introuvable !
                   
 /api/likes/users/{id}:
@@ -576,5 +576,5 @@
             schema:
               type: object
               properties:
-                message:
+                error:
                   example: Utilisateur introuvable !

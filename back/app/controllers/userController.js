@@ -1,8 +1,5 @@
 const FetchErrorHandler = require('../config/FetchErrorHandler')
 const Security = require('../config/Security')
-const Comment = require('../models/CommentModel')
-const PostLike = require('../models/PostLikeModel')
-const Post = require('../models/PostModel')
 const User = require('../models/UserModel')
 
 /**

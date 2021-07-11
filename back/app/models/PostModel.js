@@ -2,7 +2,6 @@ const Sequelize = require('sequelize')
 const { db } = require('../config/database')
 const Comment = require('./CommentModel')
 const PostLike = require('./PostLikeModel')
-const User = require('./UserModel')
 
 const Post = db.define('Post', {
     image: {
