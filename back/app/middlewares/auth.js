@@ -1,8 +1,10 @@
 const FetchErrorHandler = require('../config/FetchErrorHandler')
 const Security = require('../config/Security')
 
-const auth = (req, res, next) => {
+const auth = async (req, res, next) => {
     try {
+        if (!req.headers.authorization) throw new FetchErrorHandler(401, 'Requête non authentifiée !')
+
         const token = req.headers.authorization.split(' ')[1]
         const userId = Security.decodeJwt(token)
 
@@ -10,7 +12,7 @@ const auth = (req, res, next) => {
         else next()
     }
     catch (error) {
-        res.status(error.statusCode || 401).json({ error: error.message || 'Requête non authentifiée !' })
+        res.status(error.statusCode || 400).json({ error: error.statusCode ? error.message : 'Token non valide !' })
     }
 }
 
