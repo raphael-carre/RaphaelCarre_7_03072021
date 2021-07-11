@@ -1,4 +1,3 @@
-const Sequelize = require('sequelize')
 const FetchErrorHandler = require('../config/FetchErrorHandler')
 const Security = require('../config/Security')
 const Comment = require('../models/CommentModel')
@@ -75,12 +74,9 @@ class CommentController {
             const id = parseInt(req.params.id)
             if (isNaN(id)) throw new FetchErrorHandler(400)
 
-            const postId = parseInt(req.params.postId)
-            if (isNaN(postId)) throw new FetchErrorHandler(400)
-
             const userId = Security.decodeJwt(req.headers.authorization.split(' ')[1])
     
-            const comment = await Comment.findOne({ attributes: ['postId', 'userId'], where: { id, postId } })
+            const comment = await Comment.findOne({ attributes: ['postId', 'userId'], where: { id } })
             if (!comment) throw new FetchErrorHandler(404, 'Commentaire introuvable !')
 
             if (!(comment.userId === userId || req.body.adminUser)) throw new FetchErrorHandler(401)
@@ -88,7 +84,7 @@ class CommentController {
             const content = req.body.content || ''
             if (!req.body.content) throw new FetchErrorHandler(400, 'Votre commentaire est vide !')
     
-            const updateComment = await Comment.update({ content }, { where: { id, userId: req.body.adminUser ? comment.userId : userId, postId }})
+            const updateComment = await Comment.update({ content }, { where: { id }})
             if (updateComment[0] === 0) throw new FetchErrorHandler(500)
 
             const updatedComment = await Comment.findOne({ where: { id } })
@@ -111,20 +107,22 @@ class CommentController {
             const id = parseInt(req.params.id)
             if (isNaN(id)) throw new FetchErrorHandler(400)
 
-            const postId = parseInt(req.params.postId)
-            if (isNaN(userId)) throw new FetchErrorHandler(400)
-
             const userId = Security.decodeJwt(req.headers.authorization.split(' ')[1])
     
-            const comment = await Comment.findOne({ attributes: ['postId', 'userId'], where: { id, postId } })
+            const comment = await Comment.findOne({ attributes: ['postId', 'userId'], where: { id } })
             if (!comment) throw new FetchErrorHandler(404, 'Commentaire introuvable !')
 
             if (!(comment.userId === userId || req.body.adminUser)) throw new FetchErrorHandler(401)
+            
+            const postId = comment.postId
     
-            const destroyedComment = await Comment.destroy({ where: { id, userId: req.body.adminUser ? comment.userId : userId, postId }})
+            const destroyedComment = await Comment.destroy({ where: { id }})
             if (destroyedComment === 0) throw new FetchErrorHandler(500)
 
-            res.status(200).json({ message: 'Commentaire supprimé !' })
+            const commentsCounter = await Comment.count({ where: { postId } })
+            if (typeof commentsCounter !== 'number') throw new FetchErrorHandler(500)
+
+            res.status(200).json({ message: 'Commentaire supprimé !', commentsCounter })
         }
         catch (error) {
             res.status(error.statusCode || 500).send(error)

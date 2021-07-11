@@ -64,7 +64,7 @@
             schema:
               type: array
               items:
-                $ref: '#components/schemas/User'
+                $ref: '#components/definitions/UserExtended'
       404:
         content:
           application/json:
@@ -93,10 +93,7 @@
         content:
           application/json:
             schema:
-              $ref: '#components/schemas/User'
-              properties:
-                Posts:
-                  $ref: '#components/definitions/UserPosts'
+              $ref: '#components/definitions/UserExtended'
       404:
         content:
           application/json:
@@ -220,6 +217,34 @@
                   example: Il n'existe aucune publication...
 
 /api/posts/{id}:
+  get:
+    tags: ['Posts']
+    description: Returns one post
+    summary: Returns one post
+    security:
+        - Auth: []
+    parameters:
+      - name: id
+        in: path
+        description: Post id
+        required: true
+        schema:
+          type: number
+    responses:
+      200:
+        content:
+          application/json:
+            schema:
+              $ref: '#components/definitions/Post'
+      404:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                error: 
+                  example: Publication introuvable !
+
   put:
     tags: ['Posts']
     description: Updates one post in the database
@@ -285,7 +310,36 @@
                 error: 
                   example: Publication introuvable !
 
-/api/posts/{postId}/comments:
+/api/posts/user/{userId}:
+  get:
+    tags: ['Posts']
+    description: Returns every posts of a user
+    summary: Returns every posts of a user
+    security:
+      - Auth: []
+    parameters:
+      - name: userId
+        in: path
+        description: User id
+        required: true
+        schema: 
+          type: number
+    responses:
+      200:
+        content:
+          application/json:
+            schema:
+              $ref: '#components/definitions/Posts'
+      404:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                error: 
+                  example: Il n'existe aucune publication...
+
+/api/comments/post/{postId}:
   post:
     tags: ['Comments']
     description: Creates a comment for a specific post
@@ -362,22 +416,16 @@
                 error: 
                   example: Il y a ey un problème...
 
-/api/posts/{postId}/comments/{id}:
+/api/comments/{id}:
   put:
     tags: ['Comments']
-    description: Updates a comment for a specific post
-    summary: Updates a comment for a specific post
+    description: Updates a comment
+    summary: Updates a comment
     security:
       - Auth: []
     requestBody:
       $ref: '#components/requestBodies/Comment'
     parameters:
-      - name: postId
-        in: path
-        description: Post id
-        required: true
-        schema: 
-          type: number
       - name: id
         in: path
         description: Comment id
@@ -405,17 +453,11 @@
                   example: Commentaire introuvable !
   delete:
     tags: ['Comments']
-    description: Deletes a comment for a specific post
-    summary: Deletes a comment for a specific post
+    description: Deletes a comment
+    summary: Deletes a comment
     security:
       - Auth: []
     parameters:
-      - name: PostId
-        in: path
-        description: Post id
-        required: true
-        schema: 
-          type: number
       - name: id
         in: path
         description: Comment id
@@ -473,8 +515,8 @@
                   example: Publication introuvable !
   get:
     tags: ['Likes']
-    description: Get every users who liked/disliked a specific post
-    summary: Get every users who liked/disliked a specific post
+    description: Returns every users who liked/disliked a specific post
+    summary: Returns every users who liked/disliked a specific post
     security:
       - Auth: []
     parameters:
@@ -509,8 +551,8 @@
 /api/likes/users/{id}:
   get:
     tags: ['Likes']
-    description: Posts liked by a specific user
-    summary: Posts liked by a specific user 
+    description: Returns posts liked by a specific user
+    summary: Returns posts liked by a specific user 
     security:
       - Auth: []
     parameters:

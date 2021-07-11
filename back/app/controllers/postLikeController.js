@@ -1,4 +1,3 @@
-const Sequelize = require('sequelize')
 const FetchErrorHandler = require('../config/FetchErrorHandler')
 const Security = require('../config/Security')
 const User = require('../models/UserModel')

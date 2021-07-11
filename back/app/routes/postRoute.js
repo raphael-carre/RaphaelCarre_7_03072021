@@ -5,6 +5,8 @@ const PostController = require('../controllers/postController')
 const router = require('express').Router()
 
 router.get('/', auth, PostController.getAll)
+router.get('/:id', auth, PostController.getOne)
+router.get('/user/:userId', auth, PostController.getAllFromUser)
 router.post('/', auth, validation, PostController.create)
 router.put('/:id', auth, admin, validation, PostController.update)
 router.delete('/:id', auth, admin, PostController.delete)

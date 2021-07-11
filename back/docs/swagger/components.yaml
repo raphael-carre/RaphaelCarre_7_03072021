@@ -188,6 +188,32 @@ components:
           type: string
         image:
           type: string
+    UserExtended:
+      type: object
+      properties:
+        id:
+          type: number
+        firstName:
+          type: string
+        lastName:
+          type: string
+        email:
+          type: string
+        description:
+          type: string
+        image:
+          type: string
+          example: http://myurl.com/myprofileimage.jpg
+        isAdmin:
+          type: boolean
+        createdAt:
+          type: string
+          format: date-time
+          example: '2021-06-01 14:00:00'
+        updatedAt:
+          type: string
+          format: date-time
+          example: '2021-06-02 16:34:00'
     UserPosts:
       type: array
       items:
@@ -199,6 +225,16 @@ components:
                 $ref: '#components/definitions/Comments'
               PostLikes:
                 $ref: '#components/definitions/PostLikes'
+    Post:
+      type: object
+      $ref: '#components/schemas/Post'
+      properties:
+        User:
+          $ref: '#components/definitions/UserLight'
+        Comments:
+          $ref: '#components/definitions/Comments'
+        PostLikes:
+          $ref: '#components/definitions/PostLikes'
     Posts:
       type: array
       items:

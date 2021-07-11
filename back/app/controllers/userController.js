@@ -1,4 +1,3 @@
-const Sequelize = require('sequelize')
 const FetchErrorHandler = require('../config/FetchErrorHandler')
 const Security = require('../config/Security')
 const Comment = require('../models/CommentModel')
@@ -17,9 +16,7 @@ class UserController {
      */
     static async getAll(req, res) {
         try {
-            const options = !req.body.adminUser ? { attributes: ['id', 'firstName', 'lastName'] } : { attributes: { exclude: ['password'] }}
-
-            const users = await User.findAll(options)
+            const users = await User.findAll({ attributes: { exclude: ['password'] }, order: [['createdAt', 'DESC']] })
             if (typeof users !== 'object') throw new FetchErrorHandler(500)
             if (users.length === 0) throw new FetchErrorHandler(404, 'Aucun utilisateur enregistré !')
 
@@ -40,22 +37,7 @@ class UserController {
             const id = parseInt(req.params.id)
             if (isNaN(id)) throw new FetchErrorHandler(400)
     
-            const user = await User.findOne({ 
-                attributes: { exclude: ['password'] },
-                include: [{ 
-                    model: Post, 
-                    include: [
-                        { model: Comment, include: [{ model: User, attributes: ['firstName', 'lastName', 'image'] }] },
-                        { model: PostLike, where: { 'like': true }, required: false, include: [{ model: User, attributes: ['firstName', 'lastName', 'image'] }]}
-                    ]
-                }],
-                where: { id },
-                order: [
-                    [{ model: Post }, 'createdAt', 'DESC'],
-                    [{ model: Post }, { model: Comment }, 'createdAt', 'DESC'],
-                    [{ model: Post }, { model: PostLike }, 'updatedAt', 'DESC'],
-                ]
-            })
+            const user = await User.findOne({ attributes: { exclude: ['password'] }, where: { id } })
             if (!user) throw new FetchErrorHandler(404, 'Utilisateur introuvable !')
 
             res.status(200).json(user)

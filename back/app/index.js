@@ -35,7 +35,7 @@ app.use(loggerMiddleware)
 app.use('/api/users', userRoute)
 app.use('/api/posts', postRoute)
 app.use('/api/likes', postLikeRoute)
-app.use('/api/posts/:postId/comments', commentRoute)
+app.use('/api/comments', commentRoute)
 
 if (process.env.NODE_ENV === 'development') {
     app.use('/api-docs', swaggerUi.serve, swaggerUi.setup(swaggerConfig))

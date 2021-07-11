@@ -1,6 +1,5 @@
 const FetchErrorHandler = require('../config/FetchErrorHandler')
 const Security = require('../config/Security')
-const Sequelize = require('sequelize')
 const Post = require('../models/PostModel')
 const User = require('../models/UserModel')
 const Comment = require('../models/CommentModel')
@@ -10,6 +9,39 @@ const PostLike = require('../models/PostLikeModel')
  * Post Controller
  */
 class PostController {
+    /**
+     * Get every posts from database.
+     * @param {Request} req Request
+     * @param {Response} res Response
+     */
+    static async getOne(req, res) {
+        try {
+            const id = parseInt(req.params.id)
+            if (isNaN(id)) throw new FetchErrorHandler(400)
+
+            const options = {
+                include: [
+                    { model: User, attributes: ['firstName', 'lastName', 'image'] },
+                    { model: Comment, include: [{ model: User, attributes: ['firstName', 'lastName', 'image'] }] },
+                    { model: PostLike, where: { 'like': true }, required: false, include: [{ model: User, attributes: ['firstName', 'lastName', 'image'] }] }
+                ],
+                where: { id },
+                order: [
+                    [{ model: Comment }, 'createdAt', 'DESC'],
+                    [{ model: PostLike }, 'updatedAt', 'DESC']
+                ]
+            }
+
+            const post = await Post.findOne(options)
+            if (!post) throw new FetchErrorHandler(404, 'Publication introuvable !')
+
+            res.status(200).json(post)
+        }
+        catch (error) {
+            res.status(error.statusCode || 500).send(error)
+        }
+    }
+
     /**
      * Get every posts from database.
      * @param {Request} req Request
@@ -27,6 +59,40 @@ class PostController {
                     ['createdAt', 'DESC'],
                     [{ model: Comment }, 'createdAt', 'DESC'],
                     [{ model: PostLike}, 'updatedAt', 'DESC']
+                ]
+            }
+
+            const posts = await Post.findAll(options)
+            if (typeof posts !== 'object') throw new FetchErrorHandler(500)
+            if (posts.length === 0) throw new FetchErrorHandler(404, 'Il n\'existe aucune publication...')
+
+            res.status(200).json(posts)
+        }
+        catch (error) {
+            res.status(error.statusCode || 500).send(error)
+        }
+    }
+
+    /**
+     * Get every posts of a specific user from database.
+     * @param {Request} req Request
+     * @param {Response} res Response
+     */
+    static async getAllFromUser(req, res) {
+        try {
+            const userId = parseInt(req.params.userId)
+            if (isNaN(userId)) throw new FetchErrorHandler(400)
+
+            const options = {
+                include: [
+                    { model: Comment, include: [{ model: User, attributes: ['firstName', 'lastName', 'image'] }] },
+                    { model: PostLike, where: { 'like': true }, required: false, include: [{ model: User, attributes: ['firstName', 'lastName', 'image'] }] }
+                ],
+                where: { userId },
+                order: [
+                    ['createdAt', 'DESC'],
+                    [{ model: Comment }, 'createdAt', 'DESC'],
+                    [{ model: PostLike }, 'updatedAt', 'DESC']
                 ]
             }
 
