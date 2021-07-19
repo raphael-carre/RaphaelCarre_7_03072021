@@ -11,7 +11,7 @@ class UserController {
      * @param {Request} req Request
      * @param {Response} res Response
      */
-    static async getAll(req, res) {
+    async getAll(req, res) {
         try {
             const users = await User.findAll({ attributes: { exclude: ['password'] }, order: [['createdAt', 'DESC']] })
             if (typeof users !== 'object') throw new FetchErrorHandler(500)
@@ -29,7 +29,7 @@ class UserController {
      * @param {Request} req Request
      * @param {Response} res Response
      */
-    static async getOne(req, res) {
+    async getOne(req, res) {
         try {
             const id = parseInt(req.params.id)
             if (isNaN(id)) throw new FetchErrorHandler(400)
@@ -49,7 +49,7 @@ class UserController {
      * @param {Request} req Request
      * @param {Response} res Response
      */
-    static async update(req, res) {
+    async update(req, res) {
         try {
             const id = parseInt(req.params.id)
             if (isNaN(id)) throw new FetchErrorHandler(400)
@@ -64,7 +64,7 @@ class UserController {
             const updateUser = await User.update(req.body, { where: { id } })
             if (updateUser[0] === 0) throw new FetchErrorHandler(500)
 
-            const updatedUser = await User.findOne({ attributes: ['id', 'firstName', 'lastName', 'description', 'email', 'image'], where: { id } })
+            const updatedUser = await User.findOne({ attributes: { exclude: ['password'] }, where: { id } })
             if (!updatedUser) throw new FetchErrorHandler(500)
 
             res.status(200).json({ message: 'Mise à jour effectuée !', userData: updatedUser })
@@ -79,7 +79,7 @@ class UserController {
      * @param {Request} req Request
      * @param {Response} res Response
      */
-    static async delete(req, res) {
+    async delete(req, res) {
         try {
             const id = parseInt(req.params.id)
             if (isNaN(id)) throw new FetchErrorHandler(400)
@@ -103,7 +103,7 @@ class UserController {
      * @param {Request} req Request
      * @param {Response} res Response
      */
-    static async register(req, res) {
+    async register(req, res) {
         try {
             const { firstName, lastName, email, password } = req.body
 
@@ -139,7 +139,7 @@ class UserController {
      * @param {Request} req Request
      * @param {Response} res Response
      */
-    static async login(req, res) {
+    async login(req, res) {
         try {
             const { email, password } = req.body
     
@@ -159,4 +159,4 @@ class UserController {
     }
 }
 
-module.exports = UserController
+module.exports = new UserController()

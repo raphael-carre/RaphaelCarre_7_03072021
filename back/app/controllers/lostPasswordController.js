@@ -7,7 +7,7 @@ class LostPasswordController {
          * @param {Request} req Request
          * @param {Response} res Response
          */
-    static async resetPwd(req, res) {
+    async resetPwd(req, res) {
 
     }
 
@@ -16,7 +16,7 @@ class LostPasswordController {
      * @param {Request} req Request
      * @param {Response} res Response
      */
-    static async lostPwd(req, res) {
+    async lostPwd(req, res) {
         const email = req.body.email
 
         const user = await User.findOne({ attributes: ['id', 'email'], where: { email } })
@@ -27,4 +27,4 @@ class LostPasswordController {
 
 } 
 
-module.exports = LostPasswordController
+module.exports = new LostPasswordController()

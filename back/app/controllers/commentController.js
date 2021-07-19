@@ -13,7 +13,7 @@ class CommentController {
      * @param {Request} req Request
      * @param {Response} res Response
      */
-    static async getAll(req, res) {
+    async getAll(req, res) {
         try {
             const postId = parseInt(req.params.postId)
             if (isNaN(postId)) throw new FetchErrorHandler(400)
@@ -38,7 +38,7 @@ class CommentController {
      * @param {Request} req Request
      * @param {Response} res Response
      */
-    static async create(req, res) {
+    async create(req, res) {
         try {
             const postId = parseInt(req.params.postId)
             if (isNaN(postId)) throw new FetchErrorHandler(400)
@@ -69,7 +69,7 @@ class CommentController {
      * @param {Request} req Request
      * @param {Response} res Response
      */
-    static async update(req, res) {
+    async update(req, res) {
         try {
             const id = parseInt(req.params.id)
             if (isNaN(id)) throw new FetchErrorHandler(400)
@@ -102,7 +102,7 @@ class CommentController {
      * @param {Request} req Request
      * @param {Response} res Response
      */
-    static async delete(req, res) {
+    async delete(req, res) {
         try {
             const id = parseInt(req.params.id)
             if (isNaN(id)) throw new FetchErrorHandler(400)
@@ -130,4 +130,4 @@ class CommentController {
     }
 }
 
-module.exports = CommentController
+module.exports = new CommentController()

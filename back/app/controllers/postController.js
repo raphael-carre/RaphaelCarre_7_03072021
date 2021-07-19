@@ -1,5 +1,6 @@
 const FetchErrorHandler = require('../config/FetchErrorHandler')
 const Security = require('../config/Security')
+const Sequelize = require('sequelize')
 const Post = require('../models/PostModel')
 const User = require('../models/UserModel')
 const Comment = require('../models/CommentModel')
@@ -14,22 +15,25 @@ class PostController {
      * @param {Request} req Request
      * @param {Response} res Response
      */
-    static async getOne(req, res) {
+    async getOne(req, res) {
         try {
             const id = parseInt(req.params.id)
             if (isNaN(id)) throw new FetchErrorHandler(400)
 
             const options = {
+                attributes: {
+                    include: [
+                        [Sequelize.fn('COUNT', Sequelize.col('Comments.id')), 'commentsCounter'],
+                        [Sequelize.fn('COUNT', Sequelize.col('PostLikes.id')), 'likesCounter']
+                    ]
+                },
                 include: [
                     { model: User, attributes: ['firstName', 'lastName', 'image'] },
-                    { model: Comment, include: [{ model: User, attributes: ['firstName', 'lastName', 'image'] }] },
-                    { model: PostLike, where: { 'like': true }, required: false, include: [{ model: User, attributes: ['firstName', 'lastName', 'image'] }] }
+                    { model: Comment, required: false, attributes: [] },
+                    { model: PostLike, where: { like: true }, required: false, attributes: [] }
                 ],
                 where: { id },
-                order: [
-                    [{ model: Comment }, 'createdAt', 'DESC'],
-                    [{ model: PostLike }, 'updatedAt', 'DESC']
-                ]
+                group: ['Comments.id', 'PostLikes.id']
             }
 
             const post = await Post.findOne(options)
@@ -47,19 +51,22 @@ class PostController {
      * @param {Request} req Request
      * @param {Response} res Response
      */
-    static async getAll(req, res) {
+    async getAll(req, res) {
         try {
             const options = {
+                attributes: { 
+                    include: [
+                        [Sequelize.fn('COUNT', Sequelize.col('Comments.id')), 'commentsCounter'],
+                        [Sequelize.fn('COUNT', Sequelize.col('PostLikes.id')), 'likesCounter']
+                    ]
+                },
                 include: [
                     { model: User, attributes: ['firstName', 'lastName', 'image'] },
-                    { model: Comment, include: [{ model: User, attributes: ['firstName', 'lastName', 'image'] }] },
-                    { model: PostLike, where: { 'like': true }, required: false, include: [{ model: User, attributes: ['firstName', 'lastName', 'image'] }] }
+                    { model: Comment, required: false, attributes: [] },
+                    { model: PostLike, where: { like: true }, required: false, attributes: [] }
                 ],
-                order: [
-                    ['createdAt', 'DESC'],
-                    [{ model: Comment }, 'createdAt', 'DESC'],
-                    [{ model: PostLike}, 'updatedAt', 'DESC']
-                ]
+                order: [['createdAt', 'DESC'] ],
+                group: ['id', 'Comments.id', 'PostLikes.id']
             }
 
             const posts = await Post.findAll(options)
@@ -78,22 +85,25 @@ class PostController {
      * @param {Request} req Request
      * @param {Response} res Response
      */
-    static async getAllFromUser(req, res) {
+    async getAllFromUser(req, res) {
         try {
             const userId = parseInt(req.params.userId)
             if (isNaN(userId)) throw new FetchErrorHandler(400)
 
             const options = {
+                attributes: {
+                    include: [
+                        [Sequelize.fn('COUNT', Sequelize.col('Comments.id')), 'commentsCounter'],
+                        [Sequelize.fn('COUNT', Sequelize.col('PostLikes.id')), 'likesCounter']
+                    ]
+                },
                 include: [
-                    { model: Comment, include: [{ model: User, attributes: ['firstName', 'lastName', 'image'] }] },
-                    { model: PostLike, where: { 'like': true }, required: false, include: [{ model: User, attributes: ['firstName', 'lastName', 'image'] }] }
+                    { model: Comment, required: false, attributes: [] },
+                    { model: PostLike, where: { like: true }, required: false, attributes: [] }
                 ],
                 where: { userId },
-                order: [
-                    ['createdAt', 'DESC'],
-                    [{ model: Comment }, 'createdAt', 'DESC'],
-                    [{ model: PostLike }, 'updatedAt', 'DESC']
-                ]
+                order: [['createdAt', 'DESC']],
+                group: ['id', 'Comments.id', 'PostLikes.id']
             }
 
             const posts = await Post.findAll(options)
@@ -112,7 +122,7 @@ class PostController {
      * @param {Request} req Request
      * @param {Response} res Response
      */
-    static async create(req, res) {
+    async create(req, res) {
         try {
             const {image, content} = req.body
             if (!image && (!content || content === '')) throw new FetchErrorHandler(400, 'Votre publication est vide !')
@@ -134,7 +144,7 @@ class PostController {
      * @param {Request} req Request
      * @param {Response} res Response
      */
-    static async update(req, res) {
+    async update(req, res) {
         try { 
             const id = parseInt(req.params.id)
             if (isNaN(id)) throw new FetchErrorHandler(400)
@@ -167,7 +177,7 @@ class PostController {
      * @param {Request} req Request
      * @param {Response} res Response
      */
-    static async delete(req, res) {
+    async delete(req, res) {
         try {
             const id = parseInt(req.params.id)
             if (isNaN(id)) throw new FetchErrorHandler(400)
@@ -190,4 +200,4 @@ class PostController {
     }
 }
 
-module.exports = PostController
+module.exports = new PostController()

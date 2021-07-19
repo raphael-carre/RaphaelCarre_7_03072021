@@ -214,27 +214,27 @@ components:
           type: string
           format: date-time
           example: '2021-06-02 16:34:00'
-    UserPosts:
-      type: array
-      items:
-        allOf:
-          - $ref: '#components/schemas/Post'
-          - type: object
-            properties:
-              Comments:
-                $ref: '#components/definitions/Comments'
-              PostLikes:
-                $ref: '#components/definitions/PostLikes'
+    # UserPosts:
+    #   type: array
+    #   items:
+    #     allOf:
+    #       - $ref: '#components/schemas/Post'
+    #       - type: object
+    #         properties:
+    #           Comments:
+    #             $ref: '#components/definitions/Comments'
+    #           PostLikes:
+    #             $ref: '#components/definitions/PostLikes'
     Post:
       type: object
       $ref: '#components/schemas/Post'
       properties:
         User:
           $ref: '#components/definitions/UserLight'
-        Comments:
-          $ref: '#components/definitions/Comments'
-        PostLikes:
-          $ref: '#components/definitions/PostLikes'
+        commentsCounter:
+          type: number
+        likesCounter:
+          type: number
     Posts:
       type: array
       items:
@@ -244,10 +244,10 @@ components:
             properties:
               User:
                 $ref: '#components/definitions/UserLight'
-              Comments:
-                $ref: '#components/definitions/Comments'
-              PostLikes:
-                $ref: '#components/definitions/PostLikes'
+              commentsCounter:
+                type: number
+              likesCounter:
+                type: number
     Comments:
       type: array
       items:

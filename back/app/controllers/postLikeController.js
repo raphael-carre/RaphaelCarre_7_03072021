@@ -13,7 +13,7 @@ class PostLikeController {
      * @param {Request} req Request
      * @param {Response} res Response
      */
-    static async getByUser(req, res) {
+    async getByUser(req, res) {
         try {
             const userId = parseInt(req.params.id)
             if (isNaN(userId)) throw new FetchErrorHandler(400)
@@ -36,7 +36,7 @@ class PostLikeController {
      * @param {Request} req Request
      * @param {Response} res Response
      */
-    static async getByPost(req, res) {
+    async getByPost(req, res) {
         try {
             const postId = parseInt(req.params.id)
             if (isNaN(postId)) throw new FetchErrorHandler(400)
@@ -64,7 +64,7 @@ class PostLikeController {
      * @param {Request} req Request
      * @param {Response} res Response
      */
-    static async toggle(req, res) {
+    async toggle(req, res) {
         try {
             const postId = parseInt(req.params.id)
             if (isNaN(postId)) throw new FetchErrorHandler(400)
@@ -97,4 +97,4 @@ class PostLikeController {
     }
 }
 
-module.exports = PostLikeController
+module.exports = new PostLikeController()
