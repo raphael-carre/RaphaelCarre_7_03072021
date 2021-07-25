@@ -584,8 +584,8 @@
     tags: ['Password']
     description:
     summary:
-    parameters:
-
+    requestBody:
+      $ref: '#components/requestBodies/LostPassword'
     responses:
       200:
         content:
@@ -604,20 +604,25 @@
               type: object
               properties:
                 error:
-                  example: Vous ne possedez pas de compte utilisateur !
+                  example: Utilisateur introuvable !
 
 /api/password/reset:
   post:
     tags: ['Password']
     description:
     summary:
-    parameters:
-
+    requestBody:
+      $ref: '#components/requestBodies/ResetPassword'
     responses:
       200:
         content:
           application/json:
-
+            schema:
+              type: object
+              properties:
+                message:
+                  type: string
+                  example: Votre mot de passe a été modifié !
       500:
         content:
           application/json:

@@ -1,3 +1,6 @@
+/**
+ * Global Controller class
+ */
 class Controller {
     constructor(service) {
         this.Service = service

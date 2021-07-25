@@ -87,7 +87,7 @@ class UserService extends Service {
      * Delete a user entry.
      * @param {Request} req Request
      * @param {Object} queryOptions Query options
-     * @returns 
+     * @returns {Boolean}
      */
     delete = async (req, queryOptions = null) => {
         this.checkId(req.params.id)

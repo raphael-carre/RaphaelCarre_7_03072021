@@ -14,7 +14,13 @@ class LostPasswordController {
          * @param {Response} res Response
          */
     resetPwd = async (req, res) => {
-
+        try {
+            const data = await this.Service.resetPwd(req)
+            res.status(200).json(data)
+        }
+        catch (error) {
+            res.status(error.statusCode || 500).send(error)
+        }
     }
 
     /**
@@ -23,7 +29,13 @@ class LostPasswordController {
      * @param {Response} res Response
      */
     lostPwd = async (req, res) => {
-
+        try {
+            const data = await this.Service.lostPwd(req)
+            res.status(200).json(data)
+        }
+        catch (error) {
+            res.status(error.statusCode || 500).send(error)
+        }
     }
 
 } 

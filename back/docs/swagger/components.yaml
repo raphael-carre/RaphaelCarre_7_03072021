@@ -97,6 +97,23 @@ components:
           type: string
           format: date-time
           example: '2021-06-02 16:34:00'
+    LostPassword:
+      type: object
+      properties:
+        id:
+          type: number
+        code:
+          type: number
+        userId:
+          type: number
+        createdAt:
+          type: string
+          format: date-time
+          example: '2021-06-01 14:00:00'
+        updatedAt:
+          type: string
+          format: date-time
+          example: '2021-06-02 16:34:00'
 
   requestBodies:
     UserRegister:
@@ -156,6 +173,35 @@ components:
               image:
                 type: string
                 example: http://myurl.com/myprofileimage.jpg
+    LostPassword:
+      required: true
+      description: User email
+      content:
+        application/json:
+          schema:
+            type: object
+            required:
+              - email
+            properties:
+              email:
+                type: string
+    ResetPassword:
+      required: true
+      description: User email and secret code
+      content:
+        application/json:
+          schema:
+            type: object
+            required:
+              - email
+              - code
+            properties:
+              email:
+                type: string
+              code:
+                type: number
+              password:
+                type: string
     Post:
       description: New Post
       content:
