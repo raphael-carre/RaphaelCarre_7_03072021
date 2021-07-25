@@ -126,7 +126,7 @@
               properties:
                 message:
                   example: Mise à jour effectuée !
-                userData:
+                data:
                   $ref: '#components/schemas/User'
       401:
         content:
@@ -269,7 +269,7 @@
               properties:
                 message:
                   example: Publication mise à jour !
-                updatedPost:
+                data:
                   $ref: '#components/schemas/Post'
       400:
         content:
@@ -441,7 +441,7 @@
               properties:
                 message:
                   example: Commentaire mis à jour !
-                comment:
+                data:
                   $ref: '#components/schemas/Comment'
       404:
         content:

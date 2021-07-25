@@ -4,11 +4,7 @@ const dotenv = require('dotenv').config({ path: './.env' })
 const loggerMiddleware = require('./middlewares/logger-middleware')
 const { swaggerUi, swaggerConfig } = require('./middlewares/swagger')
 const { db, dbConnection } = require('./config/database')
-const userRoute = require('./routes/userRoute')
-const postRoute = require('./routes/postRoute')
-const postLikeRoute = require('./routes/postLikeRoute')
-const commentRoute = require('./routes/commentRoute')
-const lostPassword = require('./routes/lostPasswordRoute')
+const router = require('./router')
 
 const app = express()
 
@@ -29,15 +25,10 @@ app.use((req, res, next) => {
 })
 
 app.use(express.json())
-
 app.use(helmet())
 app.use(loggerMiddleware)
 
-app.use('/api/users', userRoute)
-app.use('/api/posts', postRoute)
-app.use('/api/likes', postLikeRoute)
-app.use('/api/comments', commentRoute)
-app.use('/api/password', lostPassword)
+app.use('/api', router)
 
 if (process.env.NODE_ENV === 'development') {
     app.use('/api-docs', swaggerUi.serve, swaggerUi.setup(swaggerConfig))

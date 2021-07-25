@@ -1,7 +1,7 @@
-const auth = require('../middlewares/auth')
-const admin = require('../middlewares/admin')
-const validation = require('../middlewares/validation')
-const CommentController = require('../controllers/commentController')
+const auth = require('../../middlewares/auth')
+const admin = require('../../middlewares/admin')
+const validation = require('../../middlewares/validation')
+const CommentController = require('./CommentController')
 const router = require('express').Router()
 
 router.get('/post/:postId', auth, CommentController.getAll)

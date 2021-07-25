@@ -1,5 +1,5 @@
-const auth = require('../middlewares/auth')
-const PostLikeController = require('../controllers/postLikeController')
+const auth = require('../../middlewares/auth')
+const PostLikeController = require('./PostLikeController')
 const router = require('express').Router()
 
 router.get('/users/:id', auth, PostLikeController.getByUser)

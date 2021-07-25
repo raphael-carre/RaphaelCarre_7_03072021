@@ -1,7 +1,7 @@
 const Sequelize = require('sequelize')
-const { db } = require ('../config/database')
-const Post = require('./PostModel')
-const User = require('./UserModel')
+const { db } = require ('../../config/database')
+const Post = require('../Post/PostModel')
+const User = require('../User/UserModel')
 
 const PostLike = db.define('PostLike', {
     userId: {

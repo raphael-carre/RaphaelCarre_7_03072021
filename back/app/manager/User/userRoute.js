@@ -1,8 +1,8 @@
-const auth = require('../middlewares/auth')
-const admin = require('../middlewares/admin')
-const validation = require('../middlewares/validation')
+const auth = require('../../middlewares/auth')
+const admin = require('../../middlewares/admin')
+const validation = require('../../middlewares/validation')
 
-const UserController = require('../controllers/userController')
+const UserController = require('./UserController')
 const router = require('express').Router()
 
 router.get('/', auth, admin, UserController.getAll)

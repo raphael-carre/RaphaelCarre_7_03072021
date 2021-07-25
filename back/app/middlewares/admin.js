@@ -1,6 +1,6 @@
 const FetchErrorHandler = require('../config/FetchErrorHandler')
 const Security = require('../config/Security')
-const User = require('../models/UserModel')
+const User = require('../manager/User/UserModel')
 
 const adminAuth = async (req, res, next) => {
     try {

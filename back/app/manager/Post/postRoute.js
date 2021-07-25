@@ -1,7 +1,7 @@
-const auth = require('../middlewares/auth')
-const admin = require('../middlewares/admin')
-const validation = require('../middlewares/validation')
-const PostController = require('../controllers/postController')
+const auth = require('../../middlewares/auth')
+const admin = require('../../middlewares/admin')
+const validation = require('../../middlewares/validation')
+const PostController = require('./PostController')
 const router = require('express').Router()
 
 router.get('/', auth, PostController.getAll)
