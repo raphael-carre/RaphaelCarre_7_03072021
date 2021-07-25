@@ -60,11 +60,11 @@ class PostLikeService extends Service {
             const newPostLike = await this.Model.create({ userId, postId })
             if (!newPostLike) throw new FetchErrorHandler(500)
 
-            return 'Vous aimez cette publication !'
+            return 'Vous aimez cette publication !!'
         }
 
         const like = !postLiked.like
-        const message = like ? 'Vous aimez cette publication !' : 'Vous n\'aimez plus cette publication !'
+        const message = like ? 'Vous aimez cette publication !!' : 'Vous n\'aimez plus cette publication !'
 
         const postLikeUpdate = await this.Model.update({ like }, { where: { id: postLiked.id } })
         if (postLikeUpdate[0] === 0) throw new FetchErrorHandler(500)
