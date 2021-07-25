@@ -3,6 +3,7 @@ const { db } = require('../../config/database')
 const Post = require('../Post/PostModel')
 const Comment = require('../Comment/CommentModel')
 const PostLike = require('../PostLike/PostLikeModel')
+const LostPassword = require('../LostPassword/LostPasswordModel')
 
 const User = db.define('User', {
     firstName: {
@@ -42,5 +43,8 @@ Comment.belongsTo(User, { foreignKey: 'userId', onDelete: 'cascade' })
 
 User.hasMany(PostLike, { foreignKey: 'userId', onDelete: 'cascade' })
 PostLike.belongsTo(User, { foreignKey: 'userId', onDelete: 'cascade' })
+
+User.hasOne(LostPassword, { foreignKey: 'userId', onDelete: 'cascade' })
+LostPassword.belongsTo(User, { foreignKey: 'userId', onDelete: 'cascade' })
 
 module.exports = User
