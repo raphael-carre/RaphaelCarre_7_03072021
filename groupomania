@@ -34,6 +34,7 @@ then
             if  [ "$(docker ps -a | grep 'gm-')" ]
             then 
                 dumpDb
+                echo $'Arrêt des containers...\n'
                 docker-compose down -v
             fi
 
@@ -72,6 +73,7 @@ fi
 if [ ! -f "./back/.env" ]
 then
     # Parametres de la base de données
+    echo $'\nConfiguration de la base de données :'
     if [ ! "$DOCKER" == true ]
     then 
         read -r -p "Adresse de la base de données (defaut: localhost) : " DB_URL
@@ -131,6 +133,33 @@ INITSQL
         read -n1 -rsp $'Pressez une touche pour continuer...\n'
     fi
 
+    # Information du serveur mail
+    echo $'\nInformations du serveur de messagerie :'
+    while [ -z $MAIL_HOST_ADDRESS ]
+    do
+        read -r -p "Adresse du serveur smtp : " MAIL_HOST_ADDRESS
+        if [ -z $MAIL_HOST_ADDRESS ]
+        then
+            echo "Merci de renseigner l'adresse du serveur smtp !"
+        fi
+    done
+    while [ -z $MAIL_USER_NAME ]
+    do
+        read -r -p "Nom d'utilisateur du serveur de messagerie : " MAIL_USER_NAME
+        if [ -z $MAIL_USER_NAME ]
+        then
+            echo "Merci de renseigner le nom de l'utilisateur !"
+        fi
+    done
+    while [ -z $MAIL_USER_PASS ]
+    do
+        read -s -p "Mot de passe du serveur de messagerie : " MAIL_USER_PASS
+        if [ -z $MAIL_USER_PASS ]
+        then
+            echo "Merci de renseigner le mot de passe du serveur !"
+        fi
+    done
+
 
     # Création du fichier .env
     if [ ! -f "./back/.env" ]
@@ -145,6 +174,9 @@ JWT_SECRET=$JWT_SECRET
 DB_HOST=$DB_HOST
 DB_USERNAME=$MYSQL_ADMIN_USERNAME
 DB_USER_PASSWORD=$MYSQL_ADMIN_PASSWORD
+MAIL_HOST=$MAIL_HOST_ADDRESS
+MAIL_USERNAME=$MAIL_USER_NAME
+MAIL_PASSWORD=$MAIL_USER_PASS
 ENVFILE
     fi
 fi
@@ -164,6 +196,7 @@ then
     if [ ! "$(docker ps -a | grep 'gm-')" ]
     then
         echo -e "\n"
+        echo $'Lancement des containers...\n'
         docker-compose -f docker-compose.yml -f docker-compose.$MODE.yml up -d --build
 
         if [[ "$MODE" = "dev" ]]
@@ -171,11 +204,14 @@ then
             docker logs groupomania_gm-back_1 -f
         fi
     else
+        echo $'Arrêt des containers...\n'
         docker-compose down -v
         rm -rf ./back/docs/jsdoc/
     fi
 else
     # Installation des dépendances et lancement des scripts npm
+    echo $'Installation des dépendances...\n'
+
     cd ./front
     npm install
 
@@ -189,6 +225,8 @@ else
         echo "Veuillez executer la commande 'cd ./back ; npm run dev"
         echo "Dans un autre terminal, executez la commande 'cd ./front ; npm run dev"
     else
+        echo $'Lancement du projet...\n'
+
         cd ./front
         npm run prod
 
