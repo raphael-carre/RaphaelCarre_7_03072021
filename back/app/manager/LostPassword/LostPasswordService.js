@@ -1,5 +1,6 @@
 const FetchErrorHandler = require('../../config/FetchErrorHandler')
 const Security = require('../../config/Security')
+const Mailer = require('../../config/Mailer')
 const Service = require('../Service')
 const LostPasswordModel = require('./LostPasswordModel')
 const User = require('../User/UserModel')
@@ -44,15 +45,15 @@ class LostPasswordService extends Service {
     }
 
     /**
-     * Sends a random code when user has lost his password.
+     * Sends an email with a random code when user has lost his password.
      * @param {Request} req Request
      * @param {Response} res Response
-     * @returns {Object} { email, code }
+     * @returns {Object} Message
      */
     lostPwd = async req => {
         const email = req.body.email
 
-        const user = await User.findOne({ attributes: ['id', 'email'], where: { email } })
+        const user = await User.findOne({ attributes: ['id', 'firstName', 'lastName', 'email'], where: { email } })
         if (!user) throw new FetchErrorHandler(404, 'Utilisateur introuvable !')
 
         const exisitingCode = await this.Model.findOne({ where: { userId: user.id }})
@@ -66,7 +67,17 @@ class LostPasswordService extends Service {
         const newCode = await this.Model.create({ email, code, userId: user.id })
         if (!newCode) throw new FetchErrorHandler(500)
 
-        return { email, code }
+        const emailMessage = {
+            from: "Groupomania <groupomania@3rdg.fr>",
+            to: `${user.firstName} ${user.lastName} <${user.email}>`,
+            subject: "Réinitialisation de votre mot de passe",
+            text: `Veuillez saisir le code suivant pour recréer un mot de passe :\n${code}`,
+            html: `<p>Veuillez saisir le code suivant pour recréer un mot de passe :</p><p><strong>${code}</strong></p>`
+        }
+
+        Mailer.send(emailMessage)
+
+        return { message: 'Un e-mail vous a été envoyé !' }
     }
 }
 

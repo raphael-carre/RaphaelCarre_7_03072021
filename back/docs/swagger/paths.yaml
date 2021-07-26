@@ -593,10 +593,9 @@
             schema:
               type: object
               properties:
-                email:
+                message:
                   type: string
-                code:
-                  type: number
+                  example: Un e-mail vous a été envoyé !
       404:
         content:
           application/json:
