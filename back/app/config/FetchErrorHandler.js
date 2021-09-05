@@ -6,13 +6,14 @@ class FetchErrorHandler extends Error {
      * @param {Number} statusCode 
      * @param {String} errorMessage 
      */
-    constructor(statusCode = 500, errorMessage = null) {
+    constructor(statusCode = 500, errorMessage = null, key = null) {
         super()
 
         if (Error.captureStackTrace) { Error.captureStackTrace(this, FetchErrorHandler)}
 
         this.statusCode = statusCode
         this.message = errorMessage || this.message(statusCode)
+        this.key = key
     }
 
     /**

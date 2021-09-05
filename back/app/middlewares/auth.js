@@ -12,7 +12,7 @@ const auth = async (req, res, next) => {
         else next()
     }
     catch (error) {
-        res.status(error.statusCode || 400).json({ error: error.statusCode ? error.message : 'Token non valide !' })
+        res.status(error.statusCode || 400).send(error)
     }
 }
 

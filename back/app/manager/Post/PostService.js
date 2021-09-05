@@ -39,8 +39,6 @@ class PostService extends Service {
             group: ['id', 'Comments.id', 'PostLikes.id']
         }
 
-        console.log(this.queryOptions)
-
         const posts = await this.Model.findAll(options)
         if (typeof posts !== 'object') throw new FetchErrorHandler(500)
         if (posts.length === 0) throw new FetchErrorHandler(404, 'Il n\'existe aucune publication...')

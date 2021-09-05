@@ -1,5 +1,6 @@
 const bcrypt = require('bcrypt')
 const jwt = require('jsonwebtoken')
+const FetchErrorHandler = require('./FetchErrorHandler')
 
 /**
  * Security Class
@@ -39,8 +40,13 @@ class Security {
      * @returns {number} User id
      */
     static decodeJwt(token) {
-        const decodedToken = jwt.verify(token, process.env.JWT_SECRET)
-        return decodedToken.userId
+        try {
+            const decodedToken = jwt.verify(token, process.env.JWT_SECRET)
+            return decodedToken.userId
+        }
+        catch (error) {
+            throw new FetchErrorHandler(401, 'Token invalide')
+        }
     }
 }
 

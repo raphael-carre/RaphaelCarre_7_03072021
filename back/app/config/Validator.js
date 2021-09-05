@@ -48,15 +48,15 @@ class Validator {
      */
     test(userInputs) {
         for (let key in userInputs) {
-            this.forbidden.map(regex => { if (regex.filter.test(userInputs[key])) throw new FetchErrorHandler(400, regex.message) })
+            this.forbidden.map(regex => { if (regex.filter.test(userInputs[key])) throw new FetchErrorHandler(400, regex.message, key) })
 
             if (this.matches[key]) {
                 if (Array.isArray(this.matches[key].filter)) {
                     for (let i=0; i < this.matches[key].filter.length; ++i) {
-                        if (!this.matches[key].filter[i].test(userInputs[key])) throw new FetchErrorHandler(400, this.matches[key].message[i])
+                        if (!this.matches[key].filter[i].test(userInputs[key])) throw new FetchErrorHandler(400, this.matches[key].message[i], key)
                     }
                 } else {
-                    if (!this.matches[key].filter.test(userInputs[key])) throw new FetchErrorHandler(400, this.matches[key].message)
+                    if (!this.matches[key].filter.test(userInputs[key])) throw new FetchErrorHandler(400, this.matches[key].message, key)
                 }
             }
         }

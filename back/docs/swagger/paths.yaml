@@ -48,7 +48,7 @@
               type: object
               properties:
                 error:
-                  example: Utilisateur introuvable !
+                  example: Adresse e-mail incorrecte !
 
 /api/users:
   get:

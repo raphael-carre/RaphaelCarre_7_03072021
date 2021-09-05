@@ -64,7 +64,7 @@ class UserService extends Service {
         const { firstName, lastName, email, password } = req.body
 
         const existingEntry = await this.findOne(req, { attributes: ['email'], where: { email } }, false)
-        if (existingEntry) throw new FetchErrorHandler(400, 'Cette adresse e-mail est déjà utilisée !')
+        if (existingEntry) throw new FetchErrorHandler(400, 'Cette adresse e-mail est déjà utilisée !', 'email')
 
         const hash = await Security.hash(password)
         if (!hash) throw new FetchErrorHandler(500)
@@ -108,12 +108,12 @@ class UserService extends Service {
         const { email, password } = req.body
 
         const user = await this.Model.findOne({ attributes: ['id', 'email', 'password'], where: { email } })
-        if (!user) throw new FetchErrorHandler(404, 'Utilisateur introuvable !')
+        if (!user) throw new FetchErrorHandler(404, 'Adresse e-mail incorrecte !', 'email')
 
         const isValid = await Security.compareHash(password, user.password)
         if (typeof isValid !== 'boolean') throw new FetchErrorHandler(500)
 
-        if (!isValid) throw new FetchErrorHandler(401, 'Mot de passe incorrect !')
+        if (!isValid) throw new FetchErrorHandler(401, 'Mot de passe incorrect !', 'password')
     
         return { userId: user.id, token: Security.createJwt(user.id) }
     }

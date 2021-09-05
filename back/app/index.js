@@ -39,7 +39,8 @@ if (process.env.NODE_ENV === 'development') {
     })
 } else {
     app.get('/', (req, res) => {
-        res.status(200).json({ message: 'Test message from backend service...' })
+        res.status(200)
+        res.end()
     })
 }
 
