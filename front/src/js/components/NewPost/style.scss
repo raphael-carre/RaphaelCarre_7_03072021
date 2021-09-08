@@ -1,0 +1,38 @@
+.newPostDiv {
+    @extend %card;
+
+    &__head {
+        @extend %card__head;
+
+        img {
+            width: 60px;
+            height: 60px;
+        }
+    }
+
+    &__userName {
+        @extend %card__userName;
+
+        font-size: 1.1em;
+    }
+
+    &__info {
+        @extend %card__info;
+    }
+
+    &__buttons {
+        margin-top: 0.5em;
+        display: flex;
+        justify-content: flex-end;
+        width: 100%;
+
+        button {
+            @extend %btn;
+            margin: 0;    
+        }
+    }
+
+    form {
+        padding: 0 10px 10px;
+    }
+}

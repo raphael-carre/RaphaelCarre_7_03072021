@@ -1,11 +1,14 @@
 import { AppContainer } from 'react-hot-loader'
 import React from 'react'
 import ReactDOM from 'react-dom'
-import { App } from './App'
+import { AuthProvider } from '@js/utils/context'
+import App from './App'
 
 ReactDOM.render(
     <AppContainer>
-        <App />
+        <AuthProvider>
+            <App />
+        </AuthProvider>
     </AppContainer>,
     document.getElementById('root')
 )

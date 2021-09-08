@@ -47,7 +47,7 @@ let config = {
     output: {
         path: path.resolve(__dirname, 'build'),
         filename: 'js/[name].js',
-        publicPath: ''
+        publicPath: '/'
     },
     resolve: {
         alias: {
@@ -123,6 +123,7 @@ let config = {
             errors: true
         },
         public: "localhost",
+        historyApiFallback: true,
         hot: true
     },
     plugins: [

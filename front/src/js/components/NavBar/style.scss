@@ -1,0 +1,22 @@
+.navBar {
+    display: flex;
+    justify-content: space-evenly;
+    align-items: center;
+    // padding: 10px 0;
+}
+
+.navLinks {
+    padding: 10px 0;
+    width: 33%;
+    text-align: center;
+
+    &:not(:last-of-type) {
+        border-right: 1px solid rgba(255,255,255,.22)
+    }
+    // color: #fff;
+    // text-decoration: none;
+
+    // &:hover {
+    //     text-decoration: underline;
+    // }
+}
