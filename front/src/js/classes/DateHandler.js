@@ -21,7 +21,7 @@ class DateHandler {
             return `il y a ${elapsed.hours} heure${elapsed.hours > 1 ? 's' : ''}`
         }
         if (elapsed.diff >= this.oneDayInMilliseconds && elapsed.diff < this.oneWeekInMilliseconds) {
-            return `il y a ${Math.floor(elapsed.days / 7)} jour${Math.floor(elapsed.days / 7) > 1 ? 's' : ''}`
+            return `il y a ${elapsed.days} jour${elapsed.days > 1 ? 's' : ''}`
         }
         if (elapsed.diff >= this.oneWeekInMilliseconds) {
             return `le ${dateVar.getDate()} ${this.getMonth(dateVar.getMonth())} ${dateVar.getFullYear()}`
