@@ -17,7 +17,7 @@ const CommentsContainer = ({postId}) => {
     useEffect(() => {
         setIsLoading(fetchedComments.isLoading)
         setError(fetchedComments.error)
-        fetchedComments.data && comments === null && setComments(fetchedComments.data.comments.reverse())
+        fetchedComments.data && comments === null && setComments(fetchedComments.data.comments)
     }, [fetchedComments])
 
     useEffect(() => {

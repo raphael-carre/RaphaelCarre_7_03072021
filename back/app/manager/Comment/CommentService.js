@@ -20,7 +20,7 @@ class CommentService extends Service {
 
         const options = {
             include: [{ model: User, attributes: ['firstName', 'lastName', 'image'] }],
-            where: { postId }, order: [['createdAt', 'ASC']]
+            where: { postId }, order: [['createdAt', 'DESC']]
         }
 
         const comments = await this.Model.findAll(options)

@@ -45,6 +45,7 @@ const NewCommentContainer = ({postId, setNewComment}) => {
         catch (error) { console.log('Il y a eu un problème') }
         finally { setIsLoading(false) }
     }
+
     return (
         // isLoading ? <Loader /> :
         error ? <p>{error.message}</p> :
