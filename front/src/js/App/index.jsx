@@ -6,9 +6,8 @@ import { AuthContext } from '@js/utils/context'
 import { Header } from '@js/layout/Header'
 import { Login } from '@js/pages/Login'
 import Thread from '@js/pages/Thread'
-import { Temp } from '@js/pages/Temp'
-import { Footer } from '@js/layout/Footer'
 import { Profile } from '@js/pages/Profile'
+import { Footer } from '@js/layout/Footer'
 
 const App = () => {
     const { isAuthenticated } = useContext(AuthContext)
@@ -17,10 +16,8 @@ const App = () => {
         <Router>
             <Header />
             <Switch>
-                {/* <ProtectedRoute exact path="/" component={() => <Temp uri="/posts" />} /> */}
                 <ProtectedRoute exact path="/" component={() => <Thread />} />
                 <ProtectedRoute path="/profile/:id" component={() => <Profile />} />
-                <ProtectedRoute path="/users" component={() => <Temp uri="/users" />} />
                 <Route path="/login" component={Login} />
                 <Route path="*" render={() => <p>404 page introuvable</p>} />
             </Switch> 
