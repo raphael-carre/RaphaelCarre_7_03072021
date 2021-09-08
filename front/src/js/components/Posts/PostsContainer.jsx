@@ -54,22 +54,16 @@ const PostsContainer = ({uri, userId}) => {
     ]
 
     return (
-        <>
-            {isLoading ? 
-                <Loader /> :
-                (error ? 
-                    <p>{error.message}</p> : 
-                    allPosts && 
-                    <PostsView
-                        isProfile={isProfile}
-                        isOwner={isOwner}
-                        posts={allPosts}
-                        setNewPost={setNewPost}
-                        options={options}
-                    />
-                )
-            }
-        </>
+        isLoading ? <Loader /> :
+        error ? <p>{error.message}</p> : 
+        allPosts && 
+        <PostsView
+            isProfile={isProfile}
+            isOwner={isOwner}
+            posts={allPosts}
+            setNewPost={setNewPost}
+            options={options}
+        />  
     )
 }
 

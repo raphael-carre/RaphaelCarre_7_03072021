@@ -8,6 +8,7 @@ const InteractionZoneContainer = ({postData}) => {
     const [isLoading, setIsLoading] = useState(false)
     const [error, setError] = useState(false)
     const [likes, setLikes] = useState(null)
+    const [loadComments, setLoadComments] = useState(false)
 
     useEffect(() => {
         fetchLikes(postData.id)
@@ -46,14 +47,21 @@ const InteractionZoneContainer = ({postData}) => {
         catch (error) { console.log(error) }
     }
 
+    const toggleComments = () => {
+        setLoadComments(!loadComments)
+    }
+
     return (
         // isLoading ? <Loader /> :
         error ? <p>{error.message}</p> :
         likes &&
         <InteractionZoneView
+            postId={postData.id}
             likes={likes.filter(like => like.like)}
             toggleLike={toggleLike}
             commentsCounter={postData.commentsCounter}
+            loadComments={loadComments}
+            toggleComments={toggleComments}
         />
     )
 }

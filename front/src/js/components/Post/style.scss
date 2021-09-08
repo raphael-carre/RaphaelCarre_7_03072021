@@ -1,51 +1,8 @@
 .post {
     @extend %card;
-    position: relative;
-
-    &__interact {
-        position: absolute;
-        top: 0;
-        right: 0;
-        display: block;
-        margin: 0.3em;
-        width: 30px;
-        height: 30px;
-        text-align: center;
-        cursor: pointer;
-        opacity: 1;
-        transition: .3s
-    }
-
-    &__head {
-        @extend %card__head;
-    }
-
-    &__userName {
-        @extend %card__userName;
-
-        a {
-            color: inherit;
-            text-decoration: none;
-        }
-    }
-
-    &__date {
-        @extend %card__info;
-    }
-
-    // &__image {
-
-    // }
     
     &__content {
-        position: relative;
-        margin: 0;
-        padding: 15px;
-        font-size: .9em;
-
-        p {
-            margin: 0;
-        }
+        @extend %card__content;
     }
 
     &__modifyContent {

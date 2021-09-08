@@ -1,6 +1,6 @@
 import React from 'react'
-import { Posts } from '@js/components/Posts'
 import ProfileHeader from '@js/components/ProfileHeader'
+import { Posts } from '@js/components/Posts'
 
 const ProfileView = ({uri, userData}) => (
     <section>

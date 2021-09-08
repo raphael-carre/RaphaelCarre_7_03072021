@@ -1,6 +1,6 @@
 import React from 'react'
-import { Post } from '@js/components/Post'
 import { NewPost } from '@js/components/NewPost'
+import Post from '@js/components/Post'
 
 const PostsView = ({isProfile, isOwner, posts, setNewPost, options}) => (
     <>

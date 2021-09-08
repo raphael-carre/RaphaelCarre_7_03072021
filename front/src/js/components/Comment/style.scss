@@ -1,0 +1,16 @@
+.comment {
+    @extend %card;
+    background-color: $background-color-secondary;
+
+    &:first-of-type {
+        margin-top: 0;
+    }
+
+    &:last-of-type {
+        margin-bottom: 0;
+    }
+
+    &__content {
+        @extend %card__content;
+    }
+}
