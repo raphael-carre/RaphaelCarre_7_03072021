@@ -23,7 +23,7 @@ class Request {
 
     getFetchMethod = (data, method) => {
         if (typeof data === 'string') {
-            if (data === 'DELETE') return data
+            if (data === 'DELETE' || data === 'POST') return data
             throw new Error('Invalid method')
         }
         

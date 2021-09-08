@@ -1,10 +1,11 @@
 import React from 'react'
 import style from './style.scss'
-import pencil from '@img/pencil.svg'
 import defaultProfileImage from '@img/profile.png'
+import pencil from '@img/pencil.svg'
 import DateHandler from '@js/classes/DateHandler'
-import { EditionMenu } from '../EdittionMenu'
 import { Link } from 'react-router-dom'
+import { EditionMenu } from '../EdittionMenu'
+import { InteractionZone } from '../InteractionZone'
 
 const PostView = ({postData, options, openMenu, isOpened, isAllowed}) => (
     <article className={style.post} data-id={postData.id}>
@@ -33,9 +34,7 @@ const PostView = ({postData, options, openMenu, isOpened, isAllowed}) => (
         <div className={style.post__content}>
             <p>{postData.content}</p>
         </div>}
-        <div>
-            
-        </div>
+        <InteractionZone postData={postData} />
     </article>
 )
 

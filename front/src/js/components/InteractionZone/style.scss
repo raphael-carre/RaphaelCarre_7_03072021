@@ -1,0 +1,66 @@
+.interactionZone {
+    display: flex;
+    padding: 10px;
+    border-top: 1px solid rgba(0,0,0,.25);
+    font-size: .8em;
+
+    &__likes, &__comments {
+        display: flex;
+        align-items: center;
+        
+        > div {
+            position: relative;
+            cursor: pointer;        
+            z-index: 1;
+    
+            &::after {
+                content: '';
+                display: block;
+                position: absolute;
+                top: 0;
+                left: 0;
+                width: 100%;
+                height: 100%;
+                opacity: 0;
+                transition: .2s;
+                z-index: 5;
+            }
+        }
+    }
+
+    &__likes {
+        width: 100%;
+        > div::after {
+            background: url(~@img/thumb-up-filled.svg) no-repeat;
+        }
+
+        > div:hover::after {
+            opacity: 1;
+        }
+    }
+
+    &__comments {
+        padding-left: 5px;
+        justify-content: flex-end;
+        cursor: pointer;
+
+        > div::after {
+            background: url(~@img/comment-icon-red.svg) no-repeat;
+        }
+
+        &:hover > div::after {
+            opacity: 1;
+        }
+    }
+
+    img {
+        margin-right: .5em;
+        width: 25px;
+        height: 25px;
+    }
+
+    p {
+        margin: 0;
+        white-space: nowrap;
+    }
+}
