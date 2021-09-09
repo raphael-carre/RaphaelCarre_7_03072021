@@ -119,7 +119,7 @@ class PostService extends Service {
         const { content } = req.file ? JSON.parse(req.body.datas) : req.body
         if (!req.file && (!content || content === '')) throw new FetchErrorHandler(400, 'Votre publication est vide !')
 
-        if (req.file) {
+        if (req.file && post.image) {
             const filePath = `images/${post.image.split('/images/')[1]}`
             if (fs.existsSync(filePath)) { fs.unlinkSync(filePath) }
         }
