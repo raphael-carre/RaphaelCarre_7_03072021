@@ -1,6 +1,6 @@
 import React from 'react'
-import Comment from '../Comment'
-import { NewComment } from '../NewComment'
+import Comment from './components/Comment'
+import { NewComment } from './components/NewComment'
 import style from './style.scss'
 
 const CommentsView = ({postId, comments, setNewComment, options}) => (

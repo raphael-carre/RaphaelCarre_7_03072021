@@ -1,5 +1,5 @@
 import React from 'react'
-import { CardHead } from '../CardHead'
+import { CardHead } from '@js/components/CardHead'
 import style from './style.scss'
 
 const Comment = ({data, options}) => (

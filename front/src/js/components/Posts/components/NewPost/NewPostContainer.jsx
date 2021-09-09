@@ -1,8 +1,8 @@
 import React, { useState, useEffect } from 'react'
 import { useFetch } from '@js/utils/hooks'
-import NewPostView from './NewPostView'
 import Loader from '@js/utils/Loader'
 import Request from '@js/classes/Request'
+import NewPostView from './NewPostView'
 
 const NewPostContainer = ({setNewPost}) =>  {
     const userData = useFetch(`/users/${localStorage.getItem('userId')}`)

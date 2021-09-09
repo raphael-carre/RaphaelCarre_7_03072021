@@ -1,12 +1,11 @@
 import React from 'react'
-import { CardHead } from '../CardHead'
+import { CardHead } from '@js/components/CardHead'
 import { InteractionZone } from '../InteractionZone'
 import style from './style.scss'
 
 const Post = ({postData, options}) => (
     <article className={style.post} data-id={postData.id}>
         <CardHead data={postData} options={options} />
-
         {postData.image &&
         <div className={style.post__image}>
             <img src={postData.image} alt="" />

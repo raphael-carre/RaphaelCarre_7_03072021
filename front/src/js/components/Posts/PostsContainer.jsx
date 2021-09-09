@@ -15,6 +15,9 @@ const PostsContainer = ({uri, userId}) => {
 
     const [allPosts, setAllPosts] = useState(null)
     const [newPost, setNewPost] = useState(null)
+
+    const [image, setImage] = useState(null)
+    const [updatePost, setUpdatePost] = useState(null)
     // const [deletedPost, setDeletedPost] = useState(null)
 
     useEffect(() => {
@@ -44,8 +47,56 @@ const PostsContainer = ({uri, userId}) => {
         catch (error) { console.log('Il y a eu un problème') }
     }
 
-    const modifyPost = () => {
+    const modifyPost = id => {
+        setUpdatePost(id)
+    }
 
+    const handleUpdate = async (e, id) => {
+        e.preventDefault()
+
+        const content = e.target[`updateContentInput-${id}`].value
+        
+        let formData
+
+        if (image && image !== 'none') {
+            formData = new FormData()
+            formData.append('datas', JSON.stringify({content}))
+            formData.append('image', image)
+        } 
+        
+        if (image && image === 'none') {
+            formData = { image: null, content }
+        } 
+
+        if (!image) {
+            formData = { content }
+        }
+
+        try {
+            const response = await Request.apiCall(`/posts/${id}`, formData, 'PUT')
+
+            if (response.error) {
+                setError(response.data)
+                throw new Error(response.data.message)
+            }
+
+            setError(false)
+            const postIndexToUpdate = allPosts.findIndex(post => post.id === id)
+            const User = allPosts[postIndexToUpdate].User
+            allPosts[postIndexToUpdate] = {...response.data.data, User}
+        }
+        catch (error) { console.log('Il y a eu un problème') }
+        finally { setUpdatePost(null) }
+    }
+
+    const handleFile = e => {
+        setImage(e.target.files[0])
+    }
+
+    const handleResetForm = e => {
+        e.preventDefault()
+        setImage(null)
+        setUpdatePost(null)
     }
 
     const options = [
@@ -63,6 +114,9 @@ const PostsContainer = ({uri, userId}) => {
             posts={allPosts}
             setNewPost={setNewPost}
             options={options}
+            updateMethods={{handleResetForm, handleUpdate, handleFile}}
+            updatePost={updatePost}
+            image={image}
         />  
     )
 }

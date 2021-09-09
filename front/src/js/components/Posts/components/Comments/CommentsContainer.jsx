@@ -50,8 +50,6 @@ const CommentsContainer = ({postId}) => {
         { name: 'Supprimer', run: deleteComment }
     ]
 
-    console.log(comments);
-
     return (
         // isLoading ? <Loader /> :
         error ? <p>{error.message}</p> :

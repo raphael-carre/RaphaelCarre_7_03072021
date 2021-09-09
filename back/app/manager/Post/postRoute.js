@@ -14,7 +14,12 @@ router.post('/', auth, (req, res, next) => {
         next()
     })
 }, validation, PostController.create)
-router.put('/:id', auth, admin, validation, PostController.update)
+router.put('/:id', auth, admin, (req, res, next) => {
+    multer(req, res, error => {
+        if (error) return res.status(400).json({ message: error.message })
+        next()
+    })
+}, validation, PostController.update)
 router.delete('/:id', auth, admin, PostController.delete)
 
 module.exports = router

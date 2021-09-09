@@ -1,6 +1,6 @@
 import React from 'react'
 import defaultProfileImage from '@img/profile.png'
-import { Textarea } from '../Form/Input'
+import { Textarea } from '@js/components/Form/Input'
 import style from './style.scss'
 
 const NewCommentView = ({currentUser, handleSubmit, error}) => (

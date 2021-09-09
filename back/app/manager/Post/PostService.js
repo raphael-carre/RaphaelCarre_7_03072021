@@ -114,11 +114,19 @@ class PostService extends Service {
      */
     update = async req => {
         const id = this.checkId(req.params.id)
-        this.tokenId(req, id)
-        await this.checkIfPostExists(id)
+        const post = await this.checkIfPostExists(id)
+        
+        this.tokenId(req, post.userId)
 
-        const { image, content } = req.body
-        if (!image && (!content || content === '')) throw new FetchErrorHandler(400, 'Votre publication est vide !')
+        const { content } = req.file ? JSON.parse(req.body.datas) : req.body
+        if (!req.file && (!content || content === '')) throw new FetchErrorHandler(400, 'Votre publication est vide !')
+
+        if (req.file) {
+            const filePath = `images/${post.image.split('/images/')[1]}`
+            if (fs.existsSync(filePath)) { fs.unlinkSync(filePath) }
+        }
+
+        const image = req.file ? `${req.protocol}://${req.get('host')}/images/${req.file.filename}` : (req.body.image === null ? '' : post.image)
 
         const postUpdate = await Post.update({ image, content }, { where: { id } })
         if (postUpdate[0] === 0) throw new FetchErrorHandler(500)

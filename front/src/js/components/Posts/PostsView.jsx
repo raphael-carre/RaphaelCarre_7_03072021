@@ -1,13 +1,36 @@
 import React from 'react'
-import { NewPost } from '@js/components/NewPost'
-import Post from '@js/components/Post'
+import { NewPost } from './components/NewPost'
+import Post from './components/Post'
+import UpdatePost from './components/UpdatePost'
 
-const PostsView = ({isProfile, isOwner, posts, setNewPost, options}) => (
+const PostsView = ({
+    isProfile,
+    isOwner,
+    posts,
+    setNewPost,
+    options,
+    updatePost,
+    updateMethods,
+    image
+}) => (
     <>
         {(!isProfile || (isProfile && isOwner)) &&
         <NewPost setNewPost={setNewPost} />}
         {posts.map(
-            postData => <Post key={postData.id} postData={postData} options={options} />
+            postData => 
+                updatePost === postData.id ?
+                <UpdatePost
+                    key={postData.id}
+                    postData={postData}
+                    options={options}
+                    updateMethods={updateMethods}
+                    image={image}
+                /> :
+                <Post
+                    key={postData.id}
+                    postData={postData}
+                    options={options}
+                />
         )}
     </>
 )

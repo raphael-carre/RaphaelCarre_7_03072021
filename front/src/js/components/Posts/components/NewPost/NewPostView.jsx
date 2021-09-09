@@ -1,8 +1,8 @@
 import React from 'react'
 import defaultProfileImage from '@img/profile.png'
-import { Textarea } from '../Form/Input'
+import { Textarea } from '@js/components/Form/Input'
+import { ImageInput } from '@js/components/Form/Input'
 import style from './style.scss'
-import { ImageInput } from '../Form/Input'
 
 const NewPostView = ({currentUser, handleFile, imagePreview, handleSubmit, error}) => (
     <div className={style.newPostDiv}>
