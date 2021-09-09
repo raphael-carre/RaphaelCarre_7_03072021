@@ -1,4 +1,14 @@
+@keyframes commentsFadeIn {
+    0% {
+        opacity: 0;
+    }
+    100% {
+        opacity: 1;
+    }
+}
+
 .comments {
     padding: 10px;
-    border-top: 1px solid rgba(0,0,0,.2)
+    border-top: 1px solid rgba(0,0,0,.2);
+    animation: commentsFadeIn .3s linear;
 }
