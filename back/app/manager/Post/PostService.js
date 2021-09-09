@@ -17,14 +17,12 @@ class PostService extends Service {
         this.queryOptions = {
             attributes: {
                 include: [
-                    [Sequelize.fn('COUNT', Sequelize.col('Comments.id')), 'commentsCounter'],
-                    [Sequelize.fn('COUNT', Sequelize.col('PostLikes.id')), 'likesCounter']
-                ]
+                    [Sequelize.fn('COUNT', Sequelize.col('Comments.id')), 'commentsCounter']
+                ],
             },
             include: [
                 { model: User, attributes: ['firstName', 'lastName', 'image'] },
-                { model: Comment, required: false, attributes: [] },
-                { model: PostLike, where: { like: true }, required: false, attributes: [] }
+                { model: Comment, required: false, attributes: [] }
             ]
         }
     }
@@ -37,7 +35,7 @@ class PostService extends Service {
         const options = {
             ...this.queryOptions,
             order: [['createdAt', 'DESC']],
-            group: ['id', 'Comments.id', 'PostLikes.id']
+            group: ['id']
         }
 
         const posts = await this.Model.findAll(options)
@@ -57,8 +55,7 @@ class PostService extends Service {
 
         const options = {
             ...this.queryOptions,
-            where: { id },
-            group: ['Comments.id', 'PostLikes.id']
+            where: { id }
         }
 
         const post = await this.Model.findOne(options)

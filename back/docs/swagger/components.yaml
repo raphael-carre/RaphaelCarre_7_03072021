@@ -279,8 +279,6 @@ components:
           $ref: '#components/definitions/UserLight'
         commentsCounter:
           type: number
-        likesCounter:
-          type: number
     Posts:
       type: array
       items:
@@ -291,8 +289,6 @@ components:
               User:
                 $ref: '#components/definitions/UserLight'
               commentsCounter:
-                type: number
-              likesCounter:
                 type: number
     Comments:
       type: array
