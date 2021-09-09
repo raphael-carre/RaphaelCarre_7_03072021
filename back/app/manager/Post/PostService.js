@@ -5,7 +5,6 @@ const Service = require('../Service')
 const Post = require('./PostModel')
 const User = require('../User/UserModel')
 const Comment = require('../Comment/CommentModel')
-const PostLike = require('../PostLike/PostLikeModel')
 
 /**
  * PostService Class
@@ -76,7 +75,7 @@ class PostService extends Service {
             ...this.queryOptions,
             where: { userId },
             order: [['createdAt', 'DESC']],
-            group: ['id', 'Comments.id', 'PostLikes.id']
+            group: ['id']
         }
 
         const posts = await this.Model.findAll(options)
