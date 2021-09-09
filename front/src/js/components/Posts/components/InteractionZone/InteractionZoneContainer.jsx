@@ -8,6 +8,7 @@ const InteractionZoneContainer = ({postData}) => {
     const [isLoading, setIsLoading] = useState(false)
     const [error, setError] = useState(false)
     const [likes, setLikes] = useState(null)
+    const [commentsCounter, setCommentsCounter] = useState(postData.commentsCounter)
     const [loadComments, setLoadComments] = useState(false)
 
     useEffect(() => {
@@ -59,7 +60,8 @@ const InteractionZoneContainer = ({postData}) => {
             postId={postData.id}
             likes={likes.filter(like => like.like)}
             toggleLike={toggleLike}
-            commentsCounter={postData.commentsCounter}
+            commentsCounter={commentsCounter}
+            setCommentsCounter={setCommentsCounter}
             loadComments={loadComments}
             toggleComments={toggleComments}
         />

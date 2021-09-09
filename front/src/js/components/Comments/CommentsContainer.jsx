@@ -4,7 +4,7 @@ import Loader from '@js/utils/Loader'
 import React, { useState, useEffect, useM } from 'react'
 import CommentsView from './CommentsView'
 
-const CommentsContainer = ({postId}) => {
+const CommentsContainer = ({postId, setCommentsCounter}) => {
     const fetchedComments = useFetch(`/comments/post/${postId}`)
 
     const [isLoading, setIsLoading] = useState(false)
@@ -22,6 +22,7 @@ const CommentsContainer = ({postId}) => {
 
     useEffect(() => {
         if (newComment !== null) {
+            setCommentsCounter(comments.length + 1)
             comments !== null ? setComments([newComment, ...comments]) : setComments([newComment])
         }
     }, [newComment])
@@ -35,6 +36,7 @@ const CommentsContainer = ({postId}) => {
                 throw new Error(response.data.message)
             }
 
+            setCommentsCounter(comments.length - 1)
             setComments(comments.filter(comment => comment.id !== id))
             setError(false)
         }

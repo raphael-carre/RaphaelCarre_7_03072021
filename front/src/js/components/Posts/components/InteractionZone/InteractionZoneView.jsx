@@ -5,7 +5,7 @@ import commentIcon from '@img/comment-icon-black.svg'
 import { Comments } from '@js/components/Comments'
 import style from './style.scss'
 
-const InteractionZoneView = ({postId, likes, toggleLike, commentsCounter, loadComments, toggleComments}) => (
+const InteractionZoneView = ({postId, likes, toggleLike, commentsCounter, setCommentsCounter, loadComments, toggleComments}) => (
     <>
         <div className={style.interactionZone}>
             <div className={style.interactionZone__likes}>
@@ -28,7 +28,7 @@ const InteractionZoneView = ({postId, likes, toggleLike, commentsCounter, loadCo
                 <p>{commentsCounter > 0 ? commentsCounter : 'aucun'} commentaire{commentsCounter > 1 && 's'}</p>
             </div>
         </div>
-        {loadComments && <Comments postId={postId} />}
+        {loadComments && <Comments postId={postId} setCommentsCounter={setCommentsCounter} />}
     </>
 )
 
