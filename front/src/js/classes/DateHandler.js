@@ -1,9 +1,9 @@
 class DateHandler {
     constructor () {
-        this.oneMinuteInMilliseconds = 60 * 1000
-        this.oneHourInMilliseconds = 60 * this.oneMinuteInMilliseconds
-        this.oneDayInMilliseconds = 24 * this.oneHourInMilliseconds
-        this.oneWeekInMilliseconds = 7 * this.oneDayInMilliseconds
+        this.oneMinute = 60 * 1000
+        this.oneHour = 60 * this.oneMinute
+        this.oneDay = 24 * this.oneHour
+        this.oneWeek = 7 * this.oneDay
     }
 
     formatDate (date) {
@@ -11,19 +11,19 @@ class DateHandler {
 
         const elapsed = this.getElapsedTime(dateVar)
 
-        if (elapsed.diff < this.oneMinuteInMilliseconds) {
+        if (elapsed.diff < this.oneMinute) {
             return 'il y a moins d\'une minute'
         }
-        if (elapsed.diff >= this.oneMinuteInMilliseconds && elapsed.diff < this.oneHourInMilliseconds) {
+        if (elapsed.diff >= this.oneMinute && elapsed.diff < this.oneHour) {
             return `il y a ${elapsed.minutes} minute${elapsed.minutes > 1 ? 's' : ''}`
         }
-        if (elapsed.diff >= this.oneHourInMilliseconds && elapsed.diff < this.oneDayInMilliseconds) {
+        if (elapsed.diff >= this.oneHour && elapsed.diff < this.oneDay) {
             return `il y a ${elapsed.hours} heure${elapsed.hours > 1 ? 's' : ''}`
         }
-        if (elapsed.diff >= this.oneDayInMilliseconds && elapsed.diff < this.oneWeekInMilliseconds) {
-            return `il y a ${elapsed.days} jour${elapsed.days > 1 ? 's' : ''}`
+        if (elapsed.diff >= this.oneDay && elapsed.diff < this.oneWeek) {
+            return elapsed.days === 1 ? 'hier' : `il y a ${elapsed.days} jour${elapsed.days > 1 ? 's' : ''}`
         }
-        if (elapsed.diff >= this.oneWeekInMilliseconds) {
+        if (elapsed.diff >= this.oneWeek) {
             return `le ${dateVar.getDate()} ${this.getMonth(dateVar.getMonth())} ${dateVar.getFullYear()}`
         }
     }
@@ -40,7 +40,7 @@ class DateHandler {
         const dateVar = new Date(date)
         const elapsed = this.getElapsedTime(dateVar)
 
-        return this.formatDate(date).toString() + (elapsed.diff >= this.oneWeekInMilliseconds ? ` à ${this.formatTime(date).toString()}` : '')
+        return this.formatDate(date).toString() + (elapsed.diff >= this.oneWeek ? ` à ${this.formatTime(date).toString()}` : '')
     }
 
     getMonth (month) {
