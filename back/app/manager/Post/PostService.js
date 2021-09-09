@@ -113,7 +113,8 @@ class PostService extends Service {
         const id = this.checkId(req.params.id)
         const post = await this.checkIfPostExists(id)
         
-        this.tokenId(req, post.userId)
+        const userId = this.tokenId(req, post.userId)
+        if (userId !== post.userId) throw new FetchErrorHandler(401)
 
         const { content } = req.file ? JSON.parse(req.body.datas) : req.body
         if (!req.file && (!content || content === '')) throw new FetchErrorHandler(400, 'Votre publication est vide !')

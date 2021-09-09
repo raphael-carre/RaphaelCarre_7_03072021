@@ -63,7 +63,8 @@ class CommentService extends Service {
         const comment = await this.Model.findOne({ attributes: ['postId', 'userId'], where: { id } })
         if (!comment) throw new FetchErrorHandler(404, 'Commentaire introuvable !')
         
-        this.tokenId(req, comment.userId)
+        const userId = this.tokenId(req, comment.userId)
+        if (userId !== comment.userId) throw new FetchErrorHandler(401)
 
         const content = req.body.content || ''
         if (!req.body.content) throw new FetchErrorHandler(400, 'Votre commentaire est vide !')
