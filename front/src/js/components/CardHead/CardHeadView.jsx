@@ -3,7 +3,7 @@ import defaultProfileImage from '@img/profile.png'
 import pencil from '@img/pencil.svg'
 import DateHandler from '@js/classes/DateHandler'
 import { Link } from 'react-router-dom'
-import { EditionMenu } from '../EdittionMenu'
+import { EditionMenu } from '../EditionMenu'
 import style from './style.scss'
 
 const CardHeadView = ({data, options, openMenu, isOpened, isAllowed}) => (
