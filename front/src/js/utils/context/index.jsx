@@ -1,4 +1,4 @@
-import Request from '@js/classes/Request'
+import Request from '@js/utils/classes/Request'
 import React, { useState, useEffect, createContext } from 'react'
 import Loader from '../Loader'
 

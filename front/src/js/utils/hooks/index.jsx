@@ -1,4 +1,4 @@
-import Request from "@js/classes/Request"
+import Request from "@js/utils/classes/Request"
 import { useState, useEffect } from "react"
 
 export const useFetch = (uri, userEntries = null) => {

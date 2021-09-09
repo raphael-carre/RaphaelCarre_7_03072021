@@ -1,4 +1,4 @@
-import Request from '@js/classes/Request'
+import Request from '@js/utils/classes/Request'
 import { AuthContext } from '@js/utils/context'
 import Loader from '@js/utils/Loader'
 import React, { useState, useEffect, useContext } from 'react'

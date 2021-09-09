@@ -2,8 +2,8 @@ import React from 'react'
 import thumbUpBlack from '@img/thumb-up-black.svg'
 import thumbUpFilled from '@img/thumb-up-filled.svg'
 import commentIcon from '@img/comment-icon-black.svg'
+import { Comments } from '@js/components/Comments'
 import style from './style.scss'
-import { Comments } from '../Comments'
 
 const InteractionZoneView = ({postId, likes, toggleLike, commentsCounter, loadComments, toggleComments}) => (
     <>

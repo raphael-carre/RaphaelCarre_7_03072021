@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react'
 import { useFetch } from '@js/utils/hooks'
 import Loader from '@js/utils/Loader'
-import Request from '@js/classes/Request'
+import Request from '@js/utils/classes/Request'
 import NewPostView from './NewPostView'
 
 const NewPostContainer = ({setNewPost}) =>  {

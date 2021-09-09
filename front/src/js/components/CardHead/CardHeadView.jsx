@@ -1,7 +1,7 @@
 import React from 'react'
 import defaultProfileImage from '@img/profile.png'
 import pencil from '@img/pencil.svg'
-import DateHandler from '@js/classes/DateHandler'
+import DateHandler from '@js/utils/classes/DateHandler'
 import { Link } from 'react-router-dom'
 import { EditionMenu } from '../EditionMenu'
 import style from './style.scss'

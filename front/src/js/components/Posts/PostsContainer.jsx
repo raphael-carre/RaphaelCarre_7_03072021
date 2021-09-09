@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react'
 import { useFetch } from '@js/utils/hooks'
 import PostsView from './PostsView'
 import Loader from '@js/utils/Loader'
-import Request from '@js/classes/Request'
+import Request from '@js/utils/classes/Request'
 
 const PostsContainer = ({uri, userId}) => {
     const isProfile = userId ? true : false
