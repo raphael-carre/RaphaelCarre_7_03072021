@@ -15,6 +15,7 @@ const NewPostView = ({currentUser, handleSubmit, error}) => (
         <div>
             <form onSubmit={handleSubmit}>
                 <Textarea name="content" error={error} />
+                <input type="file" name="image" accept="image/jpeg, image/jpg, image/gif, image/png" />
                 <div className={style.newPostDiv__buttons}>
                     <button type="submit">Publier</button>
                 </div>

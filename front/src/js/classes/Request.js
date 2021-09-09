@@ -4,14 +4,19 @@ class Request {
     }
 
     apiCall = async (uri, data = null, method = null) => {
+        const headers = {
+            'Authorization': `Bearer ${localStorage.getItem('token')}`,
+            'Accept': 'application/json'
+        }
+
+        if (!(data instanceof FormData)) {
+            headers['Content-Type'] = 'application/json'
+        }
+
         const response = await fetch(`${this.BASE_API_URL}${uri}`, {
             method: this.getFetchMethod(data, method),
-            headers: {
-                'Authorization': `Bearer ${localStorage.getItem('token')}`,
-                'Accept': 'application/json',
-                'Content-Type': 'application/json'
-            },
-            body: typeof data === 'object' && data !== null  ? JSON.stringify(data) : null
+            headers,
+            body: typeof data === 'object' && data !== null  ? (data instanceof FormData ? data : JSON.stringify(data)) : null
         })
         
         const responseData = await response.json()

@@ -28,6 +28,8 @@ app.use(express.json())
 app.use(helmet())
 app.use(loggerMiddleware)
 
+app.use('/images', express.static('./images'))
+
 app.use('/api', router)
 
 if (process.env.NODE_ENV === 'development') {

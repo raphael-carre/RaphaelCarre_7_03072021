@@ -39,7 +39,7 @@ class Service {
      * @returns {Object} {id, userId}
      */
     checkIfPostExists = async id => {
-        const post = await Post.findOne({ attributes: ['id', 'userId'], where: { id } })
+        const post = await Post.findOne({ attributes: ['id', 'userId', 'image'], where: { id } })
         if (!post) throw new FetchErrorHandler(404, 'Publication introuvable !')
 
         return post

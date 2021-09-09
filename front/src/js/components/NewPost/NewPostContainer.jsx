@@ -27,11 +27,22 @@ const NewPostContainer = ({setNewPost}) =>  {
             image: user.image
         }
 
+        const image = e.target['image'].files[0]
         const content = e.target['content'].value
+
+        let formData
+
+        if (image) {
+            formData = new FormData()
+            formData.append('datas', JSON.stringify({content}))
+            formData.append('image', image)
+        } else {
+            formData = { content }
+        }
 
         setIsLoading(true)
         try {
-            const response = await Request.apiCall('/posts', { content })
+            const response = await Request.apiCall('/posts', formData)
 
             if (response.error) {
                 setError(response.data)
@@ -43,11 +54,15 @@ const NewPostContainer = ({setNewPost}) =>  {
             e.target['content'].value = ''
         }
         catch (error) {
-            console.log('Il y a eu un problème')
+            console.log('Il y a eu un problème', error)
         }
         finally {
             setIsLoading(false)
         }
+    }
+
+    const handleFile = e => {
+        console.log(e.target.files[0])
     }
 
     return (
@@ -56,6 +71,7 @@ const NewPostContainer = ({setNewPost}) =>  {
         user && 
         <NewPostView 
             currentUser={user}
+            handleFile={handleFile}
             handleSubmit={handleSubmit}
             error={error}
         />

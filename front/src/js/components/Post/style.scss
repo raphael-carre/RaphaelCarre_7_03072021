@@ -1,6 +1,12 @@
 .post {
     @extend %card;
     
+    &__image {
+        img {
+            width: 100%;
+        }
+    }
+
     &__content {
         @extend %card__content;
     }

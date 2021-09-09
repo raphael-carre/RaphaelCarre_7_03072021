@@ -1,3 +1,4 @@
+const fs = require('fs')
 const FetchErrorHandler = require('../../config/FetchErrorHandler')
 const Sequelize = require('sequelize')
 const Service = require('../Service')
@@ -94,10 +95,11 @@ class PostService extends Service {
      * @returns {Object} The new post created
      */
     create = async req => {
-        const { image, content } = req.body
-        if (!image && (!content || content === '')) throw new FetchErrorHandler(400, 'Votre publication est vide !')
+        const { content } = req.file ? JSON.parse(req.body.datas) : req.body
+        if (!req.file && (!content || content === '')) throw new FetchErrorHandler(400, 'Votre publication est vide !')
 
         const userId = this.tokenId(req)
+        const image = req.file ? `${req.protocol}://${req.get('host')}/images/${req.file.filename}` : null
 
         const newPost = await this.Model.create({ image, content, userId })
         if (!newPost) throw new FetchErrorHandler(500)
@@ -138,8 +140,12 @@ class PostService extends Service {
 
         this.tokenId(req, post.userId)
 
+        const filePath = post.image !== null ? `images/${post.image.split('/images/')[1]}` : null
+
         const destroyedPost = await this.Model.destroy({ where: { id } })
         if (destroyedPost === 0) throw new FetchErrorHandler(500)
+
+        if (fs.existsSync(filePath)) { fs.unlinkSync(filePath) }
 
         return true
     }

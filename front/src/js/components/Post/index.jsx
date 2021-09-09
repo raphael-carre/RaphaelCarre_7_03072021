@@ -9,7 +9,7 @@ const Post = ({postData, options}) => (
 
         {postData.image &&
         <div className={style.post__image}>
-
+            <img src={postData.image} alt="" />
         </div>}
         {postData.content &&
         <div className={style.post__content}>
