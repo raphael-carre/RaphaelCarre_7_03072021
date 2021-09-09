@@ -10,6 +10,7 @@ const NewPostContainer = ({setNewPost}) =>  {
     const [isLoading, setIsLoading] = useState(false)
     const [error, setError] = useState(false)
     const [user, setUser] = useState(null)
+    const [image, setImage] = useState(null)
 
     useEffect(() => {
         setIsLoading(userData.isLoading)
@@ -27,7 +28,6 @@ const NewPostContainer = ({setNewPost}) =>  {
             image: user.image
         }
 
-        const image = e.target['image'].files[0]
         const content = e.target['content'].value
 
         let formData
@@ -52,6 +52,7 @@ const NewPostContainer = ({setNewPost}) =>  {
             setError(false)
             setNewPost({...response.data.newPost, User})
             e.target['content'].value = ''
+            if (image) { setImage(null) }
         }
         catch (error) {
             console.log('Il y a eu un problème', error)
@@ -62,7 +63,7 @@ const NewPostContainer = ({setNewPost}) =>  {
     }
 
     const handleFile = e => {
-        console.log(e.target.files[0])
+        setImage(e.target.files[0])
     }
 
     return (
@@ -72,6 +73,7 @@ const NewPostContainer = ({setNewPost}) =>  {
         <NewPostView 
             currentUser={user}
             handleFile={handleFile}
+            imagePreview={image}
             handleSubmit={handleSubmit}
             error={error}
         />

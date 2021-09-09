@@ -2,8 +2,9 @@ import React from 'react'
 import defaultProfileImage from '@img/profile.png'
 import { Textarea } from '../Form/Input'
 import style from './style.scss'
+import { ImageInput } from '../Form/Input'
 
-const NewPostView = ({currentUser, handleSubmit, error}) => (
+const NewPostView = ({currentUser, handleFile, imagePreview, handleSubmit, error}) => (
     <div className={style.newPostDiv}>
         <div className={style.newPostDiv__head}>
             <img src={currentUser.image || defaultProfileImage } alt={`Photo de ${currentUser.firstName} ${currentUser.lastName}`} />
@@ -14,9 +15,13 @@ const NewPostView = ({currentUser, handleSubmit, error}) => (
         </div>
         <div>
             <form onSubmit={handleSubmit}>
+                {imagePreview &&
+                <div className={style.newPostDiv__imagePreview}>
+                    <img src={URL.createObjectURL(imagePreview)} />    
+                </div>}
                 <Textarea name="content" error={error} />
-                <input type="file" name="image" accept="image/jpeg, image/jpg, image/gif, image/png" />
                 <div className={style.newPostDiv__buttons}>
+                    <ImageInput handleFile={handleFile} />
                     <button type="submit">Publier</button>
                 </div>
             </form>
