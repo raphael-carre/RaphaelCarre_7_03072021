@@ -1,3 +1,4 @@
+const fs = require('fs')
 const FetchErrorHandler = require("../../config/FetchErrorHandler")
 const Security = require("../../config/Security")
 const Service = require('../Service')
@@ -44,9 +45,18 @@ class UserService extends Service {
     update = async (req, queryOptions = null) => {
         const id = this.checkId(req.params.id)
         this.tokenId(req, req.params.id)
-        this.findOne(req, { attributes: ['id'], where: { id } })
+        const user = this.findOne(req, { attributes: ['id'], where: { id } })
         
-        const updateModel = await this.Model.update(req.body, queryOptions || { where: { id } })
+        const data = req.file ? JSON.parse(req.body.datas) : req.body
+        
+        if (req.file && user.image) {
+            const filePath = `images/${user.image.split('/images/')[1]}`
+            if (fs.existsSync(filePath)) { fs.unlinkSync(filePath) }
+        }
+
+        const image = req.file ? `${req.protocol}://${req.get('host')}/images/${req.file.filename}` : (req.body.image === null ? '' : user.image)
+
+        const updateModel = await this.Model.update({...data, image}, queryOptions || { where: { id } })
         if (updateModel[0] === 0) throw new FetchErrorHandler(500)
 
         const updatedPayload = await this.findOne(req)

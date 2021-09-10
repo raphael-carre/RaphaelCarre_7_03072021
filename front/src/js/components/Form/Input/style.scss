@@ -75,6 +75,19 @@
     }
 }
 
+.profileImageInput {
+    @extend %profileImageCanvas;
+    margin: 25px auto 0;
+    width: 150px;
+    height: 150px;
+}
+
+.profileImage {
+    @extend %profileImageElement;
+    box-shadow: 2px 2px 8px 2px rgba(0,0,0,.2);
+    cursor: pointer;
+}
+
 .errorSpan {
     color: red;
     font-size: .8em;

@@ -1,9 +1,9 @@
 import React from 'react'
-import defaultProfileImage from '@img/profile.png'
 import pencil from '@img/pencil.svg'
 import DateHandler from '@js/utils/classes/DateHandler'
 import { Link } from 'react-router-dom'
 import { EditionMenu } from '../EditionMenu'
+import ProfileImage from '../ProfileImage'
 import style from './style.scss'
 
 const CardHeadView = ({data, options, openMenu, isOpened, isAllowed}) => (
@@ -15,7 +15,7 @@ const CardHeadView = ({data, options, openMenu, isOpened, isAllowed}) => (
 
         <div className={style.cardHead__head}>
             <Link to={`/profile/${data.userId}`}>
-                <img src={data.User.image || defaultProfileImage} alt={`Photo de ${data.User.firstName} ${data.User.lastName}`} />
+                <ProfileImage data={data.User} />
             </Link>
             <div>
                 <h3 className={style.cardHead__userName}>

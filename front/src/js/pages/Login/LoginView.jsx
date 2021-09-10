@@ -27,7 +27,7 @@ const LoginView = ({handleSubmit, error, values, disabled, handleChange}) => (
                 />
             </div>
             <div className={style.connectionForm__buttons}>
-                <button type="submit" disabled={disabled}>Se connecter</button>
+                <button className="btn btn--primary" type="submit" disabled={disabled}>Se connecter</button>
             </div>
         </form>
         <p className={style.loginP}><Link to="/lostpassword">Mot de passe perdu</Link></p>

@@ -1,0 +1,33 @@
+.settingsForm {
+    @extend %styledForm;
+
+    &__title { @extend %styledForm__title; }
+    &__inputsDiv { @extend %styledForm__inputsDiv; }
+    &__buttons { @extend %styledForm__buttons; }
+
+    &__profileDeletion {
+        padding: 20px 0 40px;
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+
+        img {
+            margin: 30px auto 20px;
+            width: 100px;
+        }
+    }
+
+    > div {
+        margin: 20px auto 30px;
+        text-align: center;
+    }
+
+    p {
+        text-align: center;
+        font-size: .8em;
+    }
+
+    textarea {
+        background-color: #fff;
+    }
+}

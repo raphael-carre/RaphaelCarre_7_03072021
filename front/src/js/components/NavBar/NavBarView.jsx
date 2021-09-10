@@ -13,7 +13,7 @@ const NavBarView = ({logout}) => (
         <Link to={`/profile/${localStorage.getItem('userId')}`} className={style.navLinks}>
             <img src={profileIcon} alt="Profil" />
         </Link>
-        <Link to="/" className={style.navLinks} onClick={logout}>
+        <Link to="/settings" className={style.navLinks}>
             <img src={settingsIcon} alt="Réglages" />
         </Link>
     </nav>

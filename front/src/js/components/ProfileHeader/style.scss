@@ -7,7 +7,7 @@
         position: relative;
         display: block;
 
-        img {
+        > div:first-of-type {
             margin: 0 auto;
             position: absolute;
             top: -45px;
@@ -32,6 +32,7 @@
     }
 
     &__description {
-
+        text-align: center;
+        font-size: .9em;
     }
 }

@@ -5,17 +5,10 @@
 
     &__head {
         @extend %card__head;
-
-        // img {
-        //     width: 45px;
-        //     height: 60px;
-        // }
     }
 
     &__userName {
         @extend %card__userName;
-
-        // font-size: 1.1em;
     }
 
     &__info {

@@ -1,0 +1,39 @@
+.btn {
+    @extend %btn;
+
+    &--primary {
+        background-color: $background-color-primary;
+
+        &:hover {
+            background-color: $background-color-tertiary;
+        }
+    }
+
+    &--secondary {
+        color: #000;
+        border: 1px solid $background-color-primary;
+        background-color: $background-color-secondary;
+
+        &:hover {
+            color: #fff;
+            background-color: $background-color-primary;
+        }
+    }
+
+    &--tertiary {
+        background-color: $background-color-tertiary;
+
+        &:hover {
+            background-color: $background-color-primary;
+        }
+    }
+
+    &--alert {
+        color: #fff;
+        background-color: rgb(212, 2, 2);
+
+        &:hover {
+            background-color: rgb(172, 47, 47);
+        }
+    }
+}

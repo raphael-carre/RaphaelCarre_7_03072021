@@ -64,7 +64,7 @@ const RegisterView = ({isRegistered, error, values, handleChange, register, disa
                     handleChange={handleChange}
                 />
                 <div className={style.registerForm__buttons}>
-                    <button type="submit" disabled={disabled}>Inscription</button>
+                    <button className="btn btn--primary" type="submit" disabled={disabled}>Inscription</button>
                 </div>
             </div>
         </form>}
