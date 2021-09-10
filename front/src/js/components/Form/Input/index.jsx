@@ -2,10 +2,18 @@ import React from 'react'
 import imageIconBlack from '@img/image-icon-black.svg'
 import style from './style.scss'
 
-export const Input = ({type, name, label, placeholder = '', error}) => (
+export const Input = ({type, name, label, placeholder = '', error, value, handleChange}) => (
     <>
         <label htmlFor={name} className={style.label}>{label}</label>
-        <input id={name} type={type} name={name} placeholder={placeholder} className={style.input} />
+        <input
+            id={name}
+            type={type}
+            name={name}
+            placeholder={placeholder}
+            className={style.input}
+            value={value}
+            onChange={handleChange}
+        />
         {error && error.key === name && <span className={style.errorSpan}>{error.message}</span>}
     </>
 )

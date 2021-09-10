@@ -9,6 +9,7 @@ const LoginContainer = () => {
     const [isLoading, setIsLoading] = useState(false)
     const [data, setData] = useState(null)
     const [error, setError] = useState(false)
+    const [values, setValues] = useState({email: '', password: ''})
 
     const {isAuthenticated, setIsAuthenticated} = useContext(AuthContext)
 
@@ -22,11 +23,7 @@ const LoginContainer = () => {
 
     const handleSubmit = e => {
         e.preventDefault()
-
-        const email = e.target['email'].value
-        const password = e.target['password'].value
-
-        login({ email, password })
+        login(values)
     }
 
     const login = async values => {
@@ -46,9 +43,19 @@ const LoginContainer = () => {
         finally { setIsLoading(false) }
     }
 
+    const handleChange = e => {
+        setValues({...values, [e.target.name]: e.target.value})
+    }
+
     return (
         isLoading ? <Loader /> :
-        isAuthenticated ? <Redirect to="/" /> : <LoginView handleSubmit={handleSubmit} error={error} />
+        isAuthenticated ? <Redirect to="/" /> :
+        <LoginView
+            handleSubmit={handleSubmit}
+            error={error}
+            values={values}
+            handleChange={handleChange}
+        />
     )
 }
 
