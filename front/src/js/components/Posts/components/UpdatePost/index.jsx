@@ -14,10 +14,10 @@ const UpdatePost = ({postData, options, updateMethods, image}) => (
             </div>}
             <form onSubmit={e => updateMethods.handleUpdate(e, postData.id)}>
                 <Textarea name={`updateContentInput-${postData.id}`} value={postData.content || ''} />
-                <div>
+                <div className={style.post__modifyButtons}>
                     <ImageInput name="updateImageInput" handleFile={updateMethods.handleFile} />
-                    <button onClick={updateMethods.handleResetForm}>Annuler</button>
-                    <button type="submit">Modifier</button>
+                    <button className="btn btn--tertiary" onClick={updateMethods.handleResetForm}>Annuler</button>
+                    <button className="btn btn--primary" type="submit">Modifier</button>
                 </div>
             </form> 
         <InteractionZone postData={postData} />

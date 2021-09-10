@@ -15,4 +15,27 @@
     &__modifyContent {
         background-color: rgba(0,0,0,.8);
     }
+
+    &__modifyButtons {
+        display: flex;
+        align-items: center;
+        padding: 5px 0 10px;
+
+        > div {
+            margin-right: auto;
+        }
+
+        button {
+            margin: 0;
+            justify-self: flex-end;
+
+            &:first-of-type {
+                margin-right: 10px;
+            }
+        }
+    }
+
+    form {
+        padding: 0 10px;
+    }
 }
