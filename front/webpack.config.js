@@ -40,7 +40,7 @@ let config = {
     entry: {
         app: [
             'react-hot-loader/patch',
-            // './src/sass/style.scss',
+            './src/sass/global/style.scss',
             './src/js/index.js'
         ]
     },
@@ -85,7 +85,7 @@ let config = {
                     {
                         loader: 'sass-resources-loader',
                         options: {
-                            resources: './src/sass/style.scss'
+                            resources: './src/sass/resources/style.scss'
                         }
                     }
                 ]
