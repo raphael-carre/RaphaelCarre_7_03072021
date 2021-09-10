@@ -1,8 +1,18 @@
+/**
+ * Request Class
+ */
 class Request {
     constructor() {
         this.BASE_API_URL = 'http://localhost:3080/api'
     }
 
+    /**
+     * Creates an API call and returns datas.
+     * @param {String} uri 
+     * @param {*} data 
+     * @param {String} method 
+     * @returns {Object} Payload
+     */
     apiCall = async (uri, data = null, method = null) => {
         const headers = {
             'Authorization': `Bearer ${localStorage.getItem('token')}`,
@@ -26,6 +36,12 @@ class Request {
         return { data: responseData }
     }
 
+    /**
+     * Returns fetching method.
+     * @param {*} data 
+     * @param {String} method 
+     * @returns {String} Method
+     */
     getFetchMethod = (data, method) => {
         if (typeof data === 'string') {
             if (data === 'DELETE' || data === 'POST') return data

@@ -11,7 +11,7 @@ const ProfileHeader = ({userData}) => (
                 <h3 className={style.profileHeader__userName}>
                     {userData.firstName} {userData.lastName}
                 </h3>
-                <p className={style.profileHeader__date}>Membre depuis {DateHandler.formatDate(userData.createdAt)}</p>
+                <p className={style.profileHeader__date}>Membre depuis {DateHandler.formatDate(userData.createdAt, false)}</p>
                 {userData.description && <p className={style.profileHeader__description}>{userData.description}</p>}
             </div>
         </div>
