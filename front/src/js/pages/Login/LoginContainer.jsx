@@ -10,8 +10,13 @@ const LoginContainer = () => {
     const [data, setData] = useState(null)
     const [error, setError] = useState(false)
     const [values, setValues] = useState({email: '', password: ''})
+    const [disabled, setDisabled] = useState(true)
 
     const {isAuthenticated, setIsAuthenticated} = useContext(AuthContext)
+
+    useEffect(() => {
+        setDisabled(Object.values(values).some(property => property === '')) ? true : false
+    }, [values])
 
     useEffect(() => {
         if (data) {
@@ -55,6 +60,7 @@ const LoginContainer = () => {
             error={error}
             values={values}
             handleChange={handleChange}
+            disabled={disabled}
         />
     )
 }

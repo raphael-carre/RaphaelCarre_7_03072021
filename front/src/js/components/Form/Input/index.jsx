@@ -13,6 +13,7 @@ export const Input = ({type, name, label, placeholder = '', error, value, handle
             className={style.input}
             value={value}
             onChange={handleChange}
+            required
         />
         {error && error.key === name && <span className={style.errorSpan}>{error.message}</span>}
     </>

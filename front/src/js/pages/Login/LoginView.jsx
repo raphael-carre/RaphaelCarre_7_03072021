@@ -3,7 +3,7 @@ import { Link } from 'react-router-dom'
 import { Input } from '@js/components/Form/Input'
 import style from './style.scss'
 
-const LoginView = ({handleSubmit, error, values, handleChange}) => (
+const LoginView = ({handleSubmit, error, values, disabled, handleChange}) => (
     <section>
         <form onSubmit={handleSubmit} className={style.connectionForm}>
             <h2 className={style.connectionForm__title}>Connexion</h2>
@@ -27,7 +27,7 @@ const LoginView = ({handleSubmit, error, values, handleChange}) => (
                 />
             </div>
             <div className={style.connectionForm__buttons}>
-                <button type="submit">Se connecter</button>
+                <button type="submit" disabled={disabled}>Se connecter</button>
             </div>
         </form>
         <p className={style.loginP}><Link to="/lostpassword">Mot de passe perdu</Link></p>
