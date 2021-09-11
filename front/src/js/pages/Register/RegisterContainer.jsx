@@ -33,7 +33,6 @@ const RegisterContainer = () => {
         e.preventDefault()
 
         const {confirmPassword, ...userData} = values
-        console.log(userData)
 
         setIsLoading(true)
 

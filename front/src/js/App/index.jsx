@@ -9,6 +9,7 @@ import { Register } from '@js/pages/Register'
 import Thread from '@js/pages/Thread'
 import { Profile } from '@js/pages/Profile'
 import { Footer } from '@js/layout/Footer'
+import { Settings } from '@js/pages/Settings'
 
 const App = () => {
     const { isAuthenticated } = useContext(AuthContext)
@@ -19,6 +20,7 @@ const App = () => {
             <Switch>
                 <ProtectedRoute exact path="/" component={() => <Thread />} />
                 <ProtectedRoute path="/profile/:id" component={() => <Profile />} />
+                <ProtectedRoute path="/settings" component={() => <Settings />} />
                 <Route path="/login" component={Login} />
                 <Route path="/register" component={Register} />
                 <Route path="*" render={() => <p>404 page introuvable</p>} />

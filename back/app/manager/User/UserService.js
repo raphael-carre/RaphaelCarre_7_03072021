@@ -48,6 +48,12 @@ class UserService extends Service {
         const user = this.findOne(req, { attributes: ['id'], where: { id } })
         
         const data = req.file ? JSON.parse(req.body.datas) : req.body
+
+        if (data.password) {
+            const hash = await Security.hash(data.password)
+            if (!hash) throw new FetchErrorHandler(500)
+            data.password = hash
+        }
         
         if (req.file && user.image) {
             const filePath = `images/${user.image.split('/images/')[1]}`

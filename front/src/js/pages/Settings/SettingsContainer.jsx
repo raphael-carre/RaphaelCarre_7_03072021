@@ -4,9 +4,11 @@ import SettingsView from './SettingsView'
 import Loader from '@js/utils/Loader'
 import Request from '@js/utils/classes/Request'
 import { Redirect } from 'react-router-dom'
+import { Modal } from '@js/utils/Modal'
 
 const SettingsContainer = () => {
     const { setIsAuthenticated } = useContext(AuthContext)
+    const userId = localStorage.getItem('userId')
     
     const [isLoading, setIsLoading] = useState(false)
     const [error, setError] = useState(false)
@@ -19,8 +21,7 @@ const SettingsContainer = () => {
     })
     const [passwordValues, setPasswordValues] = useState({
         password: '',
-        newPassword: '',
-        confirmNewPassword: ''
+        confirmPassword: ''
     })
 
     useEffect(() => {
@@ -28,24 +29,35 @@ const SettingsContainer = () => {
     }, [])
 
     useEffect(() => {
-        console.log(values);
-    }, [values])
+        if (passwordValues.password !== passwordValues.confirmPassword) {
+            setError({ key: 'confirmPassword', message: 'Vous devez saisir un mot de passe identique !' })
+        } else {
+            setError(false)
+        }
+    }, [passwordValues])
 
     const fetchUserData = async () => {
         setIsLoading(true)
 
         try {
-            const response = await Request.apiCall(`/users/${localStorage.getItem('userId')}`)
+            const response = await Request.apiCall(`/users/${userId}`)
 
             if (response.error) {
                 setError(response.data)
-                throw new Error(response.data.message)
+                throw new Error
             }
 
             setError(false)
             setValues(response.data)
         }
-        catch (error) { console.log('Il y a eu un problème') }
+        catch (error) {
+            if (!error.key) { 
+                setError({ message: 'Il y a eu un problème' })
+                setTimeout(() => {
+                    setError(false)
+                }, 3000)
+            }
+        }
         finally { setIsLoading(false) }
     }
 
@@ -64,44 +76,61 @@ const SettingsContainer = () => {
     const handleSubmit = async e => {
         e.preventDefault()
 
+        const formName = e.target.name
+
         let formData
 
-        if (values.image && typeof values.image !== 'string') {
-            const {image, ...userValues} = values
-
-            formData = new FormData()
-            formData.append('datas', JSON.stringify(userValues))
-            formData.append('image', image)
+        if (formName !== 'userData' && formName !== 'userPassword') {
+            throw new Error
         }
 
-        if (!values.image || typeof values.image === 'string') {
-            formData = values
+        if (formName === 'userData') {
+            if (values.image && typeof values.image !== 'string') {
+                const {image, ...userValues} = values
+    
+                formData = new FormData()
+                formData.append('datas', JSON.stringify(userValues))
+                formData.append('image', image)
+            }
+    
+            if (!values.image || typeof values.image === 'string') {
+                formData = values
+            }
+        }
+
+        if (formName === 'userPassword') {
+            formData = { password: passwordValues.password }
         }
 
         setIsLoading(true)
 
         try {
-            const response = await Request.apiCall(`/users/${localStorage.getItem('userId')}`, formData, 'PUT')
+            const response = await Request.apiCall(`/users/${userId}`, formData, 'PUT')
 
             if (response.error) {
                 setError(response.data)
-                throw new Error(response.data.message)
+                throw response.data
             }
 
             setError(false)
-            setValues(response.data.data)
+            if (formName === 'userData') { setValues(response.data.data) }
         }
-        catch (error) { console.log(error.message) }
+        catch (error) { 
+            if (!error.key) { 
+                setError({ message: 'Il y a eu un problème' })
+                setTimeout(() => {
+                    setError(false)
+                }, 3000)
+            }
+        }
         finally { setIsLoading(false) }
-
-        console.log(e.target.name)
     }
 
     const handleDeleteUser = async () => {
         setIsLoading(true)
 
         try {
-            const response = await Request.apiCall(`/users/${localStorage.getItem('userId')}`, 'DELETE')
+            const response = await Request.apiCall(`/users/${userId}`, 'DELETE')
 
             if (response.error) {
                 setError(response.data)
@@ -123,20 +152,22 @@ const SettingsContainer = () => {
     }
 
     return (
-        isLoading ? <Loader /> :
-        error ? <p>{error.message}</p> :
-        values &&
-        <SettingsView
-            values={values}
-            passwordValues={passwordValues}
-            error={error}
-            handleFile={handleFile}
-            handleChange={handleChange}
-            handlePasswordChange={handlePasswordChange}
-            handleSubmit={handleSubmit}
-            handleDeleteUser={handleDeleteUser}
-            logout={logout}
-        />
+        // isLoading ? <Loader /> :
+        <>
+            {error && !error.key && <Modal type="error" content={error.message} />}
+            {values &&
+            <SettingsView
+                values={values}
+                passwordValues={passwordValues}
+                error={error}
+                handleFile={handleFile}
+                handleChange={handleChange}
+                handlePasswordChange={handlePasswordChange}
+                handleSubmit={handleSubmit}
+                handleDeleteUser={handleDeleteUser}
+                logout={logout}
+            />}
+        </>
     )
 }
 

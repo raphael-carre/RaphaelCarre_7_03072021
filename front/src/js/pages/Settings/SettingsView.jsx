@@ -34,6 +34,7 @@ const SettingsView = ({
                         name="firstName"
                         label="Prénom :"
                         value={values.firstName}
+                        error={error}
                         handleChange={handleChange}
                     />
                     <Input
@@ -69,24 +70,16 @@ const SettingsView = ({
                     <Input
                         type="password"
                         name="password"
-                        label="Mot de passe actuel :"
+                        label="Nouveau mot de passe :"
                         value={passwordValues.password}
                         error={error}
                         handleChange={handlePasswordChange}
                     />
                     <Input
                         type="password"
-                        name="newPassword"
-                        label="Nouveau mot de passe :"
-                        value={passwordValues.newPassword}
-                        error={error}
-                        handleChange={handlePasswordChange}
-                    />
-                    <Input
-                        type="password"
-                        name="confirmNewPassword"
+                        name="confirmPassword"
                         label="Confirmez le nouveau mot de passe :"
-                        value={passwordValues.confirmNewPassword}
+                        value={passwordValues.confirmPassword}
                         error={error}
                         handleChange={handlePasswordChange}
                     />
