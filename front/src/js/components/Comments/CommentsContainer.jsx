@@ -13,6 +13,7 @@ const CommentsContainer = ({postId, setCommentsCounter}) => {
 
     const [comments, setComments] = useState(null)
     const [newComment, setNewComment] = useState(null)
+    const [updateComment, setUpdateComment] = useState(null)
     // const [deletedComment, setDeletedComment] = useState(null)
 
     const modalContext = useContext(ModalContext)
@@ -55,8 +56,33 @@ const CommentsContainer = ({postId, setCommentsCounter}) => {
         }
     }
 
-    const modifyComment = () => {
+    const modifyComment = id => {
+        setUpdateComment(id)
+    }
 
+    const handleUpdate = async (e, id) => {
+        e.preventDefault()
+        const content = e.target[`updateCommentInput-${id}`].value
+
+        try {
+            const response = await Request.apiCall(`/comments/${id}`, {content}, 'PUT')
+
+            console.log(response.data)
+            if (response.error) throw response.data
+
+            setError(false)
+            const commentIndexToUpdate = comments.findIndex(comment => comment.id === id)
+            const User = comments[commentIndexToUpdate].User
+            comments[commentIndexToUpdate] = {...response.data.data, User}
+            modalContext.info(response.data.message)
+        }
+        catch (error) { setError(error) }
+        finally { setUpdateComment(null) }
+    }
+
+    const handleResetForm = e => {
+        e.preventDefault()
+        setUpdateComment(null)
     }
 
     const options = [
@@ -72,6 +98,8 @@ const CommentsContainer = ({postId, setCommentsCounter}) => {
             postId={postId}
             comments={comments}
             setNewComment={setNewComment}
+            updateComment={updateComment}
+            updateMethods={{handleUpdate, handleResetForm}}
             options={options}
         />
     )

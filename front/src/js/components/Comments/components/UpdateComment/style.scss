@@ -1,0 +1,25 @@
+.updateComment {
+    @extend %card;
+    background-color: $background-color-secondary;
+ 
+    &__modifyButtons {
+        text-align: right;
+        padding: 5px 0 10px;
+
+        button {
+            margin: 0;
+
+            &:first-of-type {
+                margin-right: 10px;
+            }
+        }
+    }
+
+    form {
+        padding: 0 10px;
+
+        textarea {
+            background-color: #fff;
+        }
+    }
+}
