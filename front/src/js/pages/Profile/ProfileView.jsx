@@ -1,5 +1,5 @@
 import React from 'react'
-import ProfileHeader from '@js/components/ProfileHeader'
+import ProfileHeader from '@js/pages/Profile/ProfileHeader'
 import { Posts } from '@js/components/Posts'
 
 const ProfileView = ({uri, userData}) => (

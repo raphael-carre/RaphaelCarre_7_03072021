@@ -1,6 +1,6 @@
 import React from 'react'
 import DateHandler from '@js/utils/classes/DateHandler'
-import ProfileImage from '../ProfileImage'
+import ProfileImage from '@js/components/ProfileImage'
 import style from './style.scss'
 
 const ProfileHeader = ({userData}) => (
