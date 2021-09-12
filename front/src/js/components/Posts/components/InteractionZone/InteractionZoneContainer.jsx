@@ -1,8 +1,9 @@
-import React, { useState, useEffect } from 'react'
+import React, { useState, useEffect, useContext } from 'react'
 import { useFetch } from '@js/utils/hooks'
 import InteractionZoneView from './InteractionZoneView'
 import Loader from '@js/utils/Loader'
 import Request from '@js/utils/classes/Request'
+import { ModalContext } from '@js/utils/context'
 
 const InteractionZoneContainer = ({postData}) => {
     const [isLoading, setIsLoading] = useState(false)
@@ -11,24 +12,30 @@ const InteractionZoneContainer = ({postData}) => {
     const [commentsCounter, setCommentsCounter] = useState(postData.commentsCounter)
     const [loadComments, setLoadComments] = useState(false)
 
+    const modalContext = useContext(ModalContext)
+
     useEffect(() => {
         fetchLikes(postData.id)
     }, [])
+
+    useEffect(() => {
+        if (error && !error.key) {
+            modalContext.error(error.statusCode !== 500 ? error.message : 'Il y a eu un problème')
+            setError(false)
+        }
+    }, [error])
 
     const fetchLikes = async postId => {
         setIsLoading(true)
         try {
             const response = await Request.apiCall(`/likes/posts/${postId}`)
 
-            if (response.error) {
-                setError(response.data)
-                throw new Error(response.data.message)
-            }
+            if (response.error) throw response.data
 
             setError(false)
             setLikes(response.data.filter(like => like.like))
         }
-        catch (error) { console.log(error) }
+        catch (error) { setError(error) }
         finally { setIsLoading(false) }
     }
 
@@ -36,16 +43,13 @@ const InteractionZoneContainer = ({postData}) => {
         try {
             const response = await Request.apiCall(`/likes/posts/${postData.id}`, 'POST')
 
-            if (response.error) {
-                setError(response.data)
-                throw new Error(response.data.message)
-            }
+            if (response.error) throw response.data
 
-            console.log(response.data.message)
+            modalContext.info(response.data.message)
             setError(false)
             fetchLikes(postData.id)
         }
-        catch (error) { console.log(error) }
+        catch (error) { setError(error) }
     }
 
     const toggleComments = () => {

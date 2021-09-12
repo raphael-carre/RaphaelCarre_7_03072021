@@ -1,8 +1,9 @@
-import React, { useState, useEffect } from 'react'
+import React, { useState, useEffect, useContext } from 'react'
 import { useFetch } from '@js/utils/hooks'
 import PostsView from './PostsView'
 import Loader from '@js/utils/Loader'
 import Request from '@js/utils/classes/Request'
+import { ModalContext } from '@js/utils/context'
 
 const PostsContainer = ({uri, userId}) => {
     const isProfile = userId ? true : false
@@ -20,6 +21,15 @@ const PostsContainer = ({uri, userId}) => {
     const [updatePost, setUpdatePost] = useState(null)
     // const [deletedPost, setDeletedPost] = useState(null)
 
+    const modalContext = useContext(ModalContext)
+
+    useEffect(() => {
+        if (error && !error.key) {
+            modalContext.error(error.statusCode !== 500 ? error.message : 'Il y a eu un problème')
+            setError(false)
+        }
+    }, [error])
+
     useEffect(() => {
         setIsLoading(posts.isLoading)
         setError(posts.error)
@@ -33,18 +43,20 @@ const PostsContainer = ({uri, userId}) => {
     }, [newPost])
 
     const deletePost = async id => {
-        try {
-            const response = await Request.apiCall(`/posts/${id}`, 'DELETE')
+        const confirm = await modalContext.confirm('Êtes-vous sûr de vouloir supprimer cette publication ?')
 
-            if (response.error) {
-                setError(response.data)
-                throw new Error(response.data.message)
+        if (confirm) {
+            try {
+                const response = await Request.apiCall(`/posts/${id}`, 'DELETE')
+    
+                if (response.error) throw response.data
+    
+                setAllPosts(allPosts.filter(post => post.id !== id))
+                setError(false)
+                modalContext.info(response.data.message)
             }
-
-            setAllPosts(allPosts.filter(post => post.id !== id))
-            setError(false)
+            catch (error) { setError(error) }
         }
-        catch (error) { console.log('Il y a eu un problème') }
     }
 
     const modifyPost = id => {
@@ -56,6 +68,34 @@ const PostsContainer = ({uri, userId}) => {
 
         const content = e.target[`updateContentInput-${id}`].value
         
+        const formData = createFormData(content)
+
+        try {
+            const response = await Request.apiCall(`/posts/${id}`, formData, 'PUT')
+
+            if (response.error) throw response.data
+
+            setError(false)
+            const postIndexToUpdate = allPosts.findIndex(post => post.id === id)
+            const User = allPosts[postIndexToUpdate].User
+            allPosts[postIndexToUpdate] = {...response.data.data, User}
+            modalContext.info(response.data.message)
+        }
+        catch (error) { setError(error) }
+        finally { setUpdatePost(null) }
+    }
+
+    const handleFile = e => {
+        setImage(e.target.files[0])
+    }
+
+    const handleResetForm = e => {
+        e.preventDefault()
+        setImage(null)
+        setUpdatePost(null)
+    }
+
+    const createFormData = content => {
         let formData
 
         if (image && image !== 'none') {
@@ -72,31 +112,7 @@ const PostsContainer = ({uri, userId}) => {
             formData = { content }
         }
 
-        try {
-            const response = await Request.apiCall(`/posts/${id}`, formData, 'PUT')
-
-            if (response.error) {
-                setError(response.data)
-                throw new Error(response.data.message)
-            }
-
-            setError(false)
-            const postIndexToUpdate = allPosts.findIndex(post => post.id === id)
-            const User = allPosts[postIndexToUpdate].User
-            allPosts[postIndexToUpdate] = {...response.data.data, User}
-        }
-        catch (error) { console.log('Il y a eu un problème') }
-        finally { setUpdatePost(null) }
-    }
-
-    const handleFile = e => {
-        setImage(e.target.files[0])
-    }
-
-    const handleResetForm = e => {
-        e.preventDefault()
-        setImage(null)
-        setUpdatePost(null)
+        return formData
     }
 
     const options = [

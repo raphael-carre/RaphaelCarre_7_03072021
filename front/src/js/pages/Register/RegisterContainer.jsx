@@ -1,5 +1,6 @@
 import Request from '@js/utils/classes/Request'
-import React, { useState, useEffect } from 'react'
+import { ModalContext } from '@js/utils/context'
+import React, { useState, useEffect, useContext } from 'react'
 import RegisterView from './RegisterView'
 
 const RegisterContainer = () => {
@@ -14,6 +15,14 @@ const RegisterContainer = () => {
         confirmPassword: ''
     })
     const [isRegistered, setIsRegistered] = useState(false)
+    const modalContext = useContext(ModalContext)
+
+    useEffect(() => {
+        if (error && !error.key) {
+            modalContext.error(error.statusCode !== 500 ? error.message : 'Il y a eu un problème')
+            setError(false)
+        }
+    }, [error])
 
     useEffect(() => {
         if (values.password !== values.confirmPassword) {
@@ -39,15 +48,12 @@ const RegisterContainer = () => {
         try {
             const response = await Request.apiCall('/users/register', userData)
 
-            if (response.error) {
-                setError(response.data)
-                throw new Error(response.data.message)
-            }
+            if (response.error) throw response.data
 
             setError(false)
             setIsRegistered(true)
         }
-        catch (error) { console.log('Il y a eu un problème') }
+        catch (error) { setError(error) }
         finally { setIsLoading(false) }
     }
 

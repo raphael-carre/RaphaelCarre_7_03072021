@@ -1,7 +1,8 @@
 import Request from '@js/utils/classes/Request'
+import { ModalContext } from '@js/utils/context'
 import { useFetch } from '@js/utils/hooks'
 import Loader from '@js/utils/Loader'
-import React, { useState, useEffect } from 'react'
+import React, { useState, useEffect, useContext } from 'react'
 import NewCommentView from './NewCommentView'
 
 const NewCommentContainer = ({postId, setNewComment}) => {
@@ -10,6 +11,15 @@ const NewCommentContainer = ({postId, setNewComment}) => {
     const [isLoading, setIsLoading] = useState(false)
     const [error, setError] = useState(false)
     const [user, setUser] = useState(null)
+
+    const modalContext = useContext(ModalContext)
+
+    useEffect(() => {
+        if (error && !error.key) {
+            modalContext.error(error.statusCode !== 500 ? error.message : 'Il y a eu un problème')
+            setError(false)
+        }
+    }, [error])
 
     useEffect(() => {
         setIsLoading(userData.isLoading)
@@ -33,16 +43,14 @@ const NewCommentContainer = ({postId, setNewComment}) => {
         try {
             const response = await Request.apiCall(`/comments/post/${postId}`, { content })
 
-            if (response.error) {
-                setError(response.data)
-                throw new Error(response.data.message)
-            }
+            if (response.error) throw response.data
 
             setError(false)
             setNewComment({...response.data.newComment, User})
             e.target['content'].value = ''
+            modalContext.info(response.data.message)
         }
-        catch (error) { console.log('Il y a eu un problème') }
+        catch (error) { setError(error) }
         finally { setIsLoading(false) }
     }
 

@@ -1,7 +1,8 @@
 import Request from '@js/utils/classes/Request'
+import { ModalContext } from '@js/utils/context'
 import { useFetch } from '@js/utils/hooks'
 import Loader from '@js/utils/Loader'
-import React, { useState, useEffect, useM } from 'react'
+import React, { useState, useEffect, useContext } from 'react'
 import CommentsView from './CommentsView'
 
 const CommentsContainer = ({postId, setCommentsCounter}) => {
@@ -13,6 +14,15 @@ const CommentsContainer = ({postId, setCommentsCounter}) => {
     const [comments, setComments] = useState(null)
     const [newComment, setNewComment] = useState(null)
     // const [deletedComment, setDeletedComment] = useState(null)
+
+    const modalContext = useContext(ModalContext)
+
+    useEffect(() => {
+        if (error && !error.key) {
+            modalContext.error(error.statusCode !== 500 ? error.message : 'Il y a eu un problème')
+            setError(false)
+        }
+    }, [error])
 
     useEffect(() => {
         setIsLoading(fetchedComments.isLoading)
@@ -28,19 +38,21 @@ const CommentsContainer = ({postId, setCommentsCounter}) => {
     }, [newComment])
 
     const deleteComment = async id => {
-        try {
-            const response = await Request.apiCall(`/comments/${id}`, 'DELETE')
+        const confirm = await modalContext.confirm('Êtes-vous sûr de vouloir supprimer ce commentaire ?')
 
-            if (response.error) {
-                setError(response.data)
-                throw new Error(response.data.message)
+        if (confirm) {
+            try {
+                const response = await Request.apiCall(`/comments/${id}`, 'DELETE')
+    
+                if (response.error) throw response.data
+    
+                setCommentsCounter(comments.length - 1)
+                setComments(comments.filter(comment => comment.id !== id))
+                setError(false)
+                modalContext.info(response.data.message)
             }
-
-            setCommentsCounter(comments.length - 1)
-            setComments(comments.filter(comment => comment.id !== id))
-            setError(false)
+            catch (error) { setError(error) }
         }
-        catch (error) { console.log('Il y a eu un problème') }
     }
 
     const modifyComment = () => {

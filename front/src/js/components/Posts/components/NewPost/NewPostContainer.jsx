@@ -1,8 +1,9 @@
-import React, { useState, useEffect } from 'react'
+import React, { useState, useEffect, useContext } from 'react'
 import { useFetch } from '@js/utils/hooks'
 import Loader from '@js/utils/Loader'
 import Request from '@js/utils/classes/Request'
 import NewPostView from './NewPostView'
+import { ModalContext } from '@js/utils/context'
 
 const NewPostContainer = ({setNewPost}) =>  {
     const userData = useFetch(`/users/${localStorage.getItem('userId')}`)
@@ -11,6 +12,15 @@ const NewPostContainer = ({setNewPost}) =>  {
     const [error, setError] = useState(false)
     const [user, setUser] = useState(null)
     const [image, setImage] = useState(null)
+
+    const modalContext = useContext(ModalContext)
+
+    useEffect(() => {
+        if (error && !error.key) {
+            modalContext.error(error.statusCode !== 500 ? error.message : 'Il y a eu un problème')
+            setError(false)
+        }
+    }, [error])
 
     useEffect(() => {
         setIsLoading(userData.isLoading)
@@ -30,6 +40,29 @@ const NewPostContainer = ({setNewPost}) =>  {
 
         const content = e.target['content'].value
 
+        const formData = createFormData(content)
+
+        setIsLoading(true)
+        try {
+            const response = await Request.apiCall('/posts', formData)
+
+            if (response.error) throw response.data
+
+            setError(false)
+            setNewPost({...response.data.newPost, User})
+            e.target['content'].value = ''
+            if (image) { setImage(null) }
+            modalContext.info(response.data.message)
+        }
+        catch (error) { setError(error) }
+        finally { setIsLoading(false) }
+    }
+
+    const handleFile = e => {
+        setImage(e.target.files[0])
+    }
+
+    const createFormData = content => {
         let formData
 
         if (image) {
@@ -40,30 +73,7 @@ const NewPostContainer = ({setNewPost}) =>  {
             formData = { content }
         }
 
-        setIsLoading(true)
-        try {
-            const response = await Request.apiCall('/posts', formData)
-
-            if (response.error) {
-                setError(response.data)
-                throw new Error(response.data.message)
-            }
-
-            setError(false)
-            setNewPost({...response.data.newPost, User})
-            e.target['content'].value = ''
-            if (image) { setImage(null) }
-        }
-        catch (error) {
-            console.log('Il y a eu un problème', error)
-        }
-        finally {
-            setIsLoading(false)
-        }
-    }
-
-    const handleFile = e => {
-        setImage(e.target.files[0])
+        return formData
     }
 
     return (

@@ -1,13 +1,14 @@
 import React, { useState, useEffect, useContext } from 'react'
 import { AuthContext } from '@js/utils/context'
+import { ModalContext } from '@js/utils/context'
 import SettingsView from './SettingsView'
 import Loader from '@js/utils/Loader'
 import Request from '@js/utils/classes/Request'
 import { Redirect } from 'react-router-dom'
-import { Modal } from '@js/utils/Modal'
 
 const SettingsContainer = () => {
     const { setIsAuthenticated } = useContext(AuthContext)
+    const modalContext = useContext(ModalContext)
     const userId = localStorage.getItem('userId')
     
     const [isLoading, setIsLoading] = useState(false)
@@ -29,6 +30,13 @@ const SettingsContainer = () => {
     }, [])
 
     useEffect(() => {
+        if (error && !error.key) {
+            modalContext.error(error.statusCode !== 500 ? error.message : 'Il y a eu un problème')
+            setError(false)
+        }
+    }, [error])
+
+    useEffect(() => {
         if (passwordValues.password !== passwordValues.confirmPassword) {
             setError({ key: 'confirmPassword', message: 'Vous devez saisir un mot de passe identique !' })
         } else {
@@ -42,22 +50,12 @@ const SettingsContainer = () => {
         try {
             const response = await Request.apiCall(`/users/${userId}`)
 
-            if (response.error) {
-                setError(response.data)
-                throw new Error
-            }
+            if (response.error) throw response.data
 
             setError(false)
             setValues(response.data)
         }
-        catch (error) {
-            if (!error.key) { 
-                setError({ message: 'Il y a eu un problème' })
-                setTimeout(() => {
-                    setError(false)
-                }, 3000)
-            }
-        }
+        catch (error) { setError(error) }
         finally { setIsLoading(false) }
     }
 
@@ -77,7 +75,51 @@ const SettingsContainer = () => {
         e.preventDefault()
 
         const formName = e.target.name
+        const formData = createFormData(formName)
 
+        setIsLoading(true)
+
+        try {
+            const response = await Request.apiCall(`/users/${userId}`, formData, 'PUT')
+
+            if (response.error) throw response.data
+
+            setError(false)
+            modalContext.setModalContent({content: response.data.message, type: 'info'})
+            if (formName === 'userData') { setValues(response.data.data) }
+            if (formName === 'userPassword') {setPasswordValues({password: '', confirmPassword: ''})}
+        }
+        catch (error) { setError(error) }
+        finally { setIsLoading(false) }
+    }
+
+    const handleDeleteUser = async () => {
+        const confirm = await modalContext.confirm('Êtes-vous sûr de vouloir supprimer votre compte ?')
+
+        if (confirm) {
+            setIsLoading(true)
+
+            try {
+                const response = await Request.apiCall(`/users/${userId}`, 'DELETE')
+
+                if (response.error) throw response.data
+
+                localStorage.clear()
+                setIsAuthenticated(false)
+
+                return <Redirect to="/" />
+            }
+            catch (error) { setError(error) }
+            finally { setIsLoading(false) }
+        }
+    }
+
+    const logout = () => {
+        localStorage.clear()
+        setIsAuthenticated(false)
+    }
+
+    const createFormData = formName => {
         let formData
 
         if (formName !== 'userData' && formName !== 'userPassword') {
@@ -102,72 +144,22 @@ const SettingsContainer = () => {
             formData = { password: passwordValues.password }
         }
 
-        setIsLoading(true)
-
-        try {
-            const response = await Request.apiCall(`/users/${userId}`, formData, 'PUT')
-
-            if (response.error) {
-                setError(response.data)
-                throw response.data
-            }
-
-            setError(false)
-            if (formName === 'userData') { setValues(response.data.data) }
-        }
-        catch (error) { 
-            if (!error.key) { 
-                setError({ message: 'Il y a eu un problème' })
-                setTimeout(() => {
-                    setError(false)
-                }, 3000)
-            }
-        }
-        finally { setIsLoading(false) }
-    }
-
-    const handleDeleteUser = async () => {
-        setIsLoading(true)
-
-        try {
-            const response = await Request.apiCall(`/users/${userId}`, 'DELETE')
-
-            if (response.error) {
-                setError(response.data)
-                throw new Error(response.data.message)
-            }
-
-            localStorage.clear()
-            setIsAuthenticated(false)
-
-            return <Redirect to="/" />
-        }
-        catch (error) { console.log(error.message) }
-        finally { setIsLoading(false) }
-    }
-
-    const logout = () => {
-        localStorage.clear()
-        setIsAuthenticated(false)
+        return formData
     }
 
     return (
         // isLoading ? <Loader /> :
-        <>
-            {error && !error.key && <Modal type="error" content={error.message} />}
-            {values &&
-            <SettingsView
-                values={values}
-                passwordValues={passwordValues}
-                error={error}
-                handleFile={handleFile}
-                handleChange={handleChange}
-                handlePasswordChange={handlePasswordChange}
-                handleSubmit={handleSubmit}
-                handleDeleteUser={handleDeleteUser}
-                logout={logout}
-            />}
-        </>
+        <SettingsView
+            values={values}
+            passwordValues={passwordValues}
+            error={error}
+            handleFile={handleFile}
+            handleChange={handleChange}
+            handlePasswordChange={handlePasswordChange}
+            handleSubmit={handleSubmit}
+            handleDeleteUser={handleDeleteUser}
+            logout={logout}
+        />
     )
 }
 

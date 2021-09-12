@@ -1,4 +1,5 @@
 import Request from '@js/utils/classes/Request'
+import { ModalContext } from '@js/utils/context'
 import { AuthContext } from '@js/utils/context'
 import Loader from '@js/utils/Loader'
 import React, { useState, useEffect, useContext } from 'react'
@@ -13,6 +14,14 @@ const LoginContainer = () => {
     const [disabled, setDisabled] = useState(true)
 
     const {isAuthenticated, setIsAuthenticated} = useContext(AuthContext)
+    const modalContext = useContext(ModalContext)
+
+    useEffect(() => {
+        if (error && !error.key) {
+            modalContext.error(error.statusCode !== 500 ? error.message : 'Il y a eu un problème')
+            setError(false)
+        }
+    }, [error])
 
     useEffect(() => {
         setDisabled(Object.values(values).some(property => property === '')) ? true : false
@@ -36,15 +45,12 @@ const LoginContainer = () => {
         try {
             const response = await Request.apiCall('/users/login', values)
 
-            if (response.error) {
-                setError(response.data)
-                throw new Error(response.data.message)
-            }
+            if (response.error) throw response.data
 
             setError(false)
             setData(response.data)
         }
-        catch (error) { console.error('Il y a eu un problème') }
+        catch (error) { setError(error) }
         finally { setIsLoading(false) }
     }
 
