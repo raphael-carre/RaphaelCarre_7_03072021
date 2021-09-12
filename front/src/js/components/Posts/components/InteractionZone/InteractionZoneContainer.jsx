@@ -1,5 +1,4 @@
 import React, { useState, useEffect, useContext } from 'react'
-import { useFetch } from '@js/utils/hooks'
 import InteractionZoneView from './InteractionZoneView'
 import Loader from '@js/utils/Loader'
 import Request from '@js/utils/classes/Request'

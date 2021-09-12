@@ -1,10 +1,21 @@
 import Request from "@js/utils/classes/Request"
-import { useState, useEffect } from "react"
+import { useState, useEffect, useContext } from "react"
+import { ModalContext } from "../context"
 
 export const useFetch = (uri, userEntries = null) => {
     const [isLoading, setIsLoading] = useState(false)
     const [data, setData] = useState(null)
     const [error, setError] = useState(false)
+
+    const modalContext = useContext(ModalContext)
+
+    useEffect(() => {
+        if (error && !error.key) {
+            console.log(error.statusCode)
+            modalContext.error(error.statusCode && error.statusCode !== 500 ? error.message : 'Il y a eu un problème')
+            setError(false)
+        }
+    }, [error])
 
     useEffect(() => {
         fetchApi(uri, userEntries)
@@ -15,21 +26,13 @@ export const useFetch = (uri, userEntries = null) => {
         try {
             const response = await Request.apiCall(uri, data, method)
 
-            if (response.error) { 
-                setError(response.data)
-                throw new Error(response.data.message)
-            }
+            if (response.error) throw response.data
 
             setError(false)
             setData(response.data)
         }
-        catch (error) {
-            setError(true)
-            console.log(error.message)
-        }
-        finally {
-            setIsLoading(false)
-        }
+        catch (error) { setError(error) }
+        finally { setIsLoading(false) }
     }
 
     return { isLoading, data, error }
