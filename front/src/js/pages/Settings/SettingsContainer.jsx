@@ -85,7 +85,7 @@ const SettingsContainer = () => {
             if (response.error) throw response.data
 
             setError(false)
-            modalContext.setModalContent({content: response.data.message, type: 'info'})
+            modalContext.info(response.data.message)
             if (formName === 'userData') { setValues(response.data.data) }
             if (formName === 'userPassword') {setPasswordValues({password: '', confirmPassword: ''})}
         }
@@ -149,6 +149,7 @@ const SettingsContainer = () => {
 
     return (
         // isLoading ? <Loader /> :
+        values.id &&
         <SettingsView
             values={values}
             passwordValues={passwordValues}
