@@ -117,3 +117,48 @@ export const ModalProvider = ({children}) => {
         </ModalContext.Provider>
     )
 }
+
+export const LoaderContext = createContext()
+
+export const LoaderProvider = ({children}) => {
+    const [isLoading, setIsLoading] = useState(false)
+    const [fadeOut, setFadeOut] = useState(false)
+
+    const setShowLoader = loading => {
+        console.log(isLoading)
+        if (!isLoading && loading) {
+            return setIsLoading(true)
+        }
+
+        if (isLoading && !loading) {
+            const images = document.querySelectorAll('#root section article div:nth-of-type(2) img')
+
+            if (images.length === 0) {
+                return setIsLoading(false)
+            }
+            
+            let counter = 0
+
+            for (let image of images) {
+                image.addEventListener('load', () => {
+                    image.complete && counter++
+                    if (counter === images.length) {
+                        setFadeOut(true)
+                        const timeout = setTimeout(() => {
+                            setFadeOut(false)
+                            setIsLoading(false)
+                            clearTimeout(timeout)
+                        }, 500)
+                    }
+                })
+            }            
+        }
+    }
+
+    return (
+        <LoaderContext.Provider value={{setShowLoader}}>
+            {isLoading && <Loader fadeOut={fadeOut} />}
+            {children}
+        </LoaderContext.Provider>
+    )
+}

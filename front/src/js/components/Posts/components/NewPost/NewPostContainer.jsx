@@ -78,7 +78,6 @@ const NewPostContainer = ({setNewPost}) =>  {
 
     return (
         isLoading ? <Loader /> :
-        error ? <p>{error.message}</p> : 
         user && 
         <NewPostView 
             currentUser={user}

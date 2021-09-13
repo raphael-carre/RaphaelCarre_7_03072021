@@ -1,9 +1,9 @@
 import React, { useState, useEffect, useContext } from 'react'
 import { useFetch } from '@js/utils/hooks'
 import PostsView from './PostsView'
-import Loader from '@js/utils/Loader'
 import Request from '@js/utils/classes/Request'
 import { ModalContext } from '@js/utils/context'
+import { LoaderContext } from '@js/utils/context'
 
 const PostsContainer = ({uri, userId}) => {
     const isProfile = userId ? true : false
@@ -21,7 +21,12 @@ const PostsContainer = ({uri, userId}) => {
     const [updatePost, setUpdatePost] = useState(null)
     // const [deletedPost, setDeletedPost] = useState(null)
 
+    const {setShowLoader} = useContext(LoaderContext)
     const modalContext = useContext(ModalContext)
+
+    useEffect(() => {
+        setShowLoader(isLoading)
+    }, [isLoading])
 
     useEffect(() => {
         if (error && !error.key) {
@@ -121,8 +126,6 @@ const PostsContainer = ({uri, userId}) => {
     ]
 
     return (
-        isLoading ? <Loader /> :
-        error ? <p>{error.message}</p> : 
         allPosts && 
         <PostsView
             isProfile={isProfile}

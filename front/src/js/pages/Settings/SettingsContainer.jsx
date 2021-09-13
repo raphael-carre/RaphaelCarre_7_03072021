@@ -2,13 +2,14 @@ import React, { useState, useEffect, useContext } from 'react'
 import { AuthContext } from '@js/utils/context'
 import { ModalContext } from '@js/utils/context'
 import SettingsView from './SettingsView'
-import Loader from '@js/utils/Loader'
 import Request from '@js/utils/classes/Request'
 import { Redirect } from 'react-router-dom'
+import { LoaderContext } from '@js/utils/context'
 
 const SettingsContainer = () => {
     const { setIsAuthenticated } = useContext(AuthContext)
     const modalContext = useContext(ModalContext)
+    const {setShowLoader} = useContext(LoaderContext)
     const userId = localStorage.getItem('userId')
     
     const [isLoading, setIsLoading] = useState(false)
@@ -28,6 +29,10 @@ const SettingsContainer = () => {
     useEffect(() => {
         fetchUserData()
     }, [])
+
+    useEffect(() => {
+        setShowLoader(isLoading)
+    }, [isLoading])
 
     useEffect(() => {
         if (error && !error.key) {
@@ -148,7 +153,6 @@ const SettingsContainer = () => {
     }
 
     return (
-        // isLoading ? <Loader /> :
         values.id &&
         <SettingsView
             values={values}

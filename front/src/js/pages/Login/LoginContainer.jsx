@@ -1,7 +1,7 @@
 import Request from '@js/utils/classes/Request'
+import { LoaderContext } from '@js/utils/context'
 import { ModalContext } from '@js/utils/context'
 import { AuthContext } from '@js/utils/context'
-import Loader from '@js/utils/Loader'
 import React, { useState, useEffect, useContext } from 'react'
 import { Redirect } from 'react-router-dom'
 import LoginView from './LoginView'
@@ -15,6 +15,11 @@ const LoginContainer = () => {
 
     const {isAuthenticated, setIsAuthenticated} = useContext(AuthContext)
     const modalContext = useContext(ModalContext)
+    const {setShowLoader} = useContext(LoaderContext)
+
+    useEffect(() => {
+        setShowLoader(isLoading)
+    }, [isLoading])
 
     useEffect(() => {
         if (error && !error.key) {
@@ -59,7 +64,6 @@ const LoginContainer = () => {
     }
 
     return (
-        isLoading ? <Loader /> :
         isAuthenticated ? <Redirect to="/" /> :
         <LoginView
             handleSubmit={handleSubmit}
