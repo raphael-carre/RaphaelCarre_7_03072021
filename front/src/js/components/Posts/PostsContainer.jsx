@@ -81,6 +81,7 @@ const PostsContainer = ({uri, userId}) => {
             if (response.error) throw response.data
 
             setError(false)
+            setImage(null)
             const postIndexToUpdate = allPosts.findIndex(post => post.id === id)
             const User = allPosts[postIndexToUpdate].User
             allPosts[postIndexToUpdate] = {...response.data.data, User}

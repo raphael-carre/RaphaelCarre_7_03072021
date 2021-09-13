@@ -125,7 +125,6 @@ export const LoaderProvider = ({children}) => {
     const [fadeOut, setFadeOut] = useState(false)
 
     const setShowLoader = loading => {
-        console.log(isLoading)
         if (!isLoading && loading) {
             return setIsLoading(true)
         }
