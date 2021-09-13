@@ -3,6 +3,7 @@ const FetchErrorHandler = require("../../config/FetchErrorHandler")
 const Security = require("../../config/Security")
 const Service = require('../Service')
 const User = require("./UserModel")
+const Post = require("../Post/PostModel")
 
 /**
  * UserService Class
@@ -108,6 +109,24 @@ class UserService extends Service {
     delete = async (req, queryOptions = null) => {
         this.checkId(req.params.id)
         this.tokenId(req, req.params.id)
+
+        const posts = await Post.findAll({ attributes: ['image'], where: { userId: req.params.id } })
+        if (posts) {
+            const filteredPosts = posts.filter(post => post.image !== null)
+
+            if (filteredPosts) {
+                for (let post of filteredPosts) {
+                    const filePath = `images/${post.image.split('/images/')[1]}`
+                    if (fs.existsSync(filePath)) { fs.unlinkSync(filePath) }
+                }
+            }
+        }
+
+        const user = await this.Model.findOne({ attributes: ['image'], where: { id: req.params.id } })
+        if (user.image) {
+            const filePath = `images/${user.image.split('/images/')[1]}`
+            if (fs.existsSync(filePath)) { fs.unlinkSync(filePath) }
+        }
         
         const destroyedModel = await this.Model.destroy(queryOptions || { where: { id: req.params.id } })
         if (destroyedModel === 0) throw new FetchErrorHandler(500)
