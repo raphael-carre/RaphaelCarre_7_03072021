@@ -36,9 +36,13 @@ const PostsContainer = ({uri, userId}) => {
     }, [error])
 
     useEffect(() => {
-        setIsLoading(posts.isLoading)
-        setError(posts.error)
-        posts.data && allPosts === null && setAllPosts(posts.data)
+        if (allPosts === null) {
+            setIsLoading(posts.isLoading)
+            setError(posts.error)
+            posts.data && setAllPosts(posts.data)
+        } else {
+            setIsLoading(false)
+        }
     }, [posts])
 
     useEffect(() => {
@@ -127,7 +131,7 @@ const PostsContainer = ({uri, userId}) => {
     ]
 
     return (
-        allPosts && 
+        // allPosts && 
         <PostsView
             isProfile={isProfile}
             isOwner={isOwner}

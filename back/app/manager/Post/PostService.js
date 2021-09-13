@@ -119,8 +119,11 @@ class PostService extends Service {
         if (!req.file && (!content || content === '')) throw new FetchErrorHandler(400, 'Votre publication est vide !')
 
         if (req.file && post.image) {
-            const filePath = `images/${post.image.split('/images/')[1]}`
-            if (fs.existsSync(filePath)) { fs.unlinkSync(filePath) }
+            const timout = setTimeout(() => {
+                const filePath = `images/${post.image.split('/images/')[1]}`
+                if (fs.existsSync(filePath)) { fs.unlinkSync(filePath) }
+                clearTimeout(timout)
+            }, 500)
         }
 
         const image = req.file ? `${req.protocol}://${req.get('host')}/images/${req.file.filename}` : (req.body.image === null ? '' : post.image)

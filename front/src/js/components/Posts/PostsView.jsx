@@ -16,7 +16,7 @@ const PostsView = ({
     <>
         {(!isProfile || (isProfile && isOwner)) &&
         <NewPost setNewPost={setNewPost} />}
-        {posts.map(
+        {posts && posts.map(
             postData => 
                 updatePost === postData.id ?
                 <UpdatePost

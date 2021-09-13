@@ -109,13 +109,13 @@ const SettingsContainer = () => {
 
                 if (response.error) throw response.data
 
+                setIsLoading(false)
                 localStorage.clear()
                 setIsAuthenticated(false)
 
                 return <Redirect to="/" />
             }
             catch (error) { setError(error) }
-            finally { setIsLoading(false) }
         }
     }
 
