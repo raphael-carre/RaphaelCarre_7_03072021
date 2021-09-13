@@ -5,4 +5,10 @@
     background: $background-color-primary;
     color: #fff;
     z-index: 8;
+
+    @include wideScreen {
+        nav {
+            display: none;
+        }
+    }
 }

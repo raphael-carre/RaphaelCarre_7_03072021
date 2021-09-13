@@ -2,7 +2,18 @@
     @extend %styledForm;
 
     &__title { @extend %styledForm__title; }
-    &__inputsDiv { @extend %styledForm__inputsDiv; }
+
+    &__userImage {
+        @include wideScreen {
+            float: left;
+            margin-top: 20px;
+            margin-right: 20px;
+        }
+    }
+    
+    &__inputsDiv { 
+        div { @extend %styledForm__inputsDiv; }
+    }
     &__buttons { @extend %styledForm__buttons; }
 
     &__profileDeletion {

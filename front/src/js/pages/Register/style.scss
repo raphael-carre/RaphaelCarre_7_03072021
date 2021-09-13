@@ -16,8 +16,10 @@
         color: $background-color-primary;
         text-decoration: none;
 
-        &:hover {
-            text-decoration: underline;
+        @include wideScreen {
+            &:hover {
+                text-decoration: underline;
+            }
         }
     }
 

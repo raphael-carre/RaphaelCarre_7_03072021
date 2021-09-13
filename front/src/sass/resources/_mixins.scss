@@ -1,0 +1,5 @@
+@mixin wideScreen {
+    @media only screen and (min-width: $breakpoint) {
+        @content;
+    }
+}

@@ -24,42 +24,46 @@ const SettingsView = ({
             <form name="userData" onSubmit={handleSubmit}>
                 <h2 className={style.settingsForm__title}>Informations du compte</h2>
                 <div className={style.settingsForm__inputsDiv}>
-                    <ProfileImageInput
-                        image={values.image && (typeof values.image === 'string' ? values.image : URL.createObjectURL(values.image))}
-                        handleFile={handleFile}
-                    />
-                    <p>Cliquez sur l'image pour la modifier</p>
-                    <Input
-                        type="text"
-                        name="firstName"
-                        label="Prénom :"
-                        value={values.firstName}
-                        error={error}
-                        handleChange={handleChange}
-                    />
-                    <Input
-                        type="text"
-                        name="lastName"
-                        label="Nom :"
-                        value={values.lastName}
-                        error={error}
-                        handleChange={handleChange}
-                    />
-                    <Input
-                        type="email"
-                        name="email"
-                        email="E-mail :"
-                        value={values.email}
-                        error={error}
-                        handleChange={handleChange}
-                    />
-                    <Textarea
-                        name="description"
-                        label="Description :"
-                        value={values.description}
-                        error={error}
-                        handleChange={handleChange}
-                    />
+                    <div className={style.settingsForm__userImage}>
+                        <ProfileImageInput
+                            image={values.image && (typeof values.image === 'string' ? values.image : URL.createObjectURL(values.image))}
+                            handleFile={handleFile}
+                        />
+                        <p>Cliquez sur l'image pour la modifier</p>
+                    </div>
+                    <div>
+                        <Input
+                            type="text"
+                            name="firstName"
+                            label="Prénom :"
+                            value={values.firstName}
+                            error={error}
+                            handleChange={handleChange}
+                        />
+                        <Input
+                            type="text"
+                            name="lastName"
+                            label="Nom :"
+                            value={values.lastName}
+                            error={error}
+                            handleChange={handleChange}
+                        />
+                        <Input
+                            type="email"
+                            name="email"
+                            label="E-mail :"
+                            value={values.email}
+                            error={error}
+                            handleChange={handleChange}
+                        />
+                        <Textarea
+                            name="description"
+                            label="Description :"
+                            value={values.description}
+                            error={error}
+                            handleChange={handleChange}
+                        />
+                    </div>
                 </div>
                 <div className={style.settingsForm__buttons}>
                     <button className="btn btn--primary" type="submit">Enregistrer</button>
@@ -67,22 +71,24 @@ const SettingsView = ({
             </form>
             <form name="userPassword" onSubmit={handleSubmit}>
                 <div className={style.settingsForm__inputsDiv}>
-                    <Input
-                        type="password"
-                        name="password"
-                        label="Nouveau mot de passe :"
-                        value={passwordValues.password}
-                        error={error}
-                        handleChange={handlePasswordChange}
-                    />
-                    <Input
-                        type="password"
-                        name="confirmPassword"
-                        label="Confirmez le nouveau mot de passe :"
-                        value={passwordValues.confirmPassword}
-                        error={error}
-                        handleChange={handlePasswordChange}
-                    />
+                    <div>
+                        <Input
+                            type="password"
+                            name="password"
+                            label="Nouveau mot de passe :"
+                            value={passwordValues.password}
+                            error={error}
+                            handleChange={handlePasswordChange}
+                        />
+                        <Input
+                            type="password"
+                            name="confirmPassword"
+                            label="Confirmez le nouveau mot de passe :"
+                            value={passwordValues.confirmPassword}
+                            error={error}
+                            handleChange={handlePasswordChange}
+                        />
+                    </div>
                 </div>
                 <div className={style.settingsForm__buttons}>
                     <button className="btn btn--primary" type="submit">Enregistrer</button>

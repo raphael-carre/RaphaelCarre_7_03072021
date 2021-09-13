@@ -1,12 +1,9 @@
 .title {
-    position: fixed;
-    top: 0;
+    margin: 0 auto;
     width: 100%;
     padding: .4em .6em;
-    background: $background-color-primary;
     color: #fff;
     text-align: center;
-    z-index: 8;
 
     > div {
         display: flex;
@@ -22,5 +19,21 @@
         margin: .2em 0;
         font-family: 'Nevis', 'Arial', sans-serif;
         font-size: 1.7em;
+        cursor: default;
+    }
+    
+    nav {
+        display: none;
+    }
+    
+    @include wideScreen {
+        max-width: $layout-max-width;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+
+        nav {
+            display: flex;
+        }
     }
 }

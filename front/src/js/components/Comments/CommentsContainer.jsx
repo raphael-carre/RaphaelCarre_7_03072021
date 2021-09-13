@@ -67,7 +67,6 @@ const CommentsContainer = ({postId, setCommentsCounter}) => {
         try {
             const response = await Request.apiCall(`/comments/${id}`, {content}, 'PUT')
 
-            console.log(response.data)
             if (response.error) throw response.data
 
             setError(false)

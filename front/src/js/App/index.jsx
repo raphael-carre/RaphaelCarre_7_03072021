@@ -16,7 +16,7 @@ const App = () => {
 
     return (
         <Router>
-            <Header />
+            <Header isAuthenticated={isAuthenticated} />
             <Switch>
                 <ProtectedRoute exact path="/" component={() => <Thread />} />
                 <ProtectedRoute path="/profile/:id" component={() => <Profile />} />
