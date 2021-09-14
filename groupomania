@@ -201,7 +201,7 @@ then
 
         if [[ "$MODE" = "dev" ]]
         then
-            docker logs groupomania_gm-back_1 -f
+            docker logs ${PWD##*/}_gm-back_1 -f
         fi
     else
         echo $'Arrêt des containers...\n'
