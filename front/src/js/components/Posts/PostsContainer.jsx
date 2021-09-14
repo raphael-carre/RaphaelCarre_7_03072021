@@ -19,7 +19,6 @@ const PostsContainer = ({uri, userId}) => {
 
     const [image, setImage] = useState(null)
     const [updatePost, setUpdatePost] = useState(null)
-    // const [deletedPost, setDeletedPost] = useState(null)
 
     const {setShowLoader} = useContext(LoaderContext)
     const modalContext = useContext(ModalContext)
@@ -125,13 +124,13 @@ const PostsContainer = ({uri, userId}) => {
         return formData
     }
 
-    const options = [
-        { name: 'Modifier', run: modifyPost },
-        { name: 'Supprimer', run: deletePost }
-    ]
+    const options = {
+        modify: modifyPost,
+        delete: deletePost
+    }
 
     return (
-        // allPosts && 
+        allPosts && 
         <PostsView
             isProfile={isProfile}
             isOwner={isOwner}

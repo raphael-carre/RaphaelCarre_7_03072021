@@ -19,7 +19,7 @@ const SettingsContainer = () => {
         firstName: '',
         lastName: '',
         description: '',
-        image: '',
+        image: ''
     })
     const [passwordValues, setPasswordValues] = useState({
         password: '',
@@ -29,12 +29,16 @@ const SettingsContainer = () => {
     document.title = "Groupomania - Paramètres"
 
     useEffect(() => {
+        console.log('reloaded');
+    })
+
+    useEffect(() => {
         fetchUserData()
     }, [])
 
-    useEffect(() => {
-        setShowLoader(isLoading)
-    }, [isLoading])
+    // useEffect(() => {
+    //     setShowLoader(isLoading)
+    // }, [isLoading])
 
     useEffect(() => {
         if (error && !error.key) {
@@ -44,10 +48,12 @@ const SettingsContainer = () => {
     }, [error])
 
     useEffect(() => {
-        if (passwordValues.password !== passwordValues.confirmPassword) {
-            setError({ key: 'confirmPassword', message: 'Vous devez saisir un mot de passe identique !' })
-        } else {
-            setError(false)
+        if (passwordValues.password !== '') {
+            if (passwordValues.password !== passwordValues.confirmPassword) {
+                setError({ key: 'confirmPassword', message: 'Vous devez saisir un mot de passe identique !' })
+            } else {
+                setError(false)
+            }
         }
     }, [passwordValues])
 
@@ -92,9 +98,9 @@ const SettingsContainer = () => {
             if (response.error) throw response.data
 
             setError(false)
-            modalContext.info(response.data.message)
             if (formName === 'userData') { setValues(response.data.data) }
             if (formName === 'userPassword') {setPasswordValues({password: '', confirmPassword: ''})}
+            modalContext.info(response.data.message)
         }
         catch (error) { setError(error) }
         finally { setIsLoading(false) }

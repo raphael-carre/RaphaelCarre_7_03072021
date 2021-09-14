@@ -11,7 +11,6 @@ $editionmenu-background-color: rgb(78, 57, 57);
 
 .editionMenu {
     position: absolute;
-    top: -15px;
     right: 50px;
     border-radius: 4px;
     box-shadow: 2px 2px 8px 2px rgba(0,0,0,.2);
@@ -19,19 +18,7 @@ $editionmenu-background-color: rgb(78, 57, 57);
     font-size: .8em;
     color: #fff;
     z-index: 5;
-
-    &::after {
-        content: '';
-        display: block;
-        position: absolute;
-        top: 25px;
-        right: -10px;
-        width: 20px;
-        height: 20px;
-        background-color: $editionmenu-background-color;
-        transform: rotate(45deg);
-        z-index: 5;
-    }
+    transform: translateY(-15px); 
 
     ul {
         position: relative;
@@ -41,11 +28,47 @@ $editionmenu-background-color: rgb(78, 57, 57);
         z-index: 6;
         
         li {
+            position: relative;
             width: 100%;
             padding: 10px 15px;
             text-align: center;
             cursor: pointer;
+            overflow: hidden;
             z-index: 6;
+
+            @include wideScreen {
+                &::after {
+                    content: '';
+                    position: absolute;
+                    top: 0;
+                    left: 0;
+                    display: block;
+                    width: 100%;
+                    height: 100%;
+                    background: radial-gradient(farthest-corner at 3px 3px, rgba(255, 255, 255, 0.27) 0%, #0000 70%);
+                    opacity: 0;
+                    z-index: 7;
+                    transition: .2s;
+                }
+
+                &:hover::after {
+                    opacity: 1;
+                }
+            }
+        }
+
+        &::after {
+            content: '';
+            display: block;
+            position: absolute;
+            top: 50%;
+            right: -11px;
+            width: 25px;
+            height: 25px;
+            background-color: $editionmenu-background-color;
+            border-radius: 4px;
+            transform: translateY(-50%) rotate(45deg);
+            z-index: -1;
         }
     }
 
@@ -58,10 +81,6 @@ $editionmenu-background-color: rgb(78, 57, 57);
         width: 100vw;
         height: 100vh;
         z-index: 2;
-
-        // &:focus ~ .editionMenu {
-        //     animation: fade linear reverse .15s;
-        // }
     }
 }
 

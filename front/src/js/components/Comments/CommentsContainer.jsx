@@ -14,7 +14,6 @@ const CommentsContainer = ({postId, setCommentsCounter}) => {
     const [comments, setComments] = useState(null)
     const [newComment, setNewComment] = useState(null)
     const [updateComment, setUpdateComment] = useState(null)
-    // const [deletedComment, setDeletedComment] = useState(null)
 
     const modalContext = useContext(ModalContext)
 
@@ -84,14 +83,12 @@ const CommentsContainer = ({postId, setCommentsCounter}) => {
         setUpdateComment(null)
     }
 
-    const options = [
-        { name: 'Modifier', run: modifyComment },
-        { name: 'Supprimer', run: deleteComment }
-    ]
+    const options = {
+        modify: modifyComment,
+        delete: deleteComment
+    }
 
     return (
-        // isLoading ? <Loader /> :
-        error ? <p>{error.message}</p> :
         comments &&
         <CommentsView
             postId={postId}

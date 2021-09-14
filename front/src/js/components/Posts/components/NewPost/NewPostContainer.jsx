@@ -77,7 +77,6 @@ const NewPostContainer = ({setNewPost}) =>  {
     }
 
     return (
-        isLoading ? <Loader /> :
         user && 
         <NewPostView 
             currentUser={user}
