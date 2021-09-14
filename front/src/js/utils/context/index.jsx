@@ -1,44 +1,45 @@
 import Request from '@js/utils/classes/Request'
-import React, { useState, useEffect, useRef, createContext } from 'react'
+import React, { useState, useEffect, useRef, createContext, useContext } from 'react'
 import Loader from '../Loader'
 import Modal from '../Modal'
 
 export const AuthContext = createContext()
 
 export const AuthProvider = ({children}) => {
-    const [isAuthenticated, setIsAuthenticated] = useState(false)
-
+    const [isAuthenticated, setIsAuthenticated] = useState(localStorage.getItem('token') ? true : false)
+    
     const [isLoading, setIsLoading] = useState(false)
     const [data, setData] = useState(null)
     const [error, setError] = useState(false)
+    
+    const modalContext = useContext(ModalContext)
 
     useEffect(() => {
-        if (localStorage.getItem('token')) { setIsAuthenticated(true) }
-    })
+        if (error && !error.key) {
+            modalContext.error(error.statusCode && error.statusCode !== 500 ? error.message : 'Il y a eu un problème')
+        }
+    }, [error])
 
     useEffect(() => {
-        if (isAuthenticated) { checkUserIsAdmin(localStorage.getItem('userId')) }
+        if (isAuthenticated) { checkUser(localStorage.getItem('userId')) }
     }, [isAuthenticated])
 
     useEffect(() => {
         if (data && data.isAdmin) { localStorage.setItem('isAdmin', true) }
     }, [data])
 
-    const checkUserIsAdmin = async (userId) => {
+    const checkUser = async userId => {
         setIsLoading(true)
         try {
             const response = await Request.apiCall(`/users/${userId}`)
 
-            if (response.error) {
-                setError(response.data)
-                throw new Error(response.data.message)
-            }
+            if (response.error) throw response.data
 
             setError(false)
             setData(response.data)
         }
         catch (error) {
-            console.log('AuthProvider', error.message)
+            setError(error)
             setIsAuthenticated(false)
             localStorage.clear()
         }
@@ -49,6 +50,7 @@ export const AuthProvider = ({children}) => {
 
     return (
         isLoading ? <Loader /> :
+        data &&
         <AuthContext.Provider value={{isAuthenticated, setIsAuthenticated}}>
             {children}
         </AuthContext.Provider>

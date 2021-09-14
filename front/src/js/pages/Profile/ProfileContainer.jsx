@@ -20,6 +20,7 @@ const ProfileContainer = () => {
 
     useEffect(() => {
         data && setUserData(data)
+        data && (document.title = `Groupomania - ${data.firstName} ${data.lastName}`)
     }, [data])
 
     return (

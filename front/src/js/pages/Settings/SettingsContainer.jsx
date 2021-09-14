@@ -26,6 +26,8 @@ const SettingsContainer = () => {
         confirmPassword: ''
     })
 
+    document.title = "Groupomania - Paramètres"
+
     useEffect(() => {
         fetchUserData()
     }, [])

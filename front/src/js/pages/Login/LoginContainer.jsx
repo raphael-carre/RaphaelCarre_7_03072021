@@ -17,6 +17,8 @@ const LoginContainer = () => {
     const modalContext = useContext(ModalContext)
     const {setShowLoader} = useContext(LoaderContext)
 
+    document.title = "Groupomania - Connexion"
+
     useEffect(() => {
         setShowLoader(isLoading)
     }, [isLoading])

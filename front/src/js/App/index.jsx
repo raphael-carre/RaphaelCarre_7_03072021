@@ -11,6 +11,7 @@ import { Profile } from '@js/pages/Profile'
 import { Footer } from '@js/layout/Footer'
 import { Settings } from '@js/pages/Settings'
 import { LoaderProvider } from '@js/utils/context'
+import Error404 from '@js/pages/Error404'
 
 const App = () => {
     const { isAuthenticated } = useContext(AuthContext)
@@ -25,7 +26,7 @@ const App = () => {
                     <ProtectedRoute path="/settings" component={() => <Settings />} />
                     <Route path="/login" component={Login} />
                     <Route path="/register" component={Register} />
-                    <Route path="*" render={() => <p>404 page introuvable</p>} />
+                    <Route path="*" render={Error404} />
                 </Switch> 
             </LoaderProvider>
             {isAuthenticated && <Footer />}

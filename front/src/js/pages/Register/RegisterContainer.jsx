@@ -17,6 +17,7 @@ const RegisterContainer = () => {
     const [isRegistered, setIsRegistered] = useState(false)
     const modalContext = useContext(ModalContext)
 
+    document.title = "Groupomania - Inscription"
     useEffect(() => {
         if (error && !error.key) {
             modalContext.error(error.statusCode !== 500 ? error.message : 'Il y a eu un problème')

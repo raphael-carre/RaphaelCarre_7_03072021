@@ -6,11 +6,11 @@ import App from './App'
 
 ReactDOM.render(
     <AppContainer>
-        <AuthProvider>
-            <ModalProvider>
+        <ModalProvider>
+            <AuthProvider>
                 <App />
-            </ModalProvider>
-        </AuthProvider>
+            </AuthProvider>
+        </ModalProvider>
     </AppContainer>,
     document.getElementById('root')
 )
