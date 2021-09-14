@@ -1,0 +1,35 @@
+.errorMessage {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    height: 100%;
+    text-align: center;
+
+    p {
+        margin: 0;
+    }
+
+    &__error, &__code {
+        padding: 0;
+        color: $background-color-primary;
+    }
+
+    &__error {
+        font-size: 1.5em;
+    }
+    
+    &__code {
+        font-weight: bold;
+        font-size: 9em;
+        line-height: 0.9;
+    }
+    
+    &__content {
+        max-width: 90%;
+        padding: 15px 0;
+        font-size: 1em;
+    }
+
+    
+}
