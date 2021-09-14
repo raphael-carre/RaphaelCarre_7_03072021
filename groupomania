@@ -11,8 +11,24 @@ dumpDb() {
     docker exec -t "$(basename $PWD)_gm-db_1" mysqldump -u $DB_USER -p$DB_PASS groupomania > $DB_FILE
 }
 
-# Vérification de l'existence de Docker (docker-compose) sur la machine
-[ -x "$(command -v docker-compose)" ] && DOCKER=true
+launchMode() {
+    if [ -z "$1" ]
+    then 
+        while [[ ! "$MODE" =~ ^(prod|dev)$ ]]
+        do
+            read -r -p 'Mode de lancement du projet (dev/prod, defaut: prod) : ' MODE
+            if [ -z "$MODE" ]
+            then
+                MODE=prod
+            fi
+        done
+    else
+            MODE=$1
+    fi
+}
+
+# Vérification de l'existence et de l'activité de Docker sur la machine
+docker info &>/dev/null && DOCKER=true
 
 MODE=""
 if [ "$1" == 'reset' ]
@@ -52,21 +68,14 @@ then
     fi
 else
     # Sélection du mode de lancement
-    if [ ! "$(docker ps -a | grep 'gm-')" ]
+    if [ "$DOCKER" == true ]
     then
-        if [ -z "$1" ]
-        then 
-            while [[ ! "$MODE" =~ ^(prod|dev)$ ]]
-            do
-                read -r -p 'Mode de lancement du projet (dev/prod, defaut: prod) : ' MODE
-                if [ -z "$MODE" ]
-                then
-                    MODE=prod
-                fi
-            done
-        else
-                MODE=$1
+        if [ ! "$(docker ps -a | grep 'gm-')" ]
+        then
+            launchMode $1
         fi
+    else
+        launchMode $1
     fi
 fi
 
