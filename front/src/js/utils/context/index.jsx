@@ -50,7 +50,7 @@ export const AuthProvider = ({children}) => {
 
     return (
         isLoading ? <Loader /> :
-        data &&
+        (data || !isAuthenticated) &&
         <AuthContext.Provider value={{isAuthenticated, setIsAuthenticated}}>
             {children}
         </AuthContext.Provider>
