@@ -1,13 +1,16 @@
 import Request from '@js/utils/classes/Request'
+import { AuthContext } from '@js/utils/context'
 import { useModal } from '@js/utils/hooks'
 import Modal from '@js/utils/Modal'
 import React, { useState, useEffect, useContext } from 'react'
+import { Redirect } from 'react-router-dom'
 import RegisterView from './RegisterView'
 
 const RegisterContainer = () => {
     const [isLoading, setIsLoading] = useState(false)
     const [error, setError] = useState(false)
     const [disabled, setDisabled] = useState(true)
+    const [isRegistered, setIsRegistered] = useState(false)
     const [values, setValues] = useState({
         firstName: '',
         lastName: '',
@@ -15,7 +18,8 @@ const RegisterContainer = () => {
         password: '',
         confirmPassword: ''
     })
-    const [isRegistered, setIsRegistered] = useState(false)
+
+    const {isAuthenticated} = useContext(AuthContext)
     const modal = useModal()
 
     document.title = "Groupomania - Inscription"
@@ -61,6 +65,7 @@ const RegisterContainer = () => {
     }
 
     return (
+        isAuthenticated ? <Redirect to="/" /> :
         <>
             {modal.content && <Modal content={modal.content} type={type} />}
             {<RegisterView

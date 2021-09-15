@@ -59,6 +59,7 @@ then
         else 
             rm -rf ./database/dbInit.sql
             rm -rf ./front/build
+            rm -rf ./back/public
         fi
 
         rm -rf ./back/docs/jsdoc/
@@ -239,7 +240,11 @@ else
         cd ./front
         npm run prod
 
+        mkdir ../back/public
+        cp -r ./build/* ../back/public
+
         cd ../back
+        echo "\nAllez à l'adresse http://localhost:3080 pour utiliser l'application !"
         npm start
     fi
 fi

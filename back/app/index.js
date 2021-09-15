@@ -40,9 +40,12 @@ if (process.env.NODE_ENV === 'development') {
         res.status(301).redirect('/api-docs')
     })
 } else {
+    app.use(express.static('./public'))
+
     app.get('/', (req, res) => {
-        res.status(200)
-        res.end()
+        const index = fs.existsSync('./public/index.html') ? fs.readFileSync('./public/index.html') : '<a href="http://localhost:8080>Groupomania</a>'
+        res.writeHead(200, {'Content-Type': 'text/html'})
+        res.end(index)
     })
 }
 
