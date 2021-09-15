@@ -1,5 +1,4 @@
 import Request from '@js/utils/classes/Request'
-import { ModalContext } from '@js/utils/context'
 import { useModal } from '@js/utils/hooks'
 import Modal from '@js/utils/Modal'
 import React, { useState, useEffect, useContext } from 'react'

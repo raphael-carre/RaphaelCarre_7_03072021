@@ -1,7 +1,8 @@
 import Request from '@js/utils/classes/Request'
-import React, { useState, useEffect, useRef, createContext, useContext } from 'react'
+import React, { useState, useEffect, createContext, useContext } from 'react'
+import { useModal } from '../hooks'
+import Modal from '../Modal'
 import Loader from '../Loader'
-// import Modal from '../Modal'
 
 export const AuthContext = createContext()
 
@@ -11,10 +12,17 @@ export const AuthProvider = ({children}) => {
     const [isLoading, setIsLoading] = useState(false)
     const [data, setData] = useState(null)
     const [error, setError] = useState(false)
+
+    const {setShowLoader} = useContext(LoaderContext)
+    const modal = useModal()
     
     useEffect(() => {
+        setShowLoader(isLoading)
+    }, [isLoading])
+
+    useEffect(() => {
         if (error && !error.key) {
-            modalContext.error(error.statusCode && error.statusCode !== 500 ? error.message : 'Il y a eu un problème')
+            modal.error(error.statusCode && error.statusCode !== 500 ? error.message : 'Il y a eu un problème')
         }
     }, [error])
 
@@ -48,11 +56,13 @@ export const AuthProvider = ({children}) => {
     }
 
     return (
-        isLoading ? <Loader /> :
-        (data || !isAuthenticated) &&
-        <AuthContext.Provider value={{isAuthenticated, setIsAuthenticated}}>
-            {children}
-        </AuthContext.Provider>
+        <>
+            {modal.content && <Modal content={modal.content} type={modal.type} />}
+            {(data || !isAuthenticated) &&
+            <AuthContext.Provider value={{isAuthenticated, setIsAuthenticated}}>
+                {children}
+            </AuthContext.Provider>}
+        </>
     )
 }
 

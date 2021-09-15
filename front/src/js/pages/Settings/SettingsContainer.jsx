@@ -4,14 +4,16 @@ import SettingsView from './SettingsView'
 import Request from '@js/utils/classes/Request'
 import { Redirect } from 'react-router-dom'
 import { LoaderContext } from '@js/utils/context'
+import { useFetch } from '@js/utils/hooks'
 import { useModal } from '@js/utils/hooks'
 import Modal from '@js/utils/Modal'
 
 const SettingsContainer = () => {
     const { setIsAuthenticated } = useContext(AuthContext)
-
     const {setShowLoader} = useContext(LoaderContext)
+
     const userId = localStorage.getItem('userId')
+    const userData = useFetch(`/users/${userId}`)
     
     const [isLoading, setIsLoading] = useState(false)
     const [localLoading, setLocalLoading] = useState(false)
@@ -33,12 +35,12 @@ const SettingsContainer = () => {
     document.title = "Groupomania - Paramètres"
 
     useEffect(() => {
-        console.log('reloaded');
-    })
-
-    useEffect(() => {
-        fetchUserData()
-    }, [])
+        setIsLoading(userData.isLoading)
+        if (!values.id) {
+            userData.error && setError(userData.data)
+            userData.data && setValues(userData.data)
+        }
+    }, [userData])
 
     useEffect(() => {
         setShowLoader(isLoading)
@@ -60,21 +62,6 @@ const SettingsContainer = () => {
             }
         }
     }, [passwordValues])
-
-    const fetchUserData = async () => {
-        setIsLoading(true)
-
-        try {
-            const response = await Request.apiCall(`/users/${userId}`)
-
-            if (response.error) throw response.data
-
-            setError(false)
-            setValues(response.data)
-        }
-        catch (error) { setError(error) }
-        finally { setIsLoading(false) }
-    }
 
     const handleChange = e => {
         setValues({...values, [e.target.name]: e.target.value})

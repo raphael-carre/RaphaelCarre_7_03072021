@@ -3,12 +3,15 @@ import React from 'react'
 import ReactDOM from 'react-dom'
 import { AuthProvider } from '@js/utils/context'
 import App from './App'
+import { LoaderProvider } from './utils/context'
 
 ReactDOM.render(
     <AppContainer>
-        <AuthProvider>
-            <App />
-        </AuthProvider>
+        <LoaderProvider>
+            <AuthProvider>
+                <App />
+            </AuthProvider>
+        </LoaderProvider>
     </AppContainer>,
     document.getElementById('root')
 )

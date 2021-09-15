@@ -10,7 +10,6 @@ import Thread from '@js/pages/Thread'
 import { Profile } from '@js/pages/Profile'
 import { Footer } from '@js/layout/Footer'
 import { Settings } from '@js/pages/Settings'
-import { LoaderProvider } from '@js/utils/context'
 import Error404 from '@js/pages/Error404'
 
 const App = () => {
@@ -19,16 +18,14 @@ const App = () => {
     return (
         <Router>
             <Header isAuthenticated={isAuthenticated} />
-            <LoaderProvider>
-                <Switch>
-                    <ProtectedRoute exact path="/" component={() => <Thread />} />
-                    <ProtectedRoute path="/profile/:id" component={() => <Profile />} />
-                    <ProtectedRoute path="/settings" component={() => <Settings />} />
-                    <Route path="/login" component={Login} />
-                    <Route path="/register" component={Register} />
-                    <Route path="*" render={Error404} />
-                </Switch> 
-            </LoaderProvider>
+            <Switch>
+                <ProtectedRoute exact path="/" component={Thread} />
+                <ProtectedRoute path="/profile/:id" component={Profile} />
+                <ProtectedRoute path="/settings" component={Settings} />
+                <Route path="/login" component={Login} />
+                <Route path="/register" component={Register} />
+                <Route path="*" render={Error404} />
+            </Switch> 
             {isAuthenticated && <Footer />}
         </Router>
     )

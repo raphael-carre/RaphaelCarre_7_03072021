@@ -6,16 +6,6 @@ export const useFetch = (uri, userEntries = null) => {
     const [data, setData] = useState(null)
     const [error, setError] = useState(false)
 
-    // const modalContext = useContext(ModalContext)
-
-    // useEffect(() => {
-    //     if (error && !error.key) {
-    //         console.log(error.statusCode)
-    //         modalContext.error(error.statusCode && error.statusCode !== 500 ? error.message : 'Il y a eu un problème')
-    //         setError(false)
-    //     }
-    // }, [error])
-
     useEffect(() => {
         fetchApi(uri, userEntries)
     }, [uri])
@@ -30,14 +20,7 @@ export const useFetch = (uri, userEntries = null) => {
             setError(false)
             setData(response.data)
         }
-        catch (error) {
-            // if (error.key) {
-            //     setError(error)
-            // } else {
-            //     modalContext.error(error)
-            // }
-            setError(error)
-        }
+        catch (error) { setError(error) }
         finally { setIsLoading(false) }
     }
 
