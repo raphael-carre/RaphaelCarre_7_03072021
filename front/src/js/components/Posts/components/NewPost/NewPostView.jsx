@@ -4,7 +4,7 @@ import ProfileImage from '@js/components/ProfileImage'
 import { ImageInput } from '@js/components/Form/Input'
 import style from './style.scss'
 
-const NewPostView = ({currentUser, handleFile, imagePreview, handleSubmit, error}) => (
+const NewPostView = ({currentUser, handleFile, imagePreview, handleSubmit, localLoading}) => (
     <div className={style.newPostDiv}>
         <div className={style.newPostDiv__head}>
             <ProfileImage data={currentUser} />
@@ -19,10 +19,10 @@ const NewPostView = ({currentUser, handleFile, imagePreview, handleSubmit, error
                 <div className={style.newPostDiv__imagePreview}>
                     <img src={URL.createObjectURL(imagePreview)} />    
                 </div>}
-                <Textarea name="content" error={error} />
+                <Textarea name="content" />
                 <div className={style.newPostDiv__buttons}>
                     <ImageInput handleFile={handleFile} />
-                    <button className="btn btn--primary" type="submit">Publier</button>
+                    <button className="btn btn--primary" type="submit" disabled={localLoading}>{localLoading ? 'Enregistrement...' : 'Publier'}</button>
                 </div>
             </form>
         </div>

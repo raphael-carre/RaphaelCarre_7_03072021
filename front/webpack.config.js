@@ -137,7 +137,7 @@ let config = {
         new HtmlWebpackPlugin({
             filename: 'index.html',
             template: path.resolve(__dirname, 'src/templates/index.ejs'),
-            publicPath: '',
+            publicPath: '/',
             minify: false
         })
     ]

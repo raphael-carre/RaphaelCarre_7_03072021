@@ -1,7 +1,8 @@
 import Request from '@js/utils/classes/Request'
 import { LoaderContext } from '@js/utils/context'
-import { ModalContext } from '@js/utils/context'
 import { AuthContext } from '@js/utils/context'
+import { useModal } from '@js/utils/hooks'
+import Modal from '@js/utils/Modal'
 import React, { useState, useEffect, useContext } from 'react'
 import { Redirect } from 'react-router-dom'
 import LoginView from './LoginView'
@@ -14,18 +15,19 @@ const LoginContainer = () => {
     const [disabled, setDisabled] = useState(true)
 
     const {isAuthenticated, setIsAuthenticated} = useContext(AuthContext)
-    const modalContext = useContext(ModalContext)
-    const {setShowLoader} = useContext(LoaderContext)
+    // const {setShowLoader} = useContext(LoaderContext)
+
+    const modal = useModal()
 
     document.title = "Groupomania - Connexion"
 
-    useEffect(() => {
-        setShowLoader(isLoading)
-    }, [isLoading])
+    // useEffect(() => {
+    //     setShowLoader(isLoading)
+    // }, [isLoading])
 
     useEffect(() => {
         if (error && !error.key) {
-            modalContext.error(error.statusCode !== 500 ? error.message : 'Il y a eu un problème')
+            modal.error(error.statusCode && error.statusCode !== 500 ? error.message : 'Il y a eu un problème')
             setError(false)
         }
     }, [error])
@@ -67,13 +69,16 @@ const LoginContainer = () => {
 
     return (
         isAuthenticated ? <Redirect to="/" /> :
-        <LoginView
-            handleSubmit={handleSubmit}
-            error={error}
-            values={values}
-            handleChange={handleChange}
-            disabled={disabled}
-        />
+        <>
+            {modal.content && <Modal content={modal.content} type={type} />}
+            {<LoginView
+                handleSubmit={handleSubmit}
+                error={error}
+                values={values}
+                handleChange={handleChange}
+                disabled={disabled}
+            />}
+        </>
     )
 }
 

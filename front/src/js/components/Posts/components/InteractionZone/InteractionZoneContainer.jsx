@@ -1,8 +1,9 @@
-import React, { useState, useEffect, useContext } from 'react'
+import React, { useState, useEffect } from 'react'
 import InteractionZoneView from './InteractionZoneView'
 import Loader from '@js/utils/Loader'
 import Request from '@js/utils/classes/Request'
-import { ModalContext } from '@js/utils/context'
+import { useModal } from '@js/utils/hooks'
+import Modal from '@js/utils/Modal'
 
 const InteractionZoneContainer = ({postData}) => {
     const [isLoading, setIsLoading] = useState(false)
@@ -11,7 +12,7 @@ const InteractionZoneContainer = ({postData}) => {
     const [commentsCounter, setCommentsCounter] = useState(postData.commentsCounter)
     const [loadComments, setLoadComments] = useState(false)
 
-    const modalContext = useContext(ModalContext)
+    const modal = useModal()
 
     useEffect(() => {
         fetchLikes(postData.id)
@@ -19,7 +20,7 @@ const InteractionZoneContainer = ({postData}) => {
 
     useEffect(() => {
         if (error && !error.key) {
-            modalContext.error(error.statusCode !== 500 ? error.message : 'Il y a eu un problème')
+            modal.error(error.statusCode && error.statusCode !== 500 ? error.message : 'Il y a eu un problème')
             setError(false)
         }
     }, [error])
@@ -44,7 +45,7 @@ const InteractionZoneContainer = ({postData}) => {
 
             if (response.error) throw response.data
 
-            modalContext.info(response.data.message)
+            modal.info(response.data.message)
             setError(false)
             fetchLikes(postData.id)
         }
@@ -57,8 +58,9 @@ const InteractionZoneContainer = ({postData}) => {
 
     return (
         // isLoading ? <Loader /> :
-        error ? <p>{error.message}</p> :
-        likes &&
+        <>
+        {modal.content && <Modal content={modal.content} type={modal.type} />}
+        {likes &&
         <InteractionZoneView
             postId={postData.id}
             likes={likes.filter(like => like.like)}
@@ -67,7 +69,8 @@ const InteractionZoneContainer = ({postData}) => {
             setCommentsCounter={setCommentsCounter}
             loadComments={loadComments}
             toggleComments={toggleComments}
-        />
+        />}
+        </>
     )
 }
 

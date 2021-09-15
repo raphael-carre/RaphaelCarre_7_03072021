@@ -1,5 +1,7 @@
 import Request from '@js/utils/classes/Request'
 import { ModalContext } from '@js/utils/context'
+import { useModal } from '@js/utils/hooks'
+import Modal from '@js/utils/Modal'
 import React, { useState, useEffect, useContext } from 'react'
 import RegisterView from './RegisterView'
 
@@ -15,12 +17,12 @@ const RegisterContainer = () => {
         confirmPassword: ''
     })
     const [isRegistered, setIsRegistered] = useState(false)
-    const modalContext = useContext(ModalContext)
+    const modal = useModal()
 
     document.title = "Groupomania - Inscription"
     useEffect(() => {
         if (error && !error.key) {
-            modalContext.error(error.statusCode !== 500 ? error.message : 'Il y a eu un problème')
+            modal.error(error.statusCode && error.statusCode !== 500 ? error.message : 'Il y a eu un problème')
             setError(false)
         }
     }, [error])
@@ -59,14 +61,17 @@ const RegisterContainer = () => {
     }
 
     return (
-        <RegisterView
-            error={error}
-            values={values}
-            handleChange={handleChange}
-            register={register}
-            isRegistered={isRegistered}
-            disabled={disabled}
-        />
+        <>
+            {modal.content && <Modal content={modal.content} type={type} />}
+            {<RegisterView
+                error={error}
+                values={values}
+                handleChange={handleChange}
+                register={register}
+                isRegistered={isRegistered}
+                disabled={disabled}
+            />}
+        </>
     )
 }
 

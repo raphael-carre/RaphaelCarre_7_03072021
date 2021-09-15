@@ -2,14 +2,16 @@ import React, { useState, useEffect, useContext } from 'react'
 import { useFetch } from '@js/utils/hooks'
 import PostsView from './PostsView'
 import Request from '@js/utils/classes/Request'
-import { ModalContext } from '@js/utils/context'
 import { LoaderContext } from '@js/utils/context'
+import { useModal } from '@js/utils/hooks'
+import Modal from '@js/utils/Modal'
 
 const PostsContainer = ({uri, userId}) => {
     const isProfile = userId ? true : false
     const isOwner = parseInt(userId) === parseInt(localStorage.getItem('userId')) ? true : false
 
-    const posts = useFetch(uri)
+    // const posts = useFetch(uri)
+    const modal = useModal()
 
     const [isLoading, setIsLoading] = useState(false)
     const [error, setError] = useState(false)
@@ -20,29 +22,30 @@ const PostsContainer = ({uri, userId}) => {
     const [image, setImage] = useState(null)
     const [updatePost, setUpdatePost] = useState(null)
 
-    const {setShowLoader} = useContext(LoaderContext)
-    const modalContext = useContext(ModalContext)
+    // const {setShowLoader} = useContext(LoaderContext)
+    // const modalContext = useContext(ModalContext)
 
     useEffect(() => {
-        setShowLoader(isLoading)
-    }, [isLoading])
+        getPosts()
+    }, [])
+    // useEffect(() => {
+    //     setShowLoader(isLoading)
+    // }, [isLoading])
 
     useEffect(() => {
         if (error && !error.key) {
-            modalContext.error(error.statusCode && error.statusCode !== 500 ? error.message : 'Il y a eu un problème')
+            modal.error(error.statusCode && error.statusCode !== 500 ? error.message : 'Il y a eu un problème')
             setError(false)
         }
     }, [error])
 
-    useEffect(() => {
-        if (allPosts === null) {
-            setIsLoading(posts.isLoading)
-            setError(posts.error)
-            posts.data && setAllPosts(posts.data)
-        } else {
-            setIsLoading(false)
-        }
-    }, [posts])
+    // useEffect(() => {
+    //     if (allPosts === null) {
+    //         setIsLoading(posts.isLoading)
+    //         posts.error && setError(posts.data)
+    //         posts.data && setAllPosts(posts.data)
+    //     }
+    // }, [posts])
 
     useEffect(() => {
         if (newPost !== null) {
@@ -50,8 +53,23 @@ const PostsContainer = ({uri, userId}) => {
         }
     }, [newPost])
 
+    const getPosts = async () => {
+        setIsLoading(true)
+
+        try {
+            const response = await Request.apiCall(uri)
+            
+            if (response.error) throw response.data
+            
+            setError(false)
+            setAllPosts(response.data)
+        }
+        catch (error) { setError(error) }
+        finally { setIsLoading(false) }
+    }
+
     const deletePost = async id => {
-        const confirm = await modalContext.confirm('Êtes-vous sûr de vouloir supprimer cette publication ?')
+        const confirm = await modal.confirm('Êtes-vous sûr de vouloir supprimer cette publication ?')
 
         if (confirm) {
             try {
@@ -61,9 +79,9 @@ const PostsContainer = ({uri, userId}) => {
     
                 setAllPosts(allPosts.filter(post => post.id !== id))
                 setError(false)
-                modalContext.info(response.data.message)
+                modal.info(response.data.message)
             }
-            catch (error) { setError(error) }
+            catch (error) { modal.error(error) }
         }
     }
 
@@ -88,7 +106,7 @@ const PostsContainer = ({uri, userId}) => {
             const postIndexToUpdate = allPosts.findIndex(post => post.id === id)
             const User = allPosts[postIndexToUpdate].User
             allPosts[postIndexToUpdate] = {...response.data.data, User}
-            modalContext.info(response.data.message)
+            modal.info(response.data.message)
         }
         catch (error) { setError(error) }
         finally { setUpdatePost(null) }
@@ -130,17 +148,19 @@ const PostsContainer = ({uri, userId}) => {
     }
 
     return (
-        allPosts && 
-        <PostsView
-            isProfile={isProfile}
-            isOwner={isOwner}
-            posts={allPosts}
-            setNewPost={setNewPost}
-            options={options}
-            updateMethods={{handleResetForm, handleUpdate, handleFile}}
-            updatePost={updatePost}
-            image={image}
-        />  
+        <>
+            {modal.content && <Modal content={modal.content} type={modal.type} confirmMethods={modal.confirmMethods} />}
+            <PostsView
+                isProfile={isProfile}
+                isOwner={isOwner}
+                posts={allPosts}
+                setNewPost={setNewPost}
+                options={options}
+                updateMethods={{handleResetForm, handleUpdate, handleFile}}
+                updatePost={updatePost}
+                image={image}
+            />
+        </>
     )
 }
 

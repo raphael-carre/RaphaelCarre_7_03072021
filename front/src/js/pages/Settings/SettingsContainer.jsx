@@ -1,15 +1,16 @@
 import React, { useState, useEffect, useContext } from 'react'
 import { AuthContext } from '@js/utils/context'
-import { ModalContext } from '@js/utils/context'
 import SettingsView from './SettingsView'
 import Request from '@js/utils/classes/Request'
 import { Redirect } from 'react-router-dom'
 import { LoaderContext } from '@js/utils/context'
+import { useModal } from '@js/utils/hooks'
+import Modal from '@js/utils/Modal'
 
 const SettingsContainer = () => {
     const { setIsAuthenticated } = useContext(AuthContext)
-    const modalContext = useContext(ModalContext)
-    const {setShowLoader} = useContext(LoaderContext)
+
+    // const {setShowLoader} = useContext(LoaderContext)
     const userId = localStorage.getItem('userId')
     
     const [isLoading, setIsLoading] = useState(false)
@@ -25,6 +26,8 @@ const SettingsContainer = () => {
         password: '',
         confirmPassword: ''
     })
+
+    const modal = useModal()
 
     document.title = "Groupomania - Paramètres"
 
@@ -42,7 +45,7 @@ const SettingsContainer = () => {
 
     useEffect(() => {
         if (error && !error.key) {
-            modalContext.error(error.statusCode !== 500 ? error.message : 'Il y a eu un problème')
+            modal.error(error.statusCode && error.statusCode !== 500 ? error.message : 'Il y a eu un problème')
             setError(false)
         }
     }, [error])
@@ -100,14 +103,14 @@ const SettingsContainer = () => {
             setError(false)
             if (formName === 'userData') { setValues(response.data.data) }
             if (formName === 'userPassword') {setPasswordValues({password: '', confirmPassword: ''})}
-            modalContext.info(response.data.message)
+            modal.info(response.data.message)
         }
         catch (error) { setError(error) }
         finally { setIsLoading(false) }
     }
 
     const handleDeleteUser = async () => {
-        const confirm = await modalContext.confirm('Êtes-vous sûr de vouloir supprimer votre compte ?')
+        const confirm = await modal.confirm('Êtes-vous sûr de vouloir supprimer votre compte ?')
 
         if (confirm) {
             setIsLoading(true)
@@ -161,18 +164,21 @@ const SettingsContainer = () => {
     }
 
     return (
-        values.id &&
-        <SettingsView
-            values={values}
-            passwordValues={passwordValues}
-            error={error}
-            handleFile={handleFile}
-            handleChange={handleChange}
-            handlePasswordChange={handlePasswordChange}
-            handleSubmit={handleSubmit}
-            handleDeleteUser={handleDeleteUser}
-            logout={logout}
-        />
+        <>
+            {modal.content && <Modal content={modal.content} type={modal.type} confirmMethods={modal.confirmMethods} />}
+            {values.id &&
+            <SettingsView
+                values={values}
+                passwordValues={passwordValues}
+                error={error}
+                handleFile={handleFile}
+                handleChange={handleChange}
+                handlePasswordChange={handlePasswordChange}
+                handleSubmit={handleSubmit}
+                handleDeleteUser={handleDeleteUser}
+                logout={logout}
+            />}
+        </>
     )
 }
 

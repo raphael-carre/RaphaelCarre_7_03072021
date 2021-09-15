@@ -1,7 +1,7 @@
 import Request from '@js/utils/classes/Request'
 import React, { useState, useEffect, useRef, createContext, useContext } from 'react'
 import Loader from '../Loader'
-import Modal from '../Modal'
+// import Modal from '../Modal'
 
 export const AuthContext = createContext()
 
@@ -12,8 +12,6 @@ export const AuthProvider = ({children}) => {
     const [data, setData] = useState(null)
     const [error, setError] = useState(false)
     
-    const modalContext = useContext(ModalContext)
-
     useEffect(() => {
         if (error && !error.key) {
             modalContext.error(error.statusCode && error.statusCode !== 500 ? error.message : 'Il y a eu un problème')
@@ -26,6 +24,7 @@ export const AuthProvider = ({children}) => {
 
     useEffect(() => {
         if (data && data.isAdmin) { localStorage.setItem('isAdmin', true) }
+        if (data) { localStorage.setItem('userData', JSON.stringify(data)) }
     }, [data])
 
     const checkUser = async userId => {
@@ -54,69 +53,6 @@ export const AuthProvider = ({children}) => {
         <AuthContext.Provider value={{isAuthenticated, setIsAuthenticated}}>
             {children}
         </AuthContext.Provider>
-    )
-}
-
-export const ModalContext = createContext()
-
-export const ModalProvider = ({children}) => {
-    const [modalContent, setModalContent] = useState({content: null, type: 'message'})
-
-    const resolver = useRef()
-
-    useEffect(() => {
-        if (modalContent.content && modalContent.type !== 'confirm') {
-            const timeout = setTimeout(() => {
-                setModalContent({content: null, type: 'message'})
-                document.body.removeAttribute('style')
-                clearTimeout(timeout)
-            }, 2200)
-        }
-    })
-
-    useEffect(() => {
-        modalContent.content && (document.body.style.overflow = 'hidden')
-    }, [modalContent])
-
-    const info = content => {
-        setModalContent({ content, type: 'message' })
-    }
-
-    const error = content => {
-        setModalContent({ content, type: 'error' })
-    }
-
-    const confirm = content => {
-        setModalContent({content, type: 'confirm'})
-
-        return new Promise(resolve => {
-            resolver.current = resolve
-        })
-    }
-
-    const handleOk = () => {
-        resolver.current && resolver.current(true)
-        closeModal()
-    }
-
-    const handleNo = () => {
-        resolver.current && resolver.current(false)
-        closeModal()
-    }
-
-    const closeModal = () => {
-        const timout = setTimeout(() => {
-            setModalContent({content: null, type: 'message'})
-            document.body.removeAttribute('style')
-            clearTimeout(timout)
-        }, 220)   
-    }
-
-    return (
-        <ModalContext.Provider value={{info, error, confirm}}>
-            {modalContent.content && <Modal content={modalContent.content} type={modalContent.type} confirmMethods={{handleOk, handleNo}} />}
-            {children}
-        </ModalContext.Provider>
     )
 }
 

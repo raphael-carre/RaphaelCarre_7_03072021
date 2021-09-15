@@ -1,32 +1,26 @@
-import React, { useState, useEffect, useContext } from 'react'
-import { useFetch } from '@js/utils/hooks'
+import React, { useState, useEffect } from 'react'
 import Loader from '@js/utils/Loader'
 import Request from '@js/utils/classes/Request'
 import NewPostView from './NewPostView'
-import { ModalContext } from '@js/utils/context'
+import { useModal } from '@js/utils/hooks'
+import Modal from '@js/utils/Modal'
 
 const NewPostContainer = ({setNewPost}) =>  {
-    const userData = useFetch(`/users/${localStorage.getItem('userId')}`)
+    const user = JSON.parse(localStorage.getItem('userData'))
 
     const [isLoading, setIsLoading] = useState(false)
+    const [localLoading, setLocalLoading] = useState(false)
     const [error, setError] = useState(false)
-    const [user, setUser] = useState(null)
     const [image, setImage] = useState(null)
 
-    const modalContext = useContext(ModalContext)
+    const modal = useModal()
 
     useEffect(() => {
         if (error && !error.key) {
-            modalContext.error(error.statusCode !== 500 ? error.message : 'Il y a eu un problème')
+            modal.error(error.statusCode !== 500 ? error.message : 'Il y a eu un problème')
             setError(false)
         }
     }, [error])
-
-    useEffect(() => {
-        setIsLoading(userData.isLoading)
-        setError(userData.error)
-        userData.data && setUser(userData.data)
-    }, [userData])
 
     const handleSubmit = async e => {
         e.preventDefault()
@@ -42,7 +36,7 @@ const NewPostContainer = ({setNewPost}) =>  {
 
         const formData = createFormData(content)
 
-        setIsLoading(true)
+        setLocalLoading(true)
         try {
             const response = await Request.apiCall('/posts', formData)
 
@@ -50,12 +44,14 @@ const NewPostContainer = ({setNewPost}) =>  {
 
             setError(false)
             setNewPost({...response.data.newPost, User})
-            e.target['content'].value = ''
+            
             if (image) { setImage(null) }
-            modalContext.info(response.data.message)
+            e.target['content'].value = ''
+
+            modal.info(response.data.message)
         }
         catch (error) { setError(error) }
-        finally { setIsLoading(false) }
+        finally { setLocalLoading(false) }
     }
 
     const handleFile = e => {
@@ -77,14 +73,16 @@ const NewPostContainer = ({setNewPost}) =>  {
     }
 
     return (
-        user && 
-        <NewPostView 
-            currentUser={user}
-            handleFile={handleFile}
-            imagePreview={image}
-            handleSubmit={handleSubmit}
-            error={error}
-        />
+        <>
+            {modal.content && <Modal content={modal.content} type={modal.type} />}
+            <NewPostView 
+                currentUser={user}
+                handleFile={handleFile}
+                imagePreview={image}
+                handleSubmit={handleSubmit}
+                localLoading={localLoading}
+            />
+        </>
     )
 }
 

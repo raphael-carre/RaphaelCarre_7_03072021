@@ -1,5 +1,7 @@
 import { LoaderContext } from '@js/utils/context'
+import { useModal } from '@js/utils/hooks'
 import { useFetch } from '@js/utils/hooks'
+import Modal from '@js/utils/Modal'
 import React, { useState, useEffect, useContext } from 'react'
 import { useParams } from 'react-router-dom'
 import ProfileView from './ProfileView'
@@ -12,11 +14,19 @@ const ProfileContainer = () => {
 
     const [userData, setUserData] = useState(null)
 
-    const {setShowLoader} = useContext(LoaderContext)
+    const modal = useModal()
 
     useEffect(() => {
-        setShowLoader(isLoading)
-    }, [isLoading])
+        if (error && !error.key) {
+            modal.error(error.statusCode && error.statusCode !== 500 ? error.message : 'Il y a eu un problème')
+        }
+    }, [error])
+
+    // const {setShowLoader} = useContext(LoaderContext)
+
+    // useEffect(() => {
+    //     setShowLoader(isLoading)
+    // }, [isLoading])
 
     useEffect(() => {
         data && setUserData(data)
@@ -24,9 +34,10 @@ const ProfileContainer = () => {
     }, [data])
 
     return (
-        (error ? <p>{error.message}</p>:
-            userData && <ProfileView uri={uri} userData={userData} />
-        )
+        <>
+            {modal.content && <Modal content={modal.content} type={modal.type} />}
+            {userData && <ProfileView uri={uri} userData={userData} />}
+        </>
     )
 }
 

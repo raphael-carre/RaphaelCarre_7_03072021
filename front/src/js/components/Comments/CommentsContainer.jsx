@@ -1,7 +1,8 @@
 import Request from '@js/utils/classes/Request'
-import { ModalContext } from '@js/utils/context'
+import { useModal } from '@js/utils/hooks'
 import { useFetch } from '@js/utils/hooks'
 import Loader from '@js/utils/Loader'
+import Modal from '@js/utils/Modal'
 import React, { useState, useEffect, useContext } from 'react'
 import CommentsView from './CommentsView'
 
@@ -15,11 +16,11 @@ const CommentsContainer = ({postId, setCommentsCounter}) => {
     const [newComment, setNewComment] = useState(null)
     const [updateComment, setUpdateComment] = useState(null)
 
-    const modalContext = useContext(ModalContext)
+    const modal = useModal()
 
     useEffect(() => {
         if (error && !error.key) {
-            modalContext.error(error.statusCode && error.statusCode !== 500 ? error.message : 'Il y a eu un problème')
+            modal.error(error.statusCode && error.statusCode !== 500 ? error.message : 'Il y a eu un problème')
             setError(false)
         }
     }, [error])
@@ -38,7 +39,7 @@ const CommentsContainer = ({postId, setCommentsCounter}) => {
     }, [newComment])
 
     const deleteComment = async id => {
-        const confirm = await modalContext.confirm('Êtes-vous sûr de vouloir supprimer ce commentaire ?')
+        const confirm = await modal.confirm('Êtes-vous sûr de vouloir supprimer ce commentaire ?')
 
         if (confirm) {
             try {
@@ -49,7 +50,7 @@ const CommentsContainer = ({postId, setCommentsCounter}) => {
                 setCommentsCounter(comments.length - 1)
                 setComments(comments.filter(comment => comment.id !== id))
                 setError(false)
-                modalContext.info(response.data.message)
+                modal.info(response.data.message)
             }
             catch (error) { setError(error) }
         }
@@ -72,7 +73,7 @@ const CommentsContainer = ({postId, setCommentsCounter}) => {
             const commentIndexToUpdate = comments.findIndex(comment => comment.id === id)
             const User = comments[commentIndexToUpdate].User
             comments[commentIndexToUpdate] = {...response.data.data, User}
-            modalContext.info(response.data.message)
+            modal.info(response.data.message)
         }
         catch (error) { setError(error) }
         finally { setUpdateComment(null) }
@@ -89,15 +90,18 @@ const CommentsContainer = ({postId, setCommentsCounter}) => {
     }
 
     return (
-        comments &&
-        <CommentsView
-            postId={postId}
-            comments={comments}
-            setNewComment={setNewComment}
-            updateComment={updateComment}
-            updateMethods={{handleUpdate, handleResetForm}}
-            options={options}
-        />
+        <>
+            {modal.content && <Modal content={modal.content} type={modal.type} confirmMethods={modal.confirmMethods} />}
+            {comments &&
+            <CommentsView
+                postId={postId}
+                comments={comments}
+                setNewComment={setNewComment}
+                updateComment={updateComment}
+                updateMethods={{handleUpdate, handleResetForm}}
+                options={options}
+            />}
+        </>
     )
 }
 
