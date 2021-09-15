@@ -67,7 +67,7 @@ const RegisterContainer = () => {
     return (
         isAuthenticated ? <Redirect to="/" /> :
         <>
-            {modal.content && <Modal content={modal.content} type={type} />}
+            {modal.content && <Modal content={modal.content} type={modal.type} />}
             {<RegisterView
                 error={error}
                 values={values}
