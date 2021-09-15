@@ -1,3 +1,4 @@
+const fs = require('fs')
 const express = require('express')
 const helmet = require('helmet')
 const dotenv = require('dotenv').config({ path: './.env' })
@@ -42,10 +43,10 @@ if (process.env.NODE_ENV === 'development') {
 } else {
     app.use(express.static('./public'))
 
-    app.get('/', (req, res) => {
+    app.get('*', (req, res) => {
         const index = fs.existsSync('./public/index.html') ? fs.readFileSync('./public/index.html') : '<a href="http://localhost:8080>Groupomania</a>'
-        res.writeHead(200, {'Content-Type': 'text/html'})
-        res.end(index)
+        res.header('Content-Type', 'text/html')
+        res.send(index)
     })
 }
 
