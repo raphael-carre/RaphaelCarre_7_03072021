@@ -11,6 +11,8 @@ services:
     gm-front:
         build:
             dockerfile: Dockerfile.dev
+        ports:
+            - "8080:8080"
         volumes:
             - ./front/src:/app/src:ro
             - /app/node_modules
