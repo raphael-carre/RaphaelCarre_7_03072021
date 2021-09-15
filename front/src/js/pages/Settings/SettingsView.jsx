@@ -6,6 +6,7 @@ import { Input } from '@js/components/Form/Input'
 import style from './style.scss'
 
 const SettingsView = ({
+    localLoading,
     values,
     passwordValues,
     error,
@@ -66,7 +67,9 @@ const SettingsView = ({
                     </div>
                 </div>
                 <div className={style.settingsForm__buttons}>
-                    <button className="btn btn--primary" type="submit">Enregistrer</button>
+                    <button className="btn btn--primary" type="submit" disabled={localLoading === 'userData'}>
+                        {localLoading === 'userData' ? 'Enregistrement...' : 'Enregistrer'}
+                    </button>
                 </div>
             </form>
             <form name="userPassword" onSubmit={handleSubmit}>
@@ -91,7 +94,9 @@ const SettingsView = ({
                     </div>
                 </div>
                 <div className={style.settingsForm__buttons}>
-                    <button className="btn btn--primary" type="submit">Enregistrer</button>
+                    <button className="btn btn--primary" type="submit" disabled={localLoading === 'userPassword'}>
+                        {localLoading === 'userPassword' ? 'Enregistrement...' : 'Enregistrer'}
+                    </button>
                 </div>
             </form>
             <div className={style.settingsForm__profileDeletion}>

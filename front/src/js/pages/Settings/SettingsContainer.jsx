@@ -14,6 +14,7 @@ const SettingsContainer = () => {
     const userId = localStorage.getItem('userId')
     
     const [isLoading, setIsLoading] = useState(false)
+    const [localLoading, setLocalLoading] = useState(false)
     const [error, setError] = useState(false)
     const [values, setValues] = useState({
         id: null,
@@ -93,7 +94,7 @@ const SettingsContainer = () => {
         const formName = e.target.name
         const formData = createFormData(formName)
 
-        setIsLoading(true)
+        setLocalLoading(formName)
 
         try {
             const response = await Request.apiCall(`/users/${userId}`, formData, 'PUT')
@@ -106,7 +107,7 @@ const SettingsContainer = () => {
             modal.info(response.data.message)
         }
         catch (error) { setError(error) }
-        finally { setIsLoading(false) }
+        finally { setLocalLoading(false) }
     }
 
     const handleDeleteUser = async () => {
@@ -168,6 +169,7 @@ const SettingsContainer = () => {
             {modal.content && <Modal content={modal.content} type={modal.type} confirmMethods={modal.confirmMethods} />}
             {values.id &&
             <SettingsView
+                localLoading={localLoading}
                 values={values}
                 passwordValues={passwordValues}
                 error={error}
