@@ -6,4 +6,22 @@ COPY . .
 RUN npm run prod
 
 FROM httpd:2.4
-COPY --from=build /app/build /usr/local/apache2/htdocs
+WORKDIR /usr/local/apache2/htdocs
+COPY --from=build /app/build .
+RUN sed -i '/LoadModule rewrite_module/s/^#//g' /usr/local/apache2/conf/httpd.conf
+RUN sed -i '/<Directory "\/usr\/local\/apache2\/htdocs">/,/<\/Directory>/ s/AllowOverride None/AllowOverride All/' /usr/local/apache2/conf/httpd.conf
+RUN echo "RewriteEngine On\n"\
+"\n"\
+"DirectoryIndex index.html\n"\
+"Options +FollowSymLinks\n"\
+"Options All -Indexes\n"\
+"\n"\
+"RewriteBase /\n"\
+"\n"\
+"# Image, CSS, JS files\n"\
+"RewriteCond ${REQUEST_URI} ^/(css|img|js|font)(/.*)?$ [NC]\n"\
+"RewriteRule ^.*$ /%1%2 [L]\n" \
+"\n"\
+"RewriteCond %{REQUEST_FILENAME} !-f\n"\
+"RewriteCond %{REQUEST_FILENAME} !-d\n"\
+"RewriteRule ^(.*[^/])/?$ index.html [QSA,NC,L]\n" > .htaccess
