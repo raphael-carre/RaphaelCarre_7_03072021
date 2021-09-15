@@ -22,15 +22,16 @@ const PostsContainer = ({uri, userId}) => {
     const [image, setImage] = useState(null)
     const [updatePost, setUpdatePost] = useState(null)
 
-    // const {setShowLoader} = useContext(LoaderContext)
+    const {setShowLoader} = useContext(LoaderContext)
     // const modalContext = useContext(ModalContext)
 
     useEffect(() => {
         getPosts()
     }, [])
-    // useEffect(() => {
-    //     setShowLoader(isLoading)
-    // }, [isLoading])
+
+    useEffect(() => {
+        setShowLoader(isLoading)
+    }, [isLoading])
 
     useEffect(() => {
         if (error && !error.key) {

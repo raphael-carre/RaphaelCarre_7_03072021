@@ -15,15 +15,15 @@ const LoginContainer = () => {
     const [disabled, setDisabled] = useState(true)
 
     const {isAuthenticated, setIsAuthenticated} = useContext(AuthContext)
-    // const {setShowLoader} = useContext(LoaderContext)
+    const {setShowLoader} = useContext(LoaderContext)
 
     const modal = useModal()
 
     document.title = "Groupomania - Connexion"
 
-    // useEffect(() => {
-    //     setShowLoader(isLoading)
-    // }, [isLoading])
+    useEffect(() => {
+        setShowLoader(isLoading)
+    }, [isLoading])
 
     useEffect(() => {
         if (error && !error.key) {

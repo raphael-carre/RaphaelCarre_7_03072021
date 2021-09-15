@@ -19,7 +19,7 @@ const App = () => {
     return (
         <Router>
             <Header isAuthenticated={isAuthenticated} />
-            {/* <LoaderProvider> */}
+            <LoaderProvider>
                 <Switch>
                     <ProtectedRoute exact path="/" component={() => <Thread />} />
                     <ProtectedRoute path="/profile/:id" component={() => <Profile />} />
@@ -28,7 +28,7 @@ const App = () => {
                     <Route path="/register" component={Register} />
                     <Route path="*" render={Error404} />
                 </Switch> 
-            {/* </LoaderProvider> */}
+            </LoaderProvider>
             {isAuthenticated && <Footer />}
         </Router>
     )

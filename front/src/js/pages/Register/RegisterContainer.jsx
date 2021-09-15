@@ -20,6 +20,7 @@ const RegisterContainer = () => {
     const modal = useModal()
 
     document.title = "Groupomania - Inscription"
+    
     useEffect(() => {
         if (error && !error.key) {
             modal.error(error.statusCode && error.statusCode !== 500 ? error.message : 'Il y a eu un problème')

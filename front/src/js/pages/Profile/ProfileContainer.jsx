@@ -22,11 +22,11 @@ const ProfileContainer = () => {
         }
     }, [error])
 
-    // const {setShowLoader} = useContext(LoaderContext)
+    const {setShowLoader} = useContext(LoaderContext)
 
-    // useEffect(() => {
-    //     setShowLoader(isLoading)
-    // }, [isLoading])
+    useEffect(() => {
+        setShowLoader(isLoading)
+    }, [isLoading])
 
     useEffect(() => {
         data && setUserData(data)

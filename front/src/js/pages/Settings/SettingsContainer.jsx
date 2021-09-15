@@ -10,7 +10,7 @@ import Modal from '@js/utils/Modal'
 const SettingsContainer = () => {
     const { setIsAuthenticated } = useContext(AuthContext)
 
-    // const {setShowLoader} = useContext(LoaderContext)
+    const {setShowLoader} = useContext(LoaderContext)
     const userId = localStorage.getItem('userId')
     
     const [isLoading, setIsLoading] = useState(false)
@@ -40,9 +40,9 @@ const SettingsContainer = () => {
         fetchUserData()
     }, [])
 
-    // useEffect(() => {
-    //     setShowLoader(isLoading)
-    // }, [isLoading])
+    useEffect(() => {
+        setShowLoader(isLoading)
+    }, [isLoading])
 
     useEffect(() => {
         if (error && !error.key) {
