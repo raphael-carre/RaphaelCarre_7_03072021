@@ -20,8 +20,15 @@
             schema:
               type: object
               properties:
-                error:
-                  example: Requête invalide !
+                statusCode:
+                  type: number
+                  example: 400
+                message:
+                  type: string
+                  example: Adresse e-mail non valide !
+                key:
+                  type: string
+                  example: email
 
 /api/users/login:
   post:
@@ -47,8 +54,15 @@
             schema:
               type: object
               properties:
-                error:
+                statusCode:
+                  type: number
+                  example: 404
+                message:
+                  type: string
                   example: Adresse e-mail incorrecte !
+                key:
+                  type: string
+                  example: email
 
 /api/users:
   get:
@@ -71,8 +85,14 @@
             schema:
               type: object
               properties:
-                error: 
+                statusCode:
+                  type: number
+                  example: 404
+                message:
+                  type: string
                   example: Aucun utilisateur enregistré !
+                key:
+                  example: null
 
 /api/users/{id}:
   get:
@@ -100,8 +120,14 @@
             schema:
               type: object
               properties:
-                error: 
+                statusCode:
+                  type: number
+                  example: 404
+                message:
+                  type: string
                   example: Utilisateur introuvable !
+                key:
+                  example: null
   put:
     tags: ['Users']
     description: Updates one user in the database
@@ -134,8 +160,14 @@
             schema:
               type: object
               properties:
-                error:
+                statusCode:
+                  type: number
+                  example: 401
+                message:
+                  type: string
                   example: Vous n'avez pas l'autorisation d'effectuer cette action !
+                key:
+                  example: null
   delete:
     tags: ['Users']
     description: Deletes one user in the database
@@ -164,8 +196,14 @@
             schema:
               type: object
               properties:
-                error:
+                statusCode:
+                  type: number
+                  example: 401
+                message:
+                  type: string
                   example: Vous n'avez pas l'autorisation d'effectuer cette action !
+                key:
+                  example: null
 
 /api/posts:
   post:
@@ -193,8 +231,14 @@
             schema:
               type: object
               properties:
-                error:
-                  example: Requête invalide !
+                statusCode:
+                  type: number
+                  example: 400
+                message:
+                  type: string
+                  example: Votre publication est vide !
+                key:
+                  example: null
   get:
     tags: ['Posts']
     description: Returns every posts in database
@@ -213,8 +257,14 @@
             schema:
               type: object
               properties:
-                error: 
+                statusCode:
+                  type: number
+                  example: 404
+                message:
+                  type: string
                   example: Il n'existe aucune publication...
+                key:
+                  example: null
 
 /api/posts/{id}:
   get:
@@ -242,8 +292,14 @@
             schema:
               type: object
               properties:
-                error: 
+                statusCode:
+                  type: number
+                  example: 404
+                message:
+                  type: string
                   example: Publication introuvable !
+                key:
+                  example: null
 
   put:
     tags: ['Posts']
@@ -277,8 +333,14 @@
             schema:
               type: object
               properties:
-                error: 
+                statusCode:
+                  type: number
+                  example: 400
+                message:
+                  type: string
                   example: Votre publication est vide !
+                key:
+                  example: null
   delete:
     tags: ['Posts']
     description: Deletes one post in the database
@@ -307,8 +369,14 @@
             schema:
               type: object
               properties:
-                error: 
+                statusCode:
+                  type: number
+                  example: 404
+                message:
+                  type: string
                   example: Publication introuvable !
+                key:
+                  example: null
 
 /api/posts/user/{userId}:
   get:
@@ -336,8 +404,14 @@
             schema:
               type: object
               properties:
-                error: 
+                statusCode:
+                  type: number
+                  example: 404
+                message:
+                  type: string
                   example: Il n'existe aucune publication...
+                key:
+                  example: null
 
 /api/comments/post/{postId}:
   post:
@@ -374,8 +448,14 @@
             schema:
               type: object
               properties:
-                error:
+                statusCode:
+                  type: number
+                  example: 400
+                message:
+                  type: string
                   example: Votre commentaire est vide !
+                key:
+                  example: null
   get:
     tags: ['Comments']
     description: Returns every comments for a specific post
@@ -413,8 +493,14 @@
             schema:
               type: object
               properties:
-                error: 
-                  example: Il y a ey un problème...
+                statusCode:
+                  type: number
+                  example: 500
+                message:
+                  type: string
+                  example: Il y a eu un problème !
+                key:
+                  example: null
 
 /api/comments/{id}:
   put:
@@ -449,8 +535,14 @@
             schema:
               type: object
               properties:
-                error: 
+                statusCode:
+                  type: number
+                  example: 404
+                message:
+                  type: string
                   example: Commentaire introuvable !
+                key:
+                  example: null
   delete:
     tags: ['Comments']
     description: Deletes a comment
@@ -479,8 +571,14 @@
             schema:
               type: object
               properties:
-                error: 
+                statusCode:
+                  type: number
+                  example: 404
+                message:
+                  type: string
                   example: Commentaire introuvable !
+                key:
+                  example: null
 
 /api/likes/posts/{id}:
   post:
@@ -511,8 +609,14 @@
             schema:
               type: object
               properties:
-                error:
+                statusCode:
+                  type: number
+                  example: 404
+                message:
+                  type: string
                   example: Publication introuvable !
+                key:
+                  example: null
   get:
     tags: ['Likes']
     description: Returns every users who liked/disliked a specific post
@@ -545,8 +649,14 @@
             schema:
               type: object
               properties:
-                error:
+                statusCode:
+                  type: number
+                  example: 404
+                message:
+                  type: string
                   example: Publication introuvable !
+                key:
+                  example: null
                   
 /api/likes/users/{id}:
   get:
@@ -576,14 +686,20 @@
             schema:
               type: object
               properties:
-                error:
+                statusCode:
+                  type: number
+                  example: 404
+                message:
+                  type: string
                   example: Utilisateur introuvable !
+                key:
+                  example: null
 
 /api/password/lost:
   post:
     tags: ['Password']
-    description:
-    summary:
+    description: Asks for a random code for an existing user email
+    summary: Asks for a random code for an existing user email
     requestBody:
       $ref: '#components/requestBodies/LostPassword'
     responses:
@@ -602,14 +718,45 @@
             schema:
               type: object
               properties:
-                error:
+                statusCode:
+                  type: number
+                  example: 404
+                message:
+                  type: string
                   example: Utilisateur introuvable !
+                key:
+                  example: null
+
+/api/password/verify:
+  post:
+    tags: ['Password']
+    description: Verifies the given code
+    summary: Verifies the given code
+    requestBody:
+      $ref: '#components/requestBodies/VerifyCode'
+    responses:
+      200:
+        description: Returns true
+      400:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                statusCode:
+                  type: number
+                  example: 400
+                message:
+                  type: string
+                  example: Votre code a expiré !
+                key:
+                  example: null
 
 /api/password/reset:
   post:
     tags: ['Password']
-    description:
-    summary:
+    description: Creates a new password
+    summary: Creates a new password
     requestBody:
       $ref: '#components/requestBodies/ResetPassword'
     responses:
@@ -628,5 +775,11 @@
             schema:
               type: object
               properties:
-                error:
-                  example: Il y a eu un problème !
+                statusCode:
+                  type: number
+                  example: 500
+                message:
+                  type: string
+                  example: Il y a eu un problème...
+                key:
+                  example: null

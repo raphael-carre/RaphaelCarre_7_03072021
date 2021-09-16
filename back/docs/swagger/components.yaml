@@ -185,6 +185,21 @@ components:
             properties:
               email:
                 type: string
+    VerifyCode:
+      required: true
+      description: User email and code
+      content:
+        application/json:
+          schema:
+            type: object
+            required:
+              - email
+              - code
+            properties:
+              email:
+                type: string
+              code:
+                type: number
     ResetPassword:
       required: true
       description: User email and secret code
@@ -195,6 +210,7 @@ components:
             required:
               - email
               - code
+              - password
             properties:
               email:
                 type: string
@@ -260,17 +276,6 @@ components:
           type: string
           format: date-time
           example: '2021-06-02 16:34:00'
-    # UserPosts:
-    #   type: array
-    #   items:
-    #     allOf:
-    #       - $ref: '#components/schemas/Post'
-    #       - type: object
-    #         properties:
-    #           Comments:
-    #             $ref: '#components/definitions/Comments'
-    #           PostLikes:
-    #             $ref: '#components/definitions/PostLikes'
     Post:
       type: object
       $ref: '#components/schemas/Post'
