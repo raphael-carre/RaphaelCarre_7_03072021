@@ -26,7 +26,7 @@ Il vous sera alors demandé si vous souhaitez lancer l'application en mode 'prod
 
 Configuration avec Docker
 -------------------------
-Le script vous demandera de saisir un nom pour le compte administrateur de la base de données, de choisir un mot de passe, puis d'indiquer l'adresse d'un serveur de messagerie ainsi que le nom d'utilisateur et le mot de passe associé.  
+Le script vous demandera de saisir un nom pour le compte utilisateur de la base de données et de choisir un mot de passe, d'indiquer l'adresse d'un serveur de messagerie ainsi que le nom d'utilisateur et le mot de passe associé, puis d'entrer une clé secrète pour le Json Web Token (facultatif).  
 Il se chargera ensuite de créér les images nécessaires puis de lancer les différents containers (lors du premier lancement, le temps d'attente peut être relativement long).
 
 Une fois les containers lancés, il vous suffit de vous rendre à l'adresse suivante pour tester l'application : http://localhost:8080.
@@ -46,13 +46,13 @@ Configuration avec Node et MySQL
 > Pour que cette configuration fonctionne, Docker ne doit pas être installé, ou lancé, sur la machine.
 
 Après avoir choisi le mode d'execution ('prod' ou 'dev'), le script vous demandera l'adresse de votre base de données (le plus souvent 'localhost').  
-Il vous demandera ensuite de définir un nom pour l'administrateur, ainsi qu'un mot de passe. Cette action va créer un fichier `dbInit.sql` dans le dossier `./database`. Il vous sera alors demandé d'importer ce fichier dans votre client MySQL. Vous pouvez également, depuis un autre terminal, utiliser la commande suivante depuis l'invite de commande MySQL :
+Il vous demandera ensuite de définir un nom pour l'utilisateur, ainsi qu'un mot de passe. Cette action va créer un fichier `dbInit.sql` dans le dossier `./database`. Il vous sera alors demandé d'importer ce fichier dans votre client MySQL. Vous pouvez également, depuis un autre terminal, utiliser la commande suivante depuis l'invite de commande MySQL :
 
     SOURCE /chemin_vers_le_dossier_de_l_application/database/dbInit.sql
 
 Une fois le fichier importé, pressez une touche pour continuer.
 
-Le script vous demandera alors d'indiquer l'adresse d'un serveur de messagerie ainsi que le nom d'utilisateur et le mot de passe associé. 
+Le script vous demandera alors d'indiquer l'adresse d'un serveur de messagerie ainsi que le nom d'utilisateur et le mot de passe associé, puis de créer une clé secrète pour le Json Web Token (facultatif). 
 
 Il se chargera ensuite d'installer les dépendances pour le front-end et le back-end.
 

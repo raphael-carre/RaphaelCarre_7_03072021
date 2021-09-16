@@ -174,7 +174,11 @@ INITSQL
     # Création du fichier .env
     if [ ! -f "./back/.env" ]
     then
-        JWT_SECRET=$(openssl rand -hex 100 | tr -dc 'a-zA-Z0-9' | fold -w 32 | head -n 1)
+        read -r -p $'\n\nIndiquez une clé secrète pour le Json Web Token (par défaut, la clé sera générée aléatoirement) :\n' JWT_SECRET
+        if [ -z $JWT_SECRET ]
+        then
+            JWT_SECRET=$(openssl rand -hex 100 | tr -dc 'a-zA-Z0-9' | fold -w 32 | head -n 1)
+        fi
 
         touch ./back/.env
         cat > ./back/.env << ENVFILE
