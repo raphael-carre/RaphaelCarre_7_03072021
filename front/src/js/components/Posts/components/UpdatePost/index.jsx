@@ -4,16 +4,22 @@ import { ImageInput } from '@js/components/Form/Input'
 import { Textarea } from '@js/components/Form/Input'
 import { InteractionZone } from '../InteractionZone'
 import style from './style.scss'
+import DeleteImageButton from '@js/components/DeleteImageButton'
 
-const UpdatePost = ({postData, options, updateMethods, image}) => (
+const UpdatePost = ({postData, options, updateMethods}) => (
     <article className={style.post}>
         <CardHead data={postData} options={options} />
-            {(postData.image || image) &&
+            {(postData.image) &&
             <div className={style.post__image}>
-                <img src={image ? URL.createObjectURL(image) : postData.image} alt="" />
+                <DeleteImageButton handleDeleteImage={updateMethods.handleDeleteImage} />
+                <img src={typeof postData.image !== 'string' ? URL.createObjectURL(postData.image) : postData.image} alt="" />
             </div>}
             <form onSubmit={e => updateMethods.handleUpdate(e, postData.id)}>
-                <Textarea name={`updateContentInput-${postData.id}`} value={postData.content || ''} />
+                <Textarea
+                    name={`updateContentInput-${postData.id}`}
+                    value={postData.content || ''}
+                    handleChange={updateMethods.handleChangeContent}
+                />
                 <div className={style.post__modifyButtons}>
                     <ImageInput name="updateImageInput" handleFile={updateMethods.handleFile} />
                     <button className="btn btn--tertiary" onClick={updateMethods.handleResetForm}>Annuler</button>

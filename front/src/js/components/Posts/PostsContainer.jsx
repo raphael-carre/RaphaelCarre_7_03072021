@@ -19,7 +19,6 @@ const PostsContainer = ({uri, userId}) => {
     const [allPosts, setAllPosts] = useState(null)
     const [newPost, setNewPost] = useState(null)
 
-    const [image, setImage] = useState(null)
     const [updatePost, setUpdatePost] = useState(null)
 
     const {setShowLoader} = useContext(LoaderContext)
@@ -67,57 +66,64 @@ const PostsContainer = ({uri, userId}) => {
     }
 
     const modifyPost = id => {
-        setUpdatePost(id)
+        setUpdatePost(allPosts.filter(post => post.id === id)[0])
     }
 
     const handleUpdate = async (e, id) => {
         e.preventDefault()
 
-        const content = e.target[`updateContentInput-${id}`].value
-        
-        const formData = createFormData(content)
+        const formData = createFormData()
 
         try {
             const response = await Request.apiCall(`/posts/${id}`, formData, 'PUT')
 
             if (response.error) throw response.data
 
-            setError(false)
-            setImage(null)
             const postIndexToUpdate = allPosts.findIndex(post => post.id === id)
-            const User = allPosts[postIndexToUpdate].User
-            allPosts[postIndexToUpdate] = {...response.data.data, User}
+            allPosts[postIndexToUpdate] = {...response.data.data, User: updatePost.User}
+            
+            setError(false)
+            setUpdatePost(null)
+
             modal.info(response.data.message)
         }
         catch (error) { setError(error) }
-        finally { setUpdatePost(null) }
     }
 
     const handleFile = e => {
-        setImage(e.target.files[0])
+        setUpdatePost({...updatePost, image: e.target.files[0]})
+    }
+
+    const handleDeleteImage = () => {
+        setUpdatePost({...updatePost, image: null})
+    }
+
+    const handleChangeContent = e => {
+        setUpdatePost({...updatePost, content: e.target.value})
     }
 
     const handleResetForm = e => {
         e.preventDefault()
-        setImage(null)
         setUpdatePost(null)
     }
 
-    const createFormData = content => {
+    const createFormData = () => {
         let formData
 
-        if (image && image !== 'none') {
+        const {content, image} = updatePost
+
+        if (image && typeof image !== 'string') {
             formData = new FormData()
             formData.append('datas', JSON.stringify({content}))
             formData.append('image', image)
         } 
-        
-        if (image && image === 'none') {
-            formData = { image: null, content }
-        } 
+
+        if (image && typeof image === 'string') {
+            formData = { image, content }
+        }
 
         if (!image) {
-            formData = { content }
+            formData = { image: null, content }
         }
 
         return formData
@@ -137,9 +143,8 @@ const PostsContainer = ({uri, userId}) => {
                 posts={allPosts}
                 setNewPost={setNewPost}
                 options={options}
-                updateMethods={{handleResetForm, handleUpdate, handleFile}}
+                updateMethods={{handleResetForm, handleUpdate, handleFile, handleDeleteImage, handleChangeContent}}
                 updatePost={updatePost}
-                image={image}
             />
         </>
     )

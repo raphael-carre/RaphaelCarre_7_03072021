@@ -4,6 +4,7 @@ import { ProfileImageInput } from '@js/components/Form/Input'
 import { Textarea } from '@js/components/Form/Input'
 import { Input } from '@js/components/Form/Input'
 import style from './style.scss'
+import DeleteImageButton from '@js/components/DeleteImageButton'
 
 const SettingsView = ({
     localLoading,
@@ -15,6 +16,7 @@ const SettingsView = ({
     handlePasswordChange,
     handleSubmit,
     handleDeleteUser,
+    handleDeleteImage,
     logout
 }) => (
     <section>
@@ -26,6 +28,7 @@ const SettingsView = ({
                 <h2 className={style.settingsForm__title}>Informations du compte</h2>
                 <div className={style.settingsForm__inputsDiv}>
                     <div className={style.settingsForm__userImage}>
+                        {values.image && <DeleteImageButton handleDeleteImage={handleDeleteImage} />}
                         <ProfileImageInput
                             image={values.image && (typeof values.image === 'string' ? values.image : URL.createObjectURL(values.image))}
                             handleFile={handleFile}

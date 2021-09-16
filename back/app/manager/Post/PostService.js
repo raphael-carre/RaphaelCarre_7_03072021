@@ -116,9 +116,9 @@ class PostService extends Service {
         if (userId !== post.userId) throw new FetchErrorHandler(401)
 
         const { content } = req.file ? JSON.parse(req.body.datas) : req.body
-        if (!req.file && (!content || content === '')) throw new FetchErrorHandler(400, 'Votre publication est vide !')
+        if (!req.file && !req.body.image && (!content || content === '')) throw new FetchErrorHandler(400, 'Votre publication est vide !')
 
-        if (req.file && post.image) {
+        if (post.image && (req.file || (!req.file && !req.body.image))) {
             const timout = setTimeout(() => {
                 const filePath = `images/${post.image.split('/images/')[1]}`
                 if (fs.existsSync(filePath)) { fs.unlinkSync(filePath) }
@@ -126,7 +126,7 @@ class PostService extends Service {
             }, 500)
         }
 
-        const image = req.file ? `${req.protocol}://${req.get('host')}/images/${req.file.filename}` : (req.body.image === null ? '' : post.image)
+        const image = req.file ? `${req.protocol}://${req.get('host')}/images/${req.file.filename}` : req.body.image
 
         const postUpdate = await Post.update({ image, content }, { where: { id } })
         if (postUpdate[0] === 0) throw new FetchErrorHandler(500)

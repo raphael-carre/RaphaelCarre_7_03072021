@@ -46,7 +46,7 @@ class UserService extends Service {
     update = async (req, queryOptions = null) => {
         const id = this.checkId(req.params.id)
         this.tokenId(req, req.params.id)
-        const user = this.findOne(req, { attributes: ['id'], where: { id } })
+        const user = await this.findOne(req, { attributes: ['id', 'image'], where: { id } })
         
         const data = req.file ? JSON.parse(req.body.datas) : req.body
 
@@ -56,12 +56,13 @@ class UserService extends Service {
             data.password = hash
         }
         
-        if (req.file && user.image) {
+        console.log(user, req.file)
+        if (user.image && (req.file || (!req.file && !data.image))) {
             const filePath = `images/${user.image.split('/images/')[1]}`
             if (fs.existsSync(filePath)) { fs.unlinkSync(filePath) }
         }
 
-        const image = req.file ? `${req.protocol}://${req.get('host')}/images/${req.file.filename}` : (req.body.image === null ? '' : user.image)
+        const image = req.file ? `${req.protocol}://${req.get('host')}/images/${req.file.filename}` : data.image
 
         const updateModel = await this.Model.update({...data, image}, queryOptions || { where: { id } })
         if (updateModel[0] === 0) throw new FetchErrorHandler(500)

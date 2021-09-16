@@ -4,6 +4,8 @@
     &__title { @extend %styledForm__title; }
 
     &__userImage {
+        position: relative;
+        
         @include wideScreen {
             float: left;
             margin-top: 20px;

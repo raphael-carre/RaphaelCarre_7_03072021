@@ -4,7 +4,6 @@ import SettingsView from './SettingsView'
 import Request from '@js/utils/classes/Request'
 import { Redirect } from 'react-router-dom'
 import { LoaderContext } from '@js/utils/context'
-import { useFetch } from '@js/utils/hooks'
 import { useModal } from '@js/utils/hooks'
 import Modal from '@js/utils/Modal'
 
@@ -103,6 +102,10 @@ const SettingsContainer = () => {
         }
     }
 
+    const handleDeleteImage = () => {
+        setValues({...values, image: null})
+    }
+
     const logout = () => {
         localStorage.clear()
         setIsAuthenticated(false)
@@ -149,6 +152,7 @@ const SettingsContainer = () => {
                 handlePasswordChange={handlePasswordChange}
                 handleSubmit={handleSubmit}
                 handleDeleteUser={handleDeleteUser}
+                handleDeleteImage={handleDeleteImage}
                 logout={logout}
             />
         </>

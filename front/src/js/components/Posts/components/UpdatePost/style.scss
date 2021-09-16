@@ -2,6 +2,8 @@
     @extend %card;
     
     &__image {
+        position: relative;
+
         img {
             margin-bottom: 15px;
             width: 100%;

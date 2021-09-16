@@ -10,24 +10,22 @@ const PostsView = ({
     setNewPost,
     options,
     updatePost,
-    updateMethods,
-    image
+    updateMethods
 }) => (
     <>
         {(!isProfile || (isProfile && isOwner)) &&
         <NewPost setNewPost={setNewPost} />}
         {posts && posts.map(
             postData => 
-                updatePost === postData.id ?
+                updatePost && updatePost.id === postData.id ?
                 <UpdatePost
-                    key={postData.id}
-                    postData={postData}
+                    key={`update-${updatePost.id}`}
+                    postData={updatePost}
                     options={options}
                     updateMethods={updateMethods}
-                    image={image}
                 /> :
                 <Post
-                    key={postData.id}
+                    key={`post-${postData.id}`}
                     postData={postData}
                     options={options}
                 />
