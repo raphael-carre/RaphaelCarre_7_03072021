@@ -13,34 +13,16 @@ const SettingsContainer = () => {
     const {setShowLoader} = useContext(LoaderContext)
 
     const userId = localStorage.getItem('userId')
-    const userData = useFetch(`/users/${userId}`)
     
     const [isLoading, setIsLoading] = useState(false)
     const [localLoading, setLocalLoading] = useState(false)
     const [error, setError] = useState(false)
-    const [values, setValues] = useState({
-        id: null,
-        firstName: '',
-        lastName: '',
-        description: '',
-        image: ''
-    })
-    const [passwordValues, setPasswordValues] = useState({
-        password: '',
-        confirmPassword: ''
-    })
+    const [values, setValues] = useState(JSON.parse(localStorage.getItem('userData')))
+    const [passwordValues, setPasswordValues] = useState({ password: '', confirmPassword: '' })
 
     const modal = useModal()
 
     document.title = "Groupomania - Paramètres"
-
-    useEffect(() => {
-        setIsLoading(userData.isLoading)
-        if (!values.id) {
-            userData.error && setError(userData.data)
-            userData.data && setValues(userData.data)
-        }
-    }, [userData])
 
     useEffect(() => {
         setShowLoader(isLoading)
@@ -89,7 +71,10 @@ const SettingsContainer = () => {
             if (response.error) throw response.data
 
             setError(false)
-            if (formName === 'userData') { setValues(response.data.data) }
+            if (formName === 'userData') {
+                setValues(response.data.data)
+                localStorage.setItem('userData', JSON.stringify(response.data.data))
+            }
             if (formName === 'userPassword') {setPasswordValues({password: '', confirmPassword: ''})}
             modal.info(response.data.message)
         }
@@ -154,7 +139,6 @@ const SettingsContainer = () => {
     return (
         <>
             {modal.content && <Modal content={modal.content} type={modal.type} confirmMethods={modal.confirmMethods} />}
-            {values.id &&
             <SettingsView
                 localLoading={localLoading}
                 values={values}
@@ -166,7 +150,7 @@ const SettingsContainer = () => {
                 handleSubmit={handleSubmit}
                 handleDeleteUser={handleDeleteUser}
                 logout={logout}
-            />}
+            />
         </>
     )
 }
