@@ -45,6 +45,32 @@ class LostPasswordService extends Service {
     }
 
     /**
+     * Verifies users code
+     * @param {Request} req Request
+     * @returns 
+     */
+    verifyCode = async req => {
+        const { email, code } = req.body
+
+        const user = await User.findOne({ attributes: ['id'], where: { email }})
+        if (!user) throw new FetchErrorHandler(404, 'Utilisateur introuvable !')
+
+        const match = await this.Model.findOne({ where: { userId: user.id, code }})
+        if (!match) throw new FetchErrorHandler(400, 'Code non valide !')
+
+        const codeDate = Math.floor(Date.parse(match.createdAt) / 1000)
+        const currentDate = Math.floor(Date.now() / 1000)
+
+        if (currentDate - codeDate > 300) {
+            const destroyedCode = await this.Model.destroy({ where: { id: match.id }})
+            if (destroyedCode === 0) throw new FetchErrorHandler(500)
+            throw new FetchErrorHandler(400, 'Votre code a expiré !')
+        }
+
+        return true
+    }
+
+    /**
      * Sends an email with a random code when user has lost his password.
      * @param {Request} req Request
      * @param {Response} res Response

@@ -38,6 +38,21 @@ class LostPasswordController {
         }
     }
 
+    /**
+     * Verifies user's code.
+     * @param {Request} req Request
+     * @param {Response} res Response
+     */
+    verifyCode = async (req, res) => {
+        try {
+            const data = await this.Service.verifyCode(req)
+            res.status(200).json(data)
+        }
+        catch (error) {
+            res.status(error.statusCode || 500).send(error)
+        }
+    }
+
 } 
 
 module.exports = new LostPasswordController(LostPasswordService)
