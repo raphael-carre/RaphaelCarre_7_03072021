@@ -39,37 +39,40 @@ const InteractionZoneContainer = ({postData}) => {
         finally { setIsLoading(false) }
     }
 
-    const toggleLike = async () => {
-        try {
-            const response = await Request.apiCall(`/likes/posts/${postData.id}`, 'POST')
-
-            if (response.error) throw response.data
-
-            modal.info(response.data.message)
-            setError(false)
-            fetchLikes(postData.id)
+    const toggleLike = async e => {
+        if ((e.type === 'keydown' && e.key === 'Enter') || e.type === 'click') {
+            try {
+                const response = await Request.apiCall(`/likes/posts/${postData.id}`, 'POST')
+    
+                if (response.error) throw response.data
+    
+                modal.info(response.data.message)
+                setError(false)
+                fetchLikes(postData.id)
+            }
+            catch (error) { setError(error) }
         }
-        catch (error) { setError(error) }
     }
 
-    const toggleComments = () => {
-        setLoadComments(!loadComments)
+    const toggleComments = e => {
+        if ((e.type === 'keydown' && e.key === 'Enter') || e.type === 'click') {
+            setLoadComments(!loadComments)
+        }
     }
 
     return (
-        // isLoading ? <Loader /> :
         <>
-        {modal.content && <Modal content={modal.content} type={modal.type} />}
-        {likes &&
-        <InteractionZoneView
-            postId={postData.id}
-            likes={likes.filter(like => like.like)}
-            toggleLike={toggleLike}
-            commentsCounter={commentsCounter}
-            setCommentsCounter={setCommentsCounter}
-            loadComments={loadComments}
-            toggleComments={toggleComments}
-        />}
+            {modal.content && <Modal content={modal.content} type={modal.type} />}
+            {likes &&
+            <InteractionZoneView
+                postId={postData.id}
+                likes={likes.filter(like => like.like)}
+                toggleLike={toggleLike}
+                commentsCounter={commentsCounter}
+                setCommentsCounter={setCommentsCounter}
+                loadComments={loadComments}
+                toggleComments={toggleComments}
+            />}
         </>
     )
 }

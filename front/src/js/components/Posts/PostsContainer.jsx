@@ -48,25 +48,29 @@ const PostsContainer = ({uri, userId}) => {
         }
     }, [newPost])
 
-    const deletePost = async id => {
-        const confirm = await modal.confirm('Êtes-vous sûr de vouloir supprimer cette publication ?')
-
-        if (confirm) {
-            try {
-                const response = await Request.apiCall(`/posts/${id}`, 'DELETE')
+    const deletePost = async (e, id) => {
+        if ((e.type === 'keydown' && e.keyCode === 13) || e.type === 'click') {
+            const confirm = await modal.confirm('Êtes-vous sûr de vouloir supprimer cette publication ?')
     
-                if (response.error) throw response.data
-    
-                setAllPosts(allPosts.filter(post => post.id !== id))
-                setError(false)
-                modal.info(response.data.message)
+            if (confirm) {
+                try {
+                    const response = await Request.apiCall(`/posts/${id}`, 'DELETE')
+        
+                    if (response.error) throw response.data
+        
+                    setAllPosts(allPosts.filter(post => post.id !== id))
+                    setError(false)
+                    modal.info(response.data.message)
+                }
+                catch (error) { modal.error(error) }
             }
-            catch (error) { modal.error(error) }
         }
     }
 
-    const modifyPost = id => {
-        setUpdatePost(allPosts.filter(post => post.id === id)[0])
+    const modifyPost = (e, id) => {
+        if ((e.type === 'keydown' && e.key === 'Enter') || e.type === 'click') {
+            setUpdatePost(allPosts.filter(post => post.id === id)[0])
+        } 
     }
 
     const handleUpdate = async (e, id) => {
@@ -94,8 +98,10 @@ const PostsContainer = ({uri, userId}) => {
         setUpdatePost({...updatePost, image: e.target.files[0]})
     }
 
-    const handleDeleteImage = () => {
-        setUpdatePost({...updatePost, image: null})
+    const handleDeleteImage = e => {
+        if ((e.type === 'keydown' && e.key === 'Enter') || e.type === 'click') {
+            setUpdatePost({...updatePost, image: null})
+        }
     }
 
     const handleChangeContent = e => {

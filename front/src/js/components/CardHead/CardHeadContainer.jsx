@@ -9,8 +9,10 @@ const CardHeadContainer = ({data, options}) => {
     let menuOptions = [{ name: 'Supprimer', run: options.delete }]
     data.userId === parseInt(localStorage.getItem('userId')) && (menuOptions = [{name: 'Modifier', run: options.modify }, ...menuOptions])
 
-    const openMenu = () => {
-        setIsOpened(!isOpened)
+    const openMenu = e => {
+        if ((e.type === 'keydown' && e.key === 'Enter') || e.type === 'click') {
+            setIsOpened(!isOpened)
+        }
     }
 
     return (

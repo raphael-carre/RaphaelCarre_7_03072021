@@ -3,10 +3,12 @@
 
     &--primary {
         background-color: $background-color-primary;
+        border: 1px solid $background-color-primary;
 
         @include wideScreen {
-            &:hover {
-                background-color: $background-color-tertiary;
+            &:hover, &:focus {
+                box-shadow: 2px 2px 8px 2px rgba(0,0,0,.2);
+                background-color: $background-color-secondary-bis;
             }
         }
     }
@@ -14,10 +16,11 @@
     &--secondary {
         color: #000;
         border: 1px solid $background-color-primary;
-        background-color: $background-color-secondary;
+        background-color: $background-color-primary;
 
         @include wideScreen {
-            &:hover {
+            &:hover, &:focus {
+                box-shadow: 2px 2px 8px 2px rgba(0,0,0,.2);
                 color: #fff;
                 background-color: $background-color-primary;
             }
@@ -26,21 +29,35 @@
 
     &--tertiary {
         background-color: $background-color-tertiary;
+        border: 1px solid $background-color-primary;
 
         @include wideScreen {
-            &:hover {
-                background-color: $background-color-primary;
+            &:hover, &:focus {
+                box-shadow: 2px 2px 8px 2px rgba(0,0,0,.2);
+                background-color: $background-color-secondary-bis;
             }
         }
     }
 
     &--alert {
         color: #fff;
-        background-color: rgb(212, 2, 2);
+        background-color: #c40343;
+        border: none;
 
         @include wideScreen {
-            &:hover {
-                background-color: rgb(172, 47, 47);
+            &:hover, &:focus {
+                box-shadow: 2px 2px 8px 2px rgba(0,0,0,.2);
+                background-color: $background-color-secondary-bis;
+            }
+        }
+    }
+
+    &--disabled {
+        cursor: not-allowed !important;
+
+        @include wideScreen {
+            &:hover, &:focus {
+                box-shadow: none;
             }
         }
     }

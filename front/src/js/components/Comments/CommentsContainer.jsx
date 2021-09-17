@@ -38,26 +38,30 @@ const CommentsContainer = ({postId, setCommentsCounter}) => {
         }
     }, [newComment])
 
-    const deleteComment = async id => {
-        const confirm = await modal.confirm('Êtes-vous sûr de vouloir supprimer ce commentaire ?')
-
-        if (confirm) {
-            try {
-                const response = await Request.apiCall(`/comments/${id}`, 'DELETE')
+    const deleteComment = async (e, id) => {
+        if ((e.type === 'keydown' && e.key === 'Enter') || e.type === 'click') {
+            const confirm = await modal.confirm('Êtes-vous sûr de vouloir supprimer ce commentaire ?')
     
-                if (response.error) throw response.data
-    
-                setCommentsCounter(comments.length - 1)
-                setComments(comments.filter(comment => comment.id !== id))
-                setError(false)
-                modal.info(response.data.message)
+            if (confirm) {
+                try {
+                    const response = await Request.apiCall(`/comments/${id}`, 'DELETE')
+        
+                    if (response.error) throw response.data
+        
+                    setCommentsCounter(comments.length - 1)
+                    setComments(comments.filter(comment => comment.id !== id))
+                    setError(false)
+                    modal.info(response.data.message)
+                }
+                catch (error) { setError(error) }
             }
-            catch (error) { setError(error) }
         }
     }
 
-    const modifyComment = id => {
-        setUpdateComment(id)
+    const modifyComment = (e, id) => {
+        if ((e.type === 'keydown' && e.key === 'Enter') || e.type === 'click') {
+            setUpdateComment(id)
+        }
     }
 
     const handleUpdate = async (e, id) => {

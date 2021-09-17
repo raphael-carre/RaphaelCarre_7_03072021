@@ -64,10 +64,13 @@ const RegisterView = ({isRegistered, error, values, handleChange, register, disa
                     handleChange={handleChange}
                 />
                 <div className={style.registerForm__buttons}>
-                    <button className="btn btn--primary" type="submit" disabled={disabled}>Inscription</button>
+                    <button className={`btn btn--primary${disabled ? ' btn--disabled': ''}`} type="submit" disabled={disabled}>Inscription</button>
                 </div>
             </div>
         </form>}
+        <p className={style.registerP}>
+            <Link to="/login" title="Revenir à la page de connexion">Revenir à la page de connexion</Link>
+        </p>
     </section>
 )
 

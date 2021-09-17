@@ -102,8 +102,10 @@ const SettingsContainer = () => {
         }
     }
 
-    const handleDeleteImage = () => {
-        setValues({...values, image: null})
+    const handleDeleteImage = e => {
+        if ((e.type === 'keydown' && e.key === 'Enter') || e.type === 'click') {
+            setValues({...values, image: null})
+        }
     }
 
     const logout = () => {

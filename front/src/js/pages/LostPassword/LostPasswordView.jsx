@@ -1,5 +1,6 @@
 import { Input } from '@js/components/Form/Input'
 import React from 'react'
+import { Link } from 'react-router-dom'
 import style from './style.scss'
 
 const LostPasswordView = ({values,passwordValues, handleChange, handlePasswordChange, handleSubmit, error}) => (
@@ -69,6 +70,9 @@ const LostPasswordView = ({values,passwordValues, handleChange, handlePasswordCh
                 </div>
             </form>
         </div>}
+        <p className={style.lostPasswordP}>
+            <Link to="/login" title="Revenir à la page de connexion">Revenir à la page de connexion</Link>
+        </p>
     </section>
 )
 

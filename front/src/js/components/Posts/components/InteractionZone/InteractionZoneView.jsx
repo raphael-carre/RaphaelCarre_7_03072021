@@ -9,7 +9,17 @@ const InteractionZoneView = ({postId, likes, toggleLike, commentsCounter, setCom
     <>
         <div className={style.interactionZone}>
             <div className={style.interactionZone__likes}>
-                <div onClick={toggleLike}>
+                <div
+                    role="button"
+                    tabIndex="0"
+                    aria-label={
+                        likes.filter(
+                            like => like.userId === parseInt(localStorage.getItem('userId'))
+                        ).length === 1 ? 'Ne plus aimer cette publication' : 'Aimer cette publication'
+                    }
+                    onClick={toggleLike}
+                    onKeyDown={toggleLike}
+                >
                     <img 
                         src={
                             likes.filter(
@@ -21,7 +31,14 @@ const InteractionZoneView = ({postId, likes, toggleLike, commentsCounter, setCom
                 </div>
                 <p>{likes.length > 0 ? likes.length : ''}</p>
             </div>
-            <div className={style.interactionZone__comments} onClick={toggleComments}>
+            <div
+                role="button"
+                tabIndex="0"
+                aria-label="Afficher les commentaires ou en ajouter"
+                className={style.interactionZone__comments}
+                onClick={toggleComments}
+                onKeyDown={toggleComments}
+            >
                 <div>
                     <img src={commentIcon} alt="Commentaire" />
                 </div>

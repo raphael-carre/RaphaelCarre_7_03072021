@@ -69,16 +69,13 @@
     }
 
     &__field {
-        position: absolute;
-        top: -1000px;
-        overflow: hidden;
-        opacity: 0;
-        z-index: -1;
+        display: none;
     }
 }
 
 .profileImageInput {
     @extend %profileImageCanvas;
+    position: relative;
     margin: 25px auto 0;
     width: 150px;
     height: 150px;

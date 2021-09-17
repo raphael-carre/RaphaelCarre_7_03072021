@@ -31,3 +31,21 @@
         }
     }
 }
+
+.lostPasswordP {
+    margin: 35px 0 0;
+    padding: 10px;
+    text-align: center;
+
+    a {
+        font-weight: bold;
+        color: $background-color-primary;
+        text-decoration: none;
+
+        @include wideScreen {
+            &:hover {
+                text-decoration: underline;
+            }
+        }
+    }
+}

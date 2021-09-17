@@ -16,8 +16,13 @@
     }
 
     @include wideScreen {
-        &:hover {
+        &:hover, &:focus {
             transform: scale(1.2);
         }
     }
+}
+
+.outter {
+    right: -10px;
+    top: -10px;
 }
