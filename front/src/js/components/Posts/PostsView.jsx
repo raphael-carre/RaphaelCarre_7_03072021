@@ -10,7 +10,8 @@ const PostsView = ({
     setNewPost,
     options,
     updatePost,
-    updateMethods
+    updateMethods,
+    handleCommentsCounter
 }) => (
     <>
         {(!isProfile || (isProfile && isOwner)) &&
@@ -23,11 +24,13 @@ const PostsView = ({
                     postData={updatePost}
                     options={options}
                     updateMethods={updateMethods}
+                    handleCommentsCounter={handleCommentsCounter}
                 /> :
                 <Post
                     key={`post-${postData.id}`}
                     postData={postData}
                     options={options}
+                    handleCommentsCounter={handleCommentsCounter}
                 />
         )}
     </>

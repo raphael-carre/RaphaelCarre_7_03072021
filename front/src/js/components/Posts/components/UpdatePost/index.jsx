@@ -6,7 +6,7 @@ import { InteractionZone } from '../InteractionZone'
 import style from './style.scss'
 import DeleteImageButton from '@js/components/DeleteImageButton'
 
-const UpdatePost = ({postData, options, updateMethods}) => (
+const UpdatePost = ({postData, options, updateMethods, handleCommentsCounter}) => (
     <article className={style.post}>
         <CardHead data={postData} options={options} />
             {(postData.image) &&
@@ -26,7 +26,7 @@ const UpdatePost = ({postData, options, updateMethods}) => (
                     <button className="btn btn--primary" type="submit">Modifier</button>
                 </div>
             </form> 
-        <InteractionZone postData={postData} />
+        <InteractionZone postData={postData} handleCommentsCounter={handleCommentsCounter} />
     </article>
 )
 

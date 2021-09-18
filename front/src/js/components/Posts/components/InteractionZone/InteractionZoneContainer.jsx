@@ -5,7 +5,7 @@ import Request from '@js/utils/classes/Request'
 import { useModal } from '@js/utils/hooks'
 import Modal from '@js/utils/Modal'
 
-const InteractionZoneContainer = ({postData}) => {
+const InteractionZoneContainer = ({postData, handleCommentsCounter}) => {
     const [isLoading, setIsLoading] = useState(false)
     const [error, setError] = useState(false)
     const [likes, setLikes] = useState(null)
@@ -17,6 +17,12 @@ const InteractionZoneContainer = ({postData}) => {
     useEffect(() => {
         fetchLikes(postData.id)
     }, [])
+
+    useEffect(() => {
+        if (commentsCounter !== postData.commentsCounter) {
+            handleCommentsCounter(postData.id, commentsCounter)
+        }
+    }, [commentsCounter])
 
     useEffect(() => {
         if (error && !error.key) {

@@ -99,7 +99,7 @@ const PostsContainer = ({uri, userId}) => {
             if (response.error) throw response.data
 
             const postIndexToUpdate = allPosts.findIndex(post => post.id === id)
-            allPosts[postIndexToUpdate] = {...response.data.data, User: updatePost.User}
+            allPosts[postIndexToUpdate] = { ...allPosts[postIndexToUpdate], ...response.data.data }
             
             setError(false)
             setUpdatePost(null)
@@ -150,6 +150,11 @@ const PostsContainer = ({uri, userId}) => {
         return formData
     }
 
+    const handleCommentsCounter = (postId, commentsCounter) => {
+        const postIndexToUpdate = allPosts.findIndex(post => post.id === postId)
+        allPosts[postIndexToUpdate]['commentsCounter'] = commentsCounter
+    }
+
     const options = {
         modify: modifyPost,
         delete: deletePost
@@ -166,6 +171,7 @@ const PostsContainer = ({uri, userId}) => {
                 options={options}
                 updateMethods={{handleResetForm, handleUpdate, handleFile, handleDeleteImage, handleChangeContent}}
                 updatePost={updatePost}
+                handleCommentsCounter={handleCommentsCounter}
             />
         </>
     )

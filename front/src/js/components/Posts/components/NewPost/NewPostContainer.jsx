@@ -60,7 +60,7 @@ const NewPostContainer = ({setNewPost}) =>  {
             if (response.error) throw response.data
 
             setError(false)
-            setNewPost({...response.data.newPost, User})
+            setNewPost({...response.data.newPost, commentsCounter: 0, User})
             
             if (image) { setImage(null) }
             e.target['content'].value = ''
