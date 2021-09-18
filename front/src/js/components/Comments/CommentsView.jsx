@@ -14,7 +14,7 @@ const CommentsView = ({
 }) => (
     <div className={style.comments}>
         <NewComment postId={postId} setNewComment={setNewComment} />
-        {comments.map(
+        {comments && comments.map(
             data => 
                 updateComment === data.id ?
                 <UpdateComment

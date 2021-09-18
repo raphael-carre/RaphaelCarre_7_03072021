@@ -8,7 +8,7 @@ const Post = ({postData, options}) => (
         <CardHead data={postData} options={options} />
         {postData.image &&
         <div className={style.post__image}>
-            <img src={postData.image} alt="" />
+            <img src={postData.image} alt="" data-type="postImage" />
         </div>}
         {postData.content &&
         <div className={style.post__content}>

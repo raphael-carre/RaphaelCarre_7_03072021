@@ -1,5 +1,4 @@
 import React, { useState, useEffect, useContext } from 'react'
-import { useFetch } from '@js/utils/hooks'
 import PostsView from './PostsView'
 import Request from '@js/utils/classes/Request'
 import { LoaderContext } from '@js/utils/context'
@@ -10,7 +9,6 @@ const PostsContainer = ({uri, userId}) => {
     const isProfile = userId ? true : false
     const isOwner = parseInt(userId) === parseInt(localStorage.getItem('userId')) ? true : false
 
-    const posts = useFetch(uri)
     const modal = useModal()
 
     const [isLoading, setIsLoading] = useState(false)
@@ -22,6 +20,16 @@ const PostsContainer = ({uri, userId}) => {
     const [updatePost, setUpdatePost] = useState(null)
 
     const {setShowLoader} = useContext(LoaderContext)
+
+    
+    useEffect(() => {
+        setShowLoader(true)
+        getPosts()
+    }, [])
+
+    useEffect(() => {
+        getPosts()
+    }, [uri])
 
     useEffect(() => {
         setShowLoader(isLoading)
@@ -35,18 +43,25 @@ const PostsContainer = ({uri, userId}) => {
     }, [error])
 
     useEffect(() => {
-        setIsLoading(posts.isLoading)
-        if (allPosts === null) {
-            posts.error && setError(posts.data)
-            posts.data && setAllPosts(posts.data)
-        }
-    }, [posts])
-
-    useEffect(() => {
         if (newPost !== null) {
             allPosts !== null ? setAllPosts([newPost, ...allPosts]) : setAllPosts([newPost])
         }
     }, [newPost])
+
+    const getPosts = async () => {
+        setIsLoading(true)
+
+        try {
+            const response = await Request.apiCall(uri)
+
+            if (response.error) throw response.data
+
+            setError(false)
+            setAllPosts(response.data)
+        }
+        catch (error) { setError(error) }
+        finally { setIsLoading(false) }
+    }
 
     const deletePost = async (e, id) => {
         if ((e.type === 'keydown' && e.keyCode === 13) || e.type === 'click') {

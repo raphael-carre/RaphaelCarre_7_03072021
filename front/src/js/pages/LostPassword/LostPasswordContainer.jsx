@@ -110,7 +110,7 @@ const LostPasswordContainer = () => {
                     const timout = setTimeout(() => {
                         setRedirect(true)
                         clearTimeout(timout)
-                    }, 2200)
+                    }, 2210)
                     break
             }
         }

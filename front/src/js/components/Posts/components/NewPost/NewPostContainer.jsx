@@ -6,14 +6,19 @@ import { useModal } from '@js/utils/hooks'
 import Modal from '@js/utils/Modal'
 
 const NewPostContainer = ({setNewPost}) =>  {
-    const user = JSON.parse(localStorage.getItem('userData'))
+    const userId = JSON.parse(localStorage.getItem('userId'))
 
     const [isLoading, setIsLoading] = useState(false)
     const [localLoading, setLocalLoading] = useState(false)
     const [error, setError] = useState(false)
+    const [user, setUser] = useState(null)
     const [image, setImage] = useState(null)
 
     const modal = useModal()
+
+    useEffect(() => {
+        getUser()
+    }, [])
 
     useEffect(() => {
         if (error && !error.key) {
@@ -21,6 +26,18 @@ const NewPostContainer = ({setNewPost}) =>  {
             setError(false)
         }
     }, [error])
+
+    const getUser = async () => {
+        try {
+            const response = await Request.apiCall(`/users/${userId}`)
+
+            if (response.error) throw response.data
+
+            setError(false)
+            setUser(response.data)
+        }
+        catch (error) { setError(error) }
+    }
 
     const handleSubmit = async e => {
         e.preventDefault()
@@ -75,13 +92,14 @@ const NewPostContainer = ({setNewPost}) =>  {
     return (
         <>
             {modal.content && <Modal content={modal.content} type={modal.type} />}
+            {user &&
             <NewPostView 
                 currentUser={user}
                 handleFile={handleFile}
                 imagePreview={image}
                 handleSubmit={handleSubmit}
                 localLoading={localLoading}
-            />
+            />}
         </>
     )
 }

@@ -1,5 +1,5 @@
 import Request from '@js/utils/classes/Request'
-import React, { useState, useEffect, createContext, useContext } from 'react'
+import React, { useState, useEffect, createContext } from 'react'
 import { useModal } from '../hooks'
 import Modal from '../Modal'
 import Loader from '../Loader'
@@ -9,16 +9,10 @@ export const AuthContext = createContext()
 export const AuthProvider = ({children}) => {
     const [isAuthenticated, setIsAuthenticated] = useState(localStorage.getItem('token') ? true : false)
     
-    const [isLoading, setIsLoading] = useState(false)
     const [data, setData] = useState(null)
     const [error, setError] = useState(false)
 
-    const {setShowLoader} = useContext(LoaderContext)
     const modal = useModal()
-    
-    useEffect(() => {
-        setShowLoader(isLoading)
-    }, [isLoading])
 
     useEffect(() => {
         if (error && !error.key) {
@@ -32,11 +26,9 @@ export const AuthProvider = ({children}) => {
 
     useEffect(() => {
         if (data && data.isAdmin) { localStorage.setItem('isAdmin', true) }
-        if (data) { localStorage.setItem('userData', JSON.stringify(data)) }
     }, [data])
 
     const checkUser = async userId => {
-        setIsLoading(true)
         try {
             const response = await Request.apiCall(`/users/${userId}`)
 
@@ -49,9 +41,6 @@ export const AuthProvider = ({children}) => {
             setError(error)
             setIsAuthenticated(false)
             localStorage.clear()
-        }
-        finally {
-            setIsLoading(false)
         }
     }
 
@@ -73,32 +62,31 @@ export const LoaderProvider = ({children}) => {
     const [fadeOut, setFadeOut] = useState(false)
 
     const setShowLoader = loading => {
-        if (!isLoading && loading) {
-            return setIsLoading(true)
-        }
+        if (!isLoading && loading) return setIsLoading(true)
 
         if (isLoading && !loading) {
-            const images = document.querySelectorAll('#root section article div:nth-of-type(2) img')
+            const images = Array.from(document.querySelectorAll('img[data-type=postImage]'))
 
-            if (images.length === 0) {
-                return setIsLoading(false)
-            }
-            
+            if (images.length === 0) return setIsLoading(false)
+
             let counter = 0
 
-            for (let image of images) {
-                image.addEventListener('load', () => {
-                    image.complete && counter++
-                    if (counter === images.length) {
-                        setFadeOut(true)
-                        const timeout = setTimeout(() => {
-                            setFadeOut(false)
-                            setIsLoading(false)
-                            clearTimeout(timeout)
-                        }, 500)
-                    }
-                })
-            }            
+            if (images.length > 0) {
+                for (let image of images) {
+                    image.addEventListener('load', () => {
+                        image.complete && counter++
+
+                        if (counter === images.length) {
+                            setFadeOut(true)
+                            const timout = setTimeout(() => {
+                                setFadeOut(false)
+                                setIsLoading(false)
+                                clearTimeout(timout)
+                            }, 500)
+                        }
+                    })
+                }
+            }
         }
     }
 

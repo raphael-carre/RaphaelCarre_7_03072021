@@ -1,31 +1,4 @@
-import Request from "@js/utils/classes/Request"
 import { useState, useEffect, useRef } from "react"
-
-export const useFetch = (uri, userEntries = null) => {
-    const [isLoading, setIsLoading] = useState(false)
-    const [data, setData] = useState(null)
-    const [error, setError] = useState(false)
-
-    useEffect(() => {
-        fetchApi(uri, userEntries)
-    }, [uri])
-
-    const fetchApi = async (uri, data = null, method = null) => {
-        setIsLoading(true)
-        try {
-            const response = await Request.apiCall(uri, data, method)
-
-            if (response.error) throw response.data
-
-            setError(false)
-            setData(response.data)
-        }
-        catch (error) { setError(error) }
-        finally { setIsLoading(false) }
-    }
-
-    return { isLoading, data, error }
-}
 
 export const useModal = () => {
     const [content, setContent] = useState(null)

@@ -1,14 +1,10 @@
 import Request from '@js/utils/classes/Request'
 import { useModal } from '@js/utils/hooks'
-import { useFetch } from '@js/utils/hooks'
-import Loader from '@js/utils/Loader'
 import Modal from '@js/utils/Modal'
 import React, { useState, useEffect, useContext } from 'react'
 import CommentsView from './CommentsView'
 
 const CommentsContainer = ({postId, setCommentsCounter}) => {
-    const fetchedComments = useFetch(`/comments/post/${postId}`)
-
     const [isLoading, setIsLoading] = useState(false)
     const [error, setError] = useState(false)
 
@@ -19,6 +15,10 @@ const CommentsContainer = ({postId, setCommentsCounter}) => {
     const modal = useModal()
 
     useEffect(() => {
+        getComments()
+    }, [])
+
+    useEffect(() => {
         if (error && !error.key) {
             modal.error(error.statusCode && error.statusCode !== 500 ? error.message : 'Il y a eu un problème')
             setError(false)
@@ -26,17 +26,26 @@ const CommentsContainer = ({postId, setCommentsCounter}) => {
     }, [error])
 
     useEffect(() => {
-        setIsLoading(fetchedComments.isLoading)
-        setError(fetchedComments.error)
-        fetchedComments.data && comments === null && setComments(fetchedComments.data.comments)
-    }, [fetchedComments])
-
-    useEffect(() => {
         if (newComment !== null) {
             setCommentsCounter(comments.length + 1)
             comments !== null ? setComments([newComment, ...comments]) : setComments([newComment])
         }
     }, [newComment])
+
+    const getComments = async () => {
+        setIsLoading(true)
+
+        try {
+            const response = await Request.apiCall(`/comments/post/${postId}`)
+
+            if (response.error) throw response.data
+
+            setError(false)
+            setComments(response.data.comments)
+        }
+        catch (error) { setError(error) }
+        finally { setIsLoading(false) }
+    }
 
     const deleteComment = async (e, id) => {
         if ((e.type === 'keydown' && e.key === 'Enter') || e.type === 'click') {
@@ -96,7 +105,6 @@ const CommentsContainer = ({postId, setCommentsCounter}) => {
     return (
         <>
             {modal.content && <Modal content={modal.content} type={modal.type} confirmMethods={modal.confirmMethods} />}
-            {comments &&
             <CommentsView
                 postId={postId}
                 comments={comments}
@@ -104,7 +112,7 @@ const CommentsContainer = ({postId, setCommentsCounter}) => {
                 updateComment={updateComment}
                 updateMethods={{handleUpdate, handleResetForm}}
                 options={options}
-            />}
+            />
         </>
     )
 }

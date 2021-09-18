@@ -16,12 +16,16 @@ const SettingsContainer = () => {
     const [isLoading, setIsLoading] = useState(false)
     const [localLoading, setLocalLoading] = useState(false)
     const [error, setError] = useState(false)
-    const [values, setValues] = useState(JSON.parse(localStorage.getItem('userData')))
+    const [values, setValues] = useState(null)
     const [passwordValues, setPasswordValues] = useState({ password: '', confirmPassword: '' })
 
     const modal = useModal()
 
     document.title = "Groupomania - Paramètres"
+
+    useEffect(() => {
+        getUser()
+    }, [])
 
     useEffect(() => {
         setShowLoader(isLoading)
@@ -43,6 +47,18 @@ const SettingsContainer = () => {
             }
         }
     }, [passwordValues])
+
+    const getUser = async () => {
+        try {
+            const response = await Request.apiCall(`/users/${userId}`)
+
+            if (response.error) throw response.data
+
+            setError(false)
+            setValues(response.data)
+        }
+        catch (error) { setError(error) }
+    }
 
     const handleChange = e => {
         setValues({...values, [e.target.name]: e.target.value})
@@ -144,6 +160,7 @@ const SettingsContainer = () => {
     return (
         <>
             {modal.content && <Modal content={modal.content} type={modal.type} confirmMethods={modal.confirmMethods} />}
+            {values &&
             <SettingsView
                 localLoading={localLoading}
                 values={values}
@@ -156,7 +173,7 @@ const SettingsContainer = () => {
                 handleDeleteUser={handleDeleteUser}
                 handleDeleteImage={handleDeleteImage}
                 logout={logout}
-            />
+            />}
         </>
     )
 }

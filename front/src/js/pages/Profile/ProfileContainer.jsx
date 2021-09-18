@@ -1,19 +1,52 @@
-import { LoaderContext } from '@js/utils/context'
-import React, { useContext, useEffect } from 'react'
+import Request from '@js/utils/classes/Request'
+import { useModal } from '@js/utils/hooks'
+import Modal from '@js/utils/Modal'
+import React, { useEffect, useState } from 'react'
+import { useParams } from 'react-router-dom'
 import ProfileView from './ProfileView'
 
 const ProfileContainer = () => {
-    const id = localStorage.getItem('userId')
+    const { id } = useParams()
     const uri = `/posts/user/${id}`
-    const userData = JSON.parse(localStorage.getItem('userData'))
 
-    const {setShowLoader} = useContext(LoaderContext)
+    const modal = useModal()
+
+    const [error, setError] = useState(false)
+    const [data, setData] = useState(null)
 
     useEffect(() => {
-        setShowLoader(true)
+        getUserData(id)
     }, [])
+    
+    useEffect(() => {
+        getUserData(id)
+    }, [id])
 
-    return <ProfileView uri={uri} userData={userData} />
+    useEffect(() => {
+        if (error && !error.key) {
+            modal.error(error.statusCode && error.statusCode !== 500 ? error.message : 'Il y a eu un problème')
+            setError(false)
+        }
+    }, [error])
+
+    const getUserData = async userId => {
+        try {
+            const response = await Request.apiCall(`/users/${userId}`)
+
+            if (response.error) throw response.data
+
+            setError(false)
+            setData(response.data)
+        }
+        catch (error) { setError(error) }
+    }
+
+    return (
+        <>
+            {modal.content && <Modal content={modal.content} type={modal.type} />}
+            {data && <ProfileView uri={uri} userData={data} />}
+        </>
+    )
 }
 
 export default ProfileContainer
