@@ -9,11 +9,15 @@ const router = require('./router')
 
 const app = express()
 
-const jsDocHelmetOptions = {
+let helmetOptions = {
     useDefaults: true,
     directives: {
-        scriptSrc: ["'self'", "'unsafe-inline'"]
+        imgSrc: ["'self'", "blob:", "data:"]
     }
+}
+
+if (process.env.NODE_ENV === 'development') {
+    helmetOptions.directives.scriptSrc = ["'self'", "'unsafe-inline'"]
 }
 
 dbConnection(db)
@@ -35,13 +39,13 @@ app.use('/api', router)
 
 if (process.env.NODE_ENV === 'development') {
     app.use('/api-docs', swaggerUi.serve, swaggerUi.setup(swaggerConfig))
-    app.use('/jsdoc', helmet.contentSecurityPolicy(jsDocHelmetOptions), express.static('./docs/jsdoc'))
+    app.use('/jsdoc', helmet.contentSecurityPolicy(helmetOptions), express.static('./docs/jsdoc'))
 
     app.get('/', (req, res) => {
         res.status(301).redirect('/api-docs')
     })
 } else {
-    app.use(express.static('./public'))
+    app.use(helmet.contentSecurityPolicy(helmetOptions), express.static('./public'))
 
     app.get('*', (req, res) => {
         const index = fs.existsSync('./public/index.html') ? fs.readFileSync('./public/index.html') : '<a href="http://localhost:8080>Groupomania</a>'

@@ -47,7 +47,7 @@ class LostPasswordService extends Service {
     /**
      * Verifies users code
      * @param {Request} req Request
-     * @returns 
+     * @returns  {Boolean}
      */
     verifyCode = async req => {
         const { email, code } = req.body
