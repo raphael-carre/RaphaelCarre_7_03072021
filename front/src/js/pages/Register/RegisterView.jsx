@@ -7,15 +7,12 @@ import style from './style.scss'
 const RegisterView = ({isRegistered, error, values, handleChange, register, disabled}) => (
     <section>
         {isRegistered ?
-        <section>
+        <div>
             <p className={style.registerP}>
                 <img src={thankyou} alt="Pouce en l'air" />
             </p>
             <p className={style.registerP}>Merci de vous être enregistré !</p>
-            <p className={style.registerP}>
-                <Link to="/login">Revenir à la page de connexion</Link>
-            </p>
-        </section> :
+        </div> :
         <form className={style.registerForm} onSubmit={register}>
             <h2 className={style.registerForm__title}>Inscription</h2>
             <p className={style.registerP}>Veuillez saisir vos informations</p>
