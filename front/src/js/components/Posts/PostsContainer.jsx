@@ -106,7 +106,7 @@ const PostsContainer = ({uri, userId}) => {
 
             modal.info(response.data.message)
         }
-        catch (error) { setError(error) }
+        catch (error) { setError(error.key === 'content' ? {...error, key: `updateContentInput-${id}` } : error) }
     }
 
     const handleFile = e => {
@@ -172,6 +172,7 @@ const PostsContainer = ({uri, userId}) => {
                 updateMethods={{handleResetForm, handleUpdate, handleFile, handleDeleteImage, handleChangeContent}}
                 updatePost={updatePost}
                 handleCommentsCounter={handleCommentsCounter}
+                error={error}
             />
         </>
     )

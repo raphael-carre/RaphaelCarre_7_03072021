@@ -11,7 +11,8 @@ const PostsView = ({
     options,
     updatePost,
     updateMethods,
-    handleCommentsCounter
+    handleCommentsCounter,
+    error
 }) => (
     <>
         {(!isProfile || (isProfile && isOwner)) &&
@@ -25,6 +26,7 @@ const PostsView = ({
                     options={options}
                     updateMethods={updateMethods}
                     handleCommentsCounter={handleCommentsCounter}
+                    error={error}
                 /> :
                 <Post
                     key={`post-${postData.id}`}

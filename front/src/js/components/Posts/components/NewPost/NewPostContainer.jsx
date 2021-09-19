@@ -99,6 +99,7 @@ const NewPostContainer = ({setNewPost}) =>  {
                 imagePreview={image}
                 handleSubmit={handleSubmit}
                 localLoading={localLoading}
+                error={error}
             />}
         </>
     )
